@@ -632,18 +632,64 @@ void CManilla2DConfigDlg::DisableAllTodayScreenItems()
 CString CManilla2DConfigDlg::GetPathToActualHTCHomeSettingsXmlFile()
 {
     CString retVal("\\Windows\\HTCHomeSettings.xml");
+
+	TCHAR winDirStr[MAX_PATH];
+	if(SHGetSpecialFolderPath(NULL, winDirStr, CSIDL_WINDOWS, 0) == TRUE)
+	{
+		retVal = winDirStr;
+		retVal += "\\HTCHomeSettings.xml";
+	}
+
     return retVal;
 }
 
 CString CManilla2DConfigDlg::GetPathToBackupHTCHomeSettingsXmlFile()
 {
-    CString retVal("\\Program Files\\M2DC\\HTCHomeSettings-BACKUP.xml");
+	CString retVal("\\Application Data\\M2DC\\HTCHomeSettings-BACKUP.xml");
+
+	TCHAR appDataDir[MAX_PATH];
+	if(SHGetSpecialFolderPath(NULL, appDataDir, CSIDL_APPDATA, 1) == TRUE)
+	{
+		retVal = appDataDir;
+		retVal += "\\M2DC";
+
+		// create directory if needed here
+		//
+		//
+
+		retVal += "\\HTCHomeSettings-BACKUP.xml";
+	}
+	else
+	{
+		// try to create directory "\\Application Data\\M2DC"
+		//
+	}
+
     return retVal;
 }
 
 CString CManilla2DConfigDlg::GetPathToNewHTCHomeSettingsXmlFile()
 {
-    CString retVal("\\Program Files\\M2DC\\HTCHomeSettings-Current.xml");
+	CString retVal("\\Application Data\\M2DC\\HTCHomeSettings-Current.xml");
+
+	TCHAR appDataDir[MAX_PATH];
+	if(SHGetSpecialFolderPath(NULL, appDataDir, CSIDL_APPDATA, 1) == TRUE)
+	{
+		retVal = appDataDir;
+		retVal += "\\M2DC";
+
+		// create directory if needed here
+		//
+		//
+
+		retVal += "\\HTCHomeSettings-Current.xml";
+	}
+	else
+	{
+		// try to create directory "\\Application Data\\M2DC"
+		//
+	}
+
     return retVal;
 }
 
