@@ -1,0 +1,24 @@
+#summary Software Road Map
+
+= Software Road Map =
+
+TODO:
+- need a new icon, test icon
+- 
+
+
+BUGS:
+- Uninstaller requires a restart some times
+- Uninstaller does not delete "\Program Files\M2DC" folder HTCHomeSetting-BACKUP.xml
+- Read "\Windows" directory and "\Program Files\M2DC" directory dynamically
+- Restore Defaults needs to actually restore the default tab names and enabled states, not just copy over a whole file
+- 
+
+
+REQUESTS:
+- smart phone compatibility
+- Add more buttons to launcher: http://forum.xda-developers.com/showpost.php?p=2648154&postcount=262
+- clock management: http://forum.xda-developers.com/showpost.php?p=2640528&postcount=113
+- theme management: http://forum.xda-developers.com/showthread.php?t=425974
+- change tab functionality, add new custom tabs
+- 
