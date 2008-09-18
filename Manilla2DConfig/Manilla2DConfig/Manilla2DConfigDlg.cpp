@@ -351,8 +351,6 @@ void CManilla2DConfigDlg::PopulateWidgetVectorsFromCurrentHTCHomeSettingsXmlFile
 
 void CManilla2DConfigDlg::PopulateNewHTCHomeSettingsXmlFileFromNewWidgetVector()
 {
-        CopyFile(GetPathToActualHTCHomeSettingsXmlFile(), GetPathToNewHTCHomeSettingsXmlFile(), FALSE);
-
     CT2CA pszConvertedAnsiString(GetPathToActualHTCHomeSettingsXmlFile());
 
     std::string temp(pszConvertedAnsiString);
@@ -438,7 +436,13 @@ void CManilla2DConfigDlg::PopulateNewHTCHomeSettingsXmlFileFromNewWidgetVector()
 
 void CManilla2DConfigDlg::CopyNewHTCHomeSettingsXmlFileToWindowsDir()
 {
+    DWORD dwAttributes = GetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile());
+
+    SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), FILE_ATTRIBUTE_NORMAL);
+
     CopyFile(GetPathToNewHTCHomeSettingsXmlFile(), GetPathToActualHTCHomeSettingsXmlFile(), FALSE);
+
+    SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), dwAttributes);
 }
 
 void CManilla2DConfigDlg::BackupHTCHomeSettingsXmlFileIfNeeded()
@@ -451,7 +455,13 @@ void CManilla2DConfigDlg::BackupHTCHomeSettingsXmlFileIfNeeded()
 
 void CManilla2DConfigDlg::RestoreBackupHTCHomeSettingsXmlFileToWindowsDir()
 {
+    DWORD dwAttributes = GetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile());
+
+    SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), FILE_ATTRIBUTE_NORMAL);
+
     CopyFile(GetPathToBackupHTCHomeSettingsXmlFile(), GetPathToActualHTCHomeSettingsXmlFile(), FALSE);
+
+    SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), dwAttributes);
 }
 
 void CManilla2DConfigDlg::RefreshTodayScreen()
