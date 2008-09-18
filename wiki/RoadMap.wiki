@@ -12,7 +12,7 @@ BUGS:
 
 - Restore Defaults needs to actually restore the default tab names and enabled states, not just copy over a whole file
 
-- 
+- No Landscape/320x320/vga,qvga support (only 320x240 right now) http://msdn.microsoft.com/en-us/library/aa454895.aspx
 
 
 REQUESTS:
