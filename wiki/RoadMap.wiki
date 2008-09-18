@@ -8,7 +8,7 @@ BUGS:
 
 - Uninstaller does not delete "\Program Files\M2DC" folder HTCHomeSetting-BACKUP.xml
 
-- Read "\Windows" directory and "\Program Files\M2DC" directory dynamically
+- Read "\Windows" directory and "\Program Files\M2DC" directory dynamically (SHGetSpecialFolderPath)
 
 - Restore Defaults needs to actually restore the default tab names and enabled states, not just copy over a whole file
 
