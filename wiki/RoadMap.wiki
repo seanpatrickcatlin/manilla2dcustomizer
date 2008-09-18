@@ -2,13 +2,6 @@
 
 = Software Road Map =
 
-TODO:
-
-- need a new icon, test icon
-
-- 
-
-
 BUGS:
 
 - Uninstaller requires a restart some times
