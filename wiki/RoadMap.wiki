@@ -1,7 +1,7 @@
 #summary Software Road Map
 
 = Software Road Map =
-
+<pre>
 TODO:
 - need a new icon, test icon
 - 
@@ -22,3 +22,4 @@ REQUESTS:
 - theme management: http://forum.xda-developers.com/showthread.php?t=425974
 - change tab functionality, add new custom tabs
 - 
+</pre>
