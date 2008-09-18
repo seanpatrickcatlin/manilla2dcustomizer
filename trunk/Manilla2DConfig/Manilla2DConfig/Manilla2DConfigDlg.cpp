@@ -670,6 +670,10 @@ CString CManilla2DConfigDlg::GetPathToBackupHTCHomeSettingsXmlFile()
 
 CString CManilla2DConfigDlg::GetPathToNewHTCHomeSettingsXmlFile()
 {
+	// Maybe rather than using Application Data I should just use the install location
+	// which should be the directory that the exe is being ran from
+	// I can get hte full path by using GetModuleFileName, so that should work from there
+
 	CString retVal("\\Application Data\\M2DC\\HTCHomeSettings-Current.xml");
 
 	TCHAR appDataDir[MAX_PATH];
