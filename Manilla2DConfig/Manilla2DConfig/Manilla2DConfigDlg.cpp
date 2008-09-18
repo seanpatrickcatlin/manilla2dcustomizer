@@ -351,7 +351,11 @@ void CManilla2DConfigDlg::PopulateWidgetVectorsFromCurrentHTCHomeSettingsXmlFile
 
 void CManilla2DConfigDlg::PopulateNewHTCHomeSettingsXmlFileFromNewWidgetVector()
 {
-    CT2CA pszConvertedAnsiString(GetPathToActualHTCHomeSettingsXmlFile());
+    DWORD dwAttributes = GetFileAttributes(GetPathToNewHTCHomeSettingsXmlFile());
+
+    SetFileAttributes(GetPathToNewHTCHomeSettingsXmlFile(), FILE_ATTRIBUTE_NORMAL);
+
+    CT2CA pszConvertedAnsiString(GetPathToNewHTCHomeSettingsXmlFile());
 
     std::string temp(pszConvertedAnsiString);
 
@@ -426,12 +430,7 @@ void CManilla2DConfigDlg::PopulateNewHTCHomeSettingsXmlFileFromNewWidgetVector()
 
     m_currentWidgetVector = m_newWidgetVector;
 
-    //
-    // delete the file
-    if(FileExists(GetPathToNewHTCHomeSettingsXmlFile()))
-    {
-        DeleteFile(GetPathToNewHTCHomeSettingsXmlFile());
-    }
+    SetFileAttributes(GetPathToNewHTCHomeSettingsXmlFile(), dwAttributes);
 }
 
 void CManilla2DConfigDlg::CopyNewHTCHomeSettingsXmlFileToWindowsDir()
