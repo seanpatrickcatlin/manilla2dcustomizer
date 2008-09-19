@@ -14,6 +14,7 @@
 #define IDC_LIST3                       1007
 #define IDC_MAIN_LIST_CONTROL           1007
 #define IDC_TAB1                        1008
+#define IDC_MAIN_TAB_CONTROL            1008
 
 // Next default values for new objects
 // 

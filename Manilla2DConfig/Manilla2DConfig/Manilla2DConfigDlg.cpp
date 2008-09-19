@@ -19,7 +19,8 @@ CManilla2DConfigDlg::CManilla2DConfigDlg(CWnd* pParent /*=NULL*/)
 
 void CManilla2DConfigDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+    CDialog::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_TAB1, m_mainTabControl);
 }
 
 BEGIN_MESSAGE_MAP(CManilla2DConfigDlg, CDialog)

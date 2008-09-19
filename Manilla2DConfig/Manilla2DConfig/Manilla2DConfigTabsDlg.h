@@ -1,14 +1,12 @@
 #pragma once
 
-
+#include "M2DCTabPage.h"
 #include "Manilla2DConfigUtils.h"
 
 // CManilla2DConfigTabsDlg dialog
 
-class CManilla2DConfigTabsDlg : public CDialog
+class CManilla2DConfigTabsDlg : public CM2DCTabPage
 {
-	DECLARE_DYNAMIC(CManilla2DConfigTabsDlg)
-
 public:
 	CManilla2DConfigTabsDlg(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CManilla2DConfigTabsDlg();
@@ -21,6 +19,8 @@ protected:
 
     virtual BOOL OnInitDialog();
     virtual void OnOK();
+    virtual void OnCancel();
+    virtual CString GetTabText();
 
 	DECLARE_MESSAGE_MAP()
 
