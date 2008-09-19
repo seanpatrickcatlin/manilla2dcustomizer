@@ -3,23 +3,7 @@
 
 #pragma once
 
-#include <vector>
-
-using std::vector;
-
-struct NameAndEnabledStateItem
-{
-    CString name;
-    BOOL enabled;
-};
-
-typedef std::vector<NameAndEnabledStateItem> NameAndEnabledState_vector_t;
-
-struct TodayScreenRegBackup
-{
-    BOOL dateEnabled;
-    NameAndEnabledState_vector_t itemVector;
-};
+#include "Manilla2DConfigUtils.h"
 
 // CManilla2DConfigDlg dialog
 class CManilla2DConfigDlg : public CDialog
@@ -54,43 +38,25 @@ public:
     afx_msg void OnLvnItemchangedMainListControl(NMHDR *pNMHDR, LRESULT *pResult);
 
 private:
-    CListCtrl m_mainListControl;
-
-    CButton m_moveUpButton;
-    CButton m_moveDownButton;
-    CButton m_cancelButton;
-    CButton m_restoreDefaultsButton;
+	bool m_bPopulatingListControl;
 
     NameAndEnabledState_vector_t m_newWidgetVector;
     NameAndEnabledState_vector_t m_currentWidgetVector;
 
     TodayScreenRegBackup m_todayScreenRegBackup;
 
-    bool HasTheStateChanged();
+    CListCtrl m_mainListControl;
+    CButton m_moveUpButton;
+    CButton m_moveDownButton;
+    CButton m_cancelButton;
+    CButton m_restoreDefaultsButton;
 
     int GetSelectedItemIndex();
-
     void UpdateListControlFromNewWidgetVector();
 
     void PopulateWidgetVectorsFromCurrentHTCHomeSettingsXmlFile();
-    void PopulateNewHTCHomeSettingsXmlFileFromNewWidgetVector();
-
-    void CopyNewHTCHomeSettingsXmlFileToWindowsDir();
-    void BackupHTCHomeSettingsXmlFileIfNeeded();
-    void RestoreBackupHTCHomeSettingsXmlFileToWindowsDir();
-
-    void RefreshTodayScreen();
-    void BackupTodayScreenItemsRegHive();
-    void RestoreTodayScreenItemsRegHive();
-    void DisableAllTodayScreenItems();
-
-    bool FileExists(CString pathToFile);
-
-    bool m_bPopulatingListControl;
-
-    CString GetPathToActualHTCHomeSettingsXmlFile();
-    CString GetPathToBackupHTCHomeSettingsXmlFile();
-    CString GetPathToNewHTCHomeSettingsXmlFile();
-
-    void PrintNewWidgetVectorContents();
+	void WriteHTCHomeSettingsXmlFileFromNewWidgetVector();
+	
+	void BackupTodayScreenItemsRegHive();
+	void RestoreTodayScreenItemsRegHive();
 };
