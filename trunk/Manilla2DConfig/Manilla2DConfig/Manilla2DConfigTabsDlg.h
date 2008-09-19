@@ -13,6 +13,8 @@ public:
 
 // Dialog Data
 	enum { IDD = IDD_MANILLA2DCONFIG_TABS_DIALOG };
+    
+    virtual UINT GetIDD() { return IDD_MANILLA2DCONFIG_TABS_DIALOG; };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
