@@ -24,7 +24,7 @@ CManilla2DConfigTabsDlg::~CManilla2DConfigTabsDlg()
 
 void CManilla2DConfigTabsDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+	CM2DCTabPage::DoDataExchange(pDX);
 
     DDX_Control(pDX, IDC_MAIN_LIST_CONTROL, m_mainListControl);
     DDX_Control(pDX, IDC_MOVE_UP_BUTTON, m_moveUpButton);
