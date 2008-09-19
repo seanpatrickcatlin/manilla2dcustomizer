@@ -10,10 +10,8 @@
 
 // CManilla2DConfigTabsDlg dialog
 
-IMPLEMENT_DYNAMIC(CManilla2DConfigTabsDlg, CDialog)
-
 CManilla2DConfigTabsDlg::CManilla2DConfigTabsDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CManilla2DConfigTabsDlg::IDD, pParent)
+	: CM2DCTabPage(CManilla2DConfigTabsDlg::IDD, pParent)
 {
     m_bPopulatingListControl = false;
     m_todayScreenRegBackup.dateEnabled = 0;
@@ -72,18 +70,18 @@ void CManilla2DConfigTabsDlg::OnOK()
         RefreshTodayScreen();
     }
 
-    if(FileExists(GetPathToErrorLogFile()))
-    {
-        CString msg("A log file of errors has been generated ");
-        msg += GetPathToErrorLogFile();
-        msg += "\nPlease attach this file when reporting errors.";
-
-        AfxMessageBox(msg);
-    }
-
     CDialog::OnOK();
 }
 
+void CManilla2DConfigTabsDlg::OnCancel()
+{
+    CDialog::OnCancel();
+}
+
+CString CManilla2DConfigTabsDlg::GetTabText()
+{
+    return TEXT("Tabs");
+}
 
 void CManilla2DConfigTabsDlg::OnBnClickedMoveUpButton()
 {
@@ -136,15 +134,6 @@ void CManilla2DConfigTabsDlg::OnBnClickedRestoreDefaultsButton()
     RestoreBackupHTCHomeSettingsXmlFileToWindowsDir();
     RestoreTodayScreenItemsRegHive();
     RefreshTodayScreen();
-
-    if(FileExists(GetPathToErrorLogFile()))
-    {
-        CString msg("A log file of errors has been generated ");
-        msg += GetPathToErrorLogFile();
-        msg += "\nPlease attach this file when reporting errors.";
-
-        AfxMessageBox(msg);
-    }
 
     OnCancel();
 }

@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Manilla2DConfig.h"
 #include "Manilla2DConfigDlg.h"
+#include "Manilla2DConfigUtils.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -20,8 +21,7 @@ END_MESSAGE_MAP()
 CManilla2DConfigApp::CManilla2DConfigApp()
 	: CWinApp()
 {
-	// TODO: add construction code here,
-	// Place all significant initialization in InitInstance
+
 }
 
 
@@ -53,6 +53,15 @@ BOOL CManilla2DConfigApp::InitInstance()
 		// TODO: Place code here to handle when the dialog is
 		//  dismissed with OK
 	}
+
+    if(FileExists(GetPathToErrorLogFile()))
+    {
+        CString msg("A log file of errors has been generated ");
+        msg += GetPathToErrorLogFile();
+        msg += "\nPlease attach this file when reporting errors.";
+
+        AfxMessageBox(msg);
+    }
 
 	// Since the dialog has been closed, return FALSE so that we exit the
 	//  application, rather than start the application's message pump.

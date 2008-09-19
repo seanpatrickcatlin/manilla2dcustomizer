@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "M2DCTabPage.h"
+#include "afxcmn.h"
 
 // CManilla2DConfigDlg dialog
 class CManilla2DConfigDlg : public CDialog
@@ -28,4 +30,6 @@ protected:
 	afx_msg void OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/);
 #endif
 	DECLARE_MESSAGE_MAP()
+public:
+    CTabCtrl m_mainTabControl;
 };
