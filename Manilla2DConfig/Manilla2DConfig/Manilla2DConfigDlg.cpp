@@ -72,17 +72,25 @@ BOOL CManilla2DConfigDlg::OnInitDialog()
 
 void CManilla2DConfigDlg::OnOK()
 {
-    if(HasTheStateChanged())
+	if(CompareNameAndEnabledStateVectors(&m_newWidgetVector, &m_currentWidgetVector))
     {
         CWaitCursor wait;
 
         BackupTodayScreenItemsRegHive();
         DisableAllTodayScreenItems();
         RefreshTodayScreen();
-        PopulateNewHTCHomeSettingsXmlFileFromNewWidgetVector();
-        CopyNewHTCHomeSettingsXmlFileToWindowsDir();
+        WriteHTCHomeSettingsXmlFileFromNewWidgetVector();
         RestoreTodayScreenItemsRegHive();
         RefreshTodayScreen();
+    }
+
+    if(FileExists(GetPathToErrorLogFile()))
+    {
+        CString msg("A log file of errors has been generated ");
+        msg += GetPathToErrorLogFile();
+        msg += "\nPlease attach this file when reporting errors.";
+
+        AfxMessageBox(msg);
     }
 
     CDialog::OnOK();
@@ -128,11 +136,9 @@ void CManilla2DConfigDlg::OnBnClickedMoveDownButton()
 
     if((selectedItemIndex >= 0) && (selectedItemIndex < (m_mainListControl.GetItemCount()-1)))
     {
-        PrintNewWidgetVectorContents();
         NameAndEnabledStateItem temp = m_newWidgetVector[selectedItemIndex+1];
         m_newWidgetVector[selectedItemIndex+1] = m_newWidgetVector[selectedItemIndex];
         m_newWidgetVector[selectedItemIndex] = temp;
-        PrintNewWidgetVectorContents();
 
         m_bPopulatingListControl = true;
         m_mainListControl.SetItemState(selectedItemIndex+1, LVIS_SELECTED, LVIS_SELECTED);
@@ -158,6 +164,15 @@ void CManilla2DConfigDlg::OnBnClickedRestoreDefaultsButton()
     RestoreTodayScreenItemsRegHive();
     RefreshTodayScreen();
 
+    if(FileExists(GetPathToErrorLogFile()))
+    {
+        CString msg("A log file of errors has been generated ");
+        msg += GetPathToErrorLogFile();
+        msg += "\nPlease attach this file when reporting errors.";
+
+        AfxMessageBox(msg);
+    }
+
     OnCancel();
 }
 
@@ -182,31 +197,9 @@ void CManilla2DConfigDlg::OnLvnItemchangedMainListControl(NMHDR *pNMHDR, LRESULT
                 m_bPopulatingListControl = true;
                 m_mainListControl.SetItemState(changedItemIndex, LVIS_SELECTED, LVIS_SELECTED);
                 m_bPopulatingListControl = false;
-
-
-                PrintNewWidgetVectorContents();
             }
         }        
     }
-}
-
-bool CManilla2DConfigDlg::HasTheStateChanged()
-{
-    if(m_currentWidgetVector.size() != m_newWidgetVector.size())
-    {
-        return true;
-    }
-
-    for(size_t i=0; i<m_currentWidgetVector.size(); i++)
-    {
-        if((m_currentWidgetVector[i].name != m_newWidgetVector[i].name) ||
-            (m_currentWidgetVector[i].enabled != m_newWidgetVector[i].enabled))
-        {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 void CManilla2DConfigDlg::OnNMClickMainListControl(NMHDR *pNMHDR, LRESULT *pResult)
@@ -249,7 +242,6 @@ int CManilla2DConfigDlg::GetSelectedItemIndex()
 
 void CManilla2DConfigDlg::UpdateListControlFromNewWidgetVector()
 {
-    PrintNewWidgetVectorContents();
     m_bPopulatingListControl = true;
     int selectedIndex = GetSelectedItemIndex();
 
@@ -296,8 +288,6 @@ void CManilla2DConfigDlg::UpdateListControlFromNewWidgetVector()
 
 void CManilla2DConfigDlg::PopulateWidgetVectorsFromCurrentHTCHomeSettingsXmlFile()
 {
-    CopyFile(GetPathToActualHTCHomeSettingsXmlFile(), GetPathToNewHTCHomeSettingsXmlFile(), FALSE);
-
     CT2CA pszConvertedAnsiString(GetPathToActualHTCHomeSettingsXmlFile());
 
     std::string temp(pszConvertedAnsiString);
@@ -349,14 +339,63 @@ void CManilla2DConfigDlg::PopulateWidgetVectorsFromCurrentHTCHomeSettingsXmlFile
     m_newWidgetVector = m_currentWidgetVector;
 }
 
-void CManilla2DConfigDlg::PopulateNewHTCHomeSettingsXmlFileFromNewWidgetVector()
+void CManilla2DConfigDlg::WriteHTCHomeSettingsXmlFileFromNewWidgetVector()
 {
-    DWORD dwAttributes = GetFileAttributes(GetPathToNewHTCHomeSettingsXmlFile());
+	CString filePath = GetPathToActualHTCHomeSettingsXmlFile();
 
-    SetFileAttributes(GetPathToNewHTCHomeSettingsXmlFile(), FILE_ATTRIBUTE_NORMAL);
+    DWORD dwAttributes = GetFileAttributes(filePath);
 
-    CT2CA pszConvertedAnsiString(GetPathToNewHTCHomeSettingsXmlFile());
+    if(dwAttributes == 0xFFFFFFFF)
+    {
+		FILE* errorDump = fopen(GetConstCharStarFromCString(GetPathToErrorLogFile()), "a");
 
+		if(errorDump == NULL)
+		{
+			CString msg("ERROR WriteNew-1\nUnable to append to ");
+			msg += GetPathToErrorLogFile();
+			AfxMessageBox(msg);
+		}
+		else
+		{
+            fprintf(errorDump, "Unabled to get file attribute of ");
+            fprintf(errorDump, GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
+            fprintf(errorDump, "\n");
+
+            fprintf(errorDump, "ERROR: ");
+            fprintf(errorDump, GetConstCharStarFromCString(GetWin32ErrorString(GetLastError())));
+            fprintf(errorDump, "\n");
+            fflush(errorDump);
+            fclose(errorDump);
+		}
+    }
+
+    if(SetFileAttributes(filePath, FILE_ATTRIBUTE_NORMAL) == 0)
+    {
+		FILE* errorDump = fopen(GetConstCharStarFromCString(GetPathToErrorLogFile()), "a");
+
+		if(errorDump == NULL)
+		{
+			CString msg("ERROR WriteNew-2\nUnable to append to ");
+			msg += GetPathToErrorLogFile();
+			AfxMessageBox(msg);
+		}
+		else
+		{
+            fprintf(errorDump, "Unabled to set file attribute of ");
+            fprintf(errorDump, GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
+            fprintf(errorDump, " to Normal\n");
+
+            fprintf(errorDump, "ERROR: ");
+            fprintf(errorDump, GetConstCharStarFromCString(GetWin32ErrorString(GetLastError())));
+            fprintf(errorDump, "\n");
+
+            LogFileAttributes(errorDump, dwAttributes);
+            fflush(errorDump);
+            fclose(errorDump);
+		}
+    }
+
+    CT2CA pszConvertedAnsiString(filePath);
     std::string temp(pszConvertedAnsiString);
 
     TiXmlDocument doc(temp.c_str());
@@ -430,43 +469,32 @@ void CManilla2DConfigDlg::PopulateNewHTCHomeSettingsXmlFileFromNewWidgetVector()
 
     m_currentWidgetVector = m_newWidgetVector;
 
-    SetFileAttributes(GetPathToNewHTCHomeSettingsXmlFile(), dwAttributes);
-}
-
-void CManilla2DConfigDlg::CopyNewHTCHomeSettingsXmlFileToWindowsDir()
-{
-    DWORD dwAttributes = GetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile());
-
-    SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), FILE_ATTRIBUTE_NORMAL);
-
-    CopyFile(GetPathToNewHTCHomeSettingsXmlFile(), GetPathToActualHTCHomeSettingsXmlFile(), FALSE);
-
-    SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), dwAttributes);
-}
-
-void CManilla2DConfigDlg::BackupHTCHomeSettingsXmlFileIfNeeded()
-{
-    if(!FileExists(GetPathToBackupHTCHomeSettingsXmlFile()))
+    if(SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), dwAttributes) == 0)
     {
-        CopyFile(GetPathToActualHTCHomeSettingsXmlFile(), GetPathToBackupHTCHomeSettingsXmlFile(), FALSE);
+		FILE* errorDump = fopen(GetConstCharStarFromCString(GetPathToErrorLogFile()), "a");
+
+		if(errorDump == NULL)
+		{
+			CString msg("ERROR WriteNew-3\nUnable to append to ");
+			msg += GetPathToErrorLogFile();
+			AfxMessageBox(msg);
+		}
+		else
+		{
+            fprintf(errorDump, "Unabled to retore set file attribute of ");
+            fprintf(errorDump, GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
+            fprintf(errorDump, "\n");
+
+            fprintf(errorDump, "ERROR: ");
+            fprintf(errorDump, GetConstCharStarFromCString(GetWin32ErrorString(GetLastError())));
+            fprintf(errorDump, "\n");
+
+            LogFileAttributes(errorDump, dwAttributes);
+            fflush(errorDump);
+            fclose(errorDump);
+		}
+
     }
-}
-
-void CManilla2DConfigDlg::RestoreBackupHTCHomeSettingsXmlFileToWindowsDir()
-{
-    DWORD dwAttributes = GetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile());
-
-    SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), FILE_ATTRIBUTE_NORMAL);
-
-    CopyFile(GetPathToBackupHTCHomeSettingsXmlFile(), GetPathToActualHTCHomeSettingsXmlFile(), FALSE);
-
-    SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), dwAttributes);
-}
-
-void CManilla2DConfigDlg::RefreshTodayScreen()
-{
-    // Send message to refresh today screen
-    ::SendMessage(HWND_BROADCAST, WM_WININICHANGE, 0xF2, 0);
 }
 
 void CManilla2DConfigDlg::BackupTodayScreenItemsRegHive()
@@ -568,166 +596,5 @@ void CManilla2DConfigDlg::RestoreTodayScreenItemsRegHive()
             RegFlushKey(hKey);
             RegCloseKey(hKey);
         }
-    }
-}
-
-void CManilla2DConfigDlg::DisableAllTodayScreenItems()
-{
-    HKEY mainHKey;
-    DWORD enabledState = 0;
-    CString mainKeyName, subKeyName, valueName;
-
-    // backup the date enabled state
-    mainKeyName = "\\Software\\Microsoft\\Today";
-    
-    if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, mainKeyName, 0, 0, &mainHKey) == ERROR_SUCCESS)
-    {
-        valueName = "Date";
-        enabledState = FALSE;
-        RegSetValueEx(mainHKey, valueName, NULL, REG_DWORD, (CONST BYTE*)&enabledState, sizeof(DWORD));
-        RegFlushKey(mainHKey);
-        RegCloseKey(mainHKey);
-    }
-
-    m_todayScreenRegBackup.dateEnabled = enabledState;
-
-    // enumerate the sub items of the today screen
-    mainKeyName = "\\Software\\Microsoft\\Today\\Items";
-
-    if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, mainKeyName, 0, 0, &mainHKey) == ERROR_SUCCESS)
-    {
-        HKEY subHKey;
-        DWORD subKeyIndex = 0;
-        DWORD subKeyBufferSize = MAX_PATH;
-        TCHAR subKeyBuffer[MAX_PATH];
-
-        LONG retVal = RegEnumKeyEx(mainHKey, subKeyIndex, subKeyBuffer, &subKeyBufferSize, NULL, NULL, NULL, NULL);
-
-        while(retVal == ERROR_SUCCESS)
-        {
-            enabledState = 0;
-
-            subKeyName = "\\Software\\Microsoft\\Today\\Items\\";
-            subKeyName += subKeyBuffer;
-
-            if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, subKeyName, 0, 0, &subHKey) == ERROR_SUCCESS)
-            {
-                valueName = "Enabled";
-                enabledState = FALSE;
-                RegSetValueEx(subHKey, valueName, NULL, REG_DWORD, (CONST BYTE*)&enabledState, sizeof(DWORD));
-                RegFlushKey(subHKey);
-                RegCloseKey(subHKey);
-            }
-
-            subKeyIndex++;
-            subKeyBufferSize = MAX_PATH;
-            retVal = RegEnumKeyEx(mainHKey, subKeyIndex, subKeyBuffer, &subKeyBufferSize, NULL, NULL, NULL, NULL);
-        }
-
-        RegFlushKey(mainHKey);
-        RegCloseKey(mainHKey);
-    }
-}
-
-CString CManilla2DConfigDlg::GetPathToActualHTCHomeSettingsXmlFile()
-{
-    CString retVal("\\Windows\\HTCHomeSettings.xml");
-
-	TCHAR winDirStr[MAX_PATH];
-	if(SHGetSpecialFolderPath(NULL, winDirStr, CSIDL_WINDOWS, 0) == TRUE)
-	{
-		retVal = winDirStr;
-		retVal += "\\HTCHomeSettings.xml";
-	}
-
-    return retVal;
-}
-
-CString CManilla2DConfigDlg::GetPathToBackupHTCHomeSettingsXmlFile()
-{
-	CString retVal("\\Application Data\\M2DC\\HTCHomeSettings-BACKUP.xml");
-
-	TCHAR appDataDir[MAX_PATH];
-	if(SHGetSpecialFolderPath(NULL, appDataDir, CSIDL_APPDATA, 1) == TRUE)
-	{
-		retVal = appDataDir;
-		retVal += "\\M2DC";
-
-		// create directory if needed here
-		//
-		//
-
-		retVal += "\\HTCHomeSettings-BACKUP.xml";
-	}
-	else
-	{
-		// try to create directory "\\Application Data\\M2DC"
-		//
-	}
-
-    return retVal;
-}
-
-CString CManilla2DConfigDlg::GetPathToNewHTCHomeSettingsXmlFile()
-{
-	// Maybe rather than using Application Data I should just use the install location
-	// which should be the directory that the exe is being ran from
-	// I can get hte full path by using GetModuleFileName, so that should work from there
-
-	CString retVal("\\Application Data\\M2DC\\HTCHomeSettings-Current.xml");
-
-	TCHAR appDataDir[MAX_PATH];
-	if(SHGetSpecialFolderPath(NULL, appDataDir, CSIDL_APPDATA, 1) == TRUE)
-	{
-		retVal = appDataDir;
-		retVal += "\\M2DC";
-
-		// create directory if needed here
-		//
-		//
-
-		retVal += "\\HTCHomeSettings-Current.xml";
-	}
-	else
-	{
-		// try to create directory "\\Application Data\\M2DC"
-		//
-	}
-
-    return retVal;
-}
-
-bool CManilla2DConfigDlg::FileExists(CString pathToFile)
-{
-    bool retVal = false;
-
-    WIN32_FIND_DATA emptyStruct;
-
-    HANDLE fileHndl = FindFirstFile(GetPathToBackupHTCHomeSettingsXmlFile(), &emptyStruct);
-    if(fileHndl != INVALID_HANDLE_VALUE)
-    {
-        FindClose(fileHndl);
-        retVal = true;
-    }
-
-    return retVal;
-}
-
-void CManilla2DConfigDlg::PrintNewWidgetVectorContents()
-{
-    char tempStr[1024];
-    CString debugStr;
-
-    TRACE(TEXT("---------------"));
-
-    for(size_t i=0; i<m_newWidgetVector.size(); i++)
-    {
-        sprintf(tempStr, "Item: %d, Name: ", i);
-        debugStr = tempStr;
-        debugStr += m_newWidgetVector[i].name;
-        sprintf(tempStr, ", Enabled: %d\n", m_newWidgetVector[i].enabled);
-        debugStr += tempStr;
-
-        TRACE(debugStr);
     }
 }
