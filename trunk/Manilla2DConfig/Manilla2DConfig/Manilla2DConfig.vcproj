@@ -208,6 +208,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Manilla2DConfigLauncherDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Manilla2DConfigTabsDlg.cpp"
 				>
 			</File>
@@ -331,6 +335,10 @@
 			</File>
 			<File
 				RelativePath=".\Manilla2DConfigDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Manilla2DConfigLauncherDlg.h"
 				>
 			</File>
 			<File

@@ -14,7 +14,5 @@ public:
     virtual CString GetTabText() = 0;
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX) { CDialog::DoDataExchange(pDX); };    // DDX/DDV support
-
     virtual BOOL OnInitDialog() = 0;
 };
