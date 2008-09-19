@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include "Afxext.h"
 #include "Manilla2DConfig.h"
 #include "Manilla2DConfigDlg.h"
 #include "Manilla2DConfigTabsDlg.h"
@@ -67,6 +68,11 @@ END_MESSAGE_MAP()
 BOOL CManilla2DConfigDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
+
+    CCommandBar* cmdBar = new CCommandBar(GetSafeHwnd());
+    cmdBar->Create(this);
+    cmdBar->InsertMenuBar(IDR_MENU1);
+    cmdBar->Show(TRUE);
 
     for(size_t i=0; i<m_mainTabVector.size(); i++)
     {
