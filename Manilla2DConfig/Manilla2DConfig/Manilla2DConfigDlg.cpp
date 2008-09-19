@@ -5,6 +5,7 @@
 #include "Manilla2DConfig.h"
 #include "Manilla2DConfigDlg.h"
 #include "Manilla2DConfigTabsDlg.h"
+#include "Manilla2DConfigLauncherDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -20,6 +21,12 @@ CManilla2DConfigDlg::CManilla2DConfigDlg(CWnd* pParent /*=NULL*/)
     // here is where we add new tabpages, the rest should be done automatically
 
     CM2DCTabPage* newTabPage = new CManilla2DConfigTabsDlg(); 
+    if(newTabPage != NULL)
+    {
+        m_mainTabVector.push_back(newTabPage);
+    }
+
+    newTabPage = new CManilla2DConfigLauncherDlg();
     if(newTabPage != NULL)
     {
         m_mainTabVector.push_back(newTabPage);
@@ -67,7 +74,7 @@ BOOL CManilla2DConfigDlg::OnInitDialog()
 
         if(currentTabPage != NULL)
         {
-            currentTabPage->Create(currentTabPage->GetIDD(), this);
+            currentTabPage->Create(currentTabPage->GetIDD(), &m_mainTabControl);
         }
     }
 
@@ -95,6 +102,13 @@ BOOL CManilla2DConfigDlg::OnInitDialog()
     }
 
     SetRectangle();
+
+    CM2DCTabPage* page1 = m_mainTabVector[0];
+    if(page1 != NULL)
+    {
+        page1->ShowWindow(SW_SHOW);
+        page1->GetFocus();
+    }
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -153,10 +167,22 @@ void CManilla2DConfigDlg::OnTcnSelchangeMainTabControl(NMHDR *pNMHDR, LRESULT *p
 
     if(m_currentTabFocus != m_mainTabControl.GetCurFocus())
     {
-        m_mainTabVector[m_currentTabFocus]->ShowWindow(SW_HIDE);
+        CM2DCTabPage* oldTab = m_mainTabVector[m_currentTabFocus];
+
+        if(oldTab != NULL)
+        {
+            m_mainTabVector[m_currentTabFocus]->ShowWindow(SW_HIDE);
+        }
+
         m_currentTabFocus = m_mainTabControl.GetCurFocus();
-        m_mainTabVector[m_currentTabFocus]->ShowWindow(SW_SHOW);
-        m_mainTabVector[m_currentTabFocus]->SetFocus();
+
+        CM2DCTabPage* newTab = m_mainTabVector[m_currentTabFocus];
+
+        if(newTab != NULL)
+        {
+            m_mainTabVector[m_currentTabFocus]->ShowWindow(SW_SHOW);
+            m_mainTabVector[m_currentTabFocus]->SetFocus();
+        }
     }
 }
 
@@ -168,12 +194,11 @@ void CManilla2DConfigDlg::SetRectangle()
 	m_mainTabControl.GetClientRect(&tabRect);
 	m_mainTabControl.GetItemRect(0, &itemRect);
 
-	nX=itemRect.left;
-	nY=itemRect.bottom+1;
-	nXc=tabRect.right-itemRect.left-1;
-	nYc=tabRect.bottom-nY-1;
+	nX=tabRect.left+1;
+	nY=tabRect.top+1;
+	nXc=tabRect.right-2;
+    nYc=itemRect.top-tabRect.top-2;
     
-	m_mainTabVector[0]->SetWindowPos(&wndTop, nX, nY, nXc, nYc, SWP_SHOWWINDOW);
 	for(size_t i=0; i < m_mainTabVector.size(); i++)
     {
         UINT showFlag = SWP_HIDEWINDOW;
@@ -187,7 +212,7 @@ void CManilla2DConfigDlg::SetRectangle()
 
         if(currentTabPage != NULL)
         {
-		    currentTabPage->SetWindowPos(&wndTop, nX, nY, nXc, nYc, SWP_HIDEWINDOW);
+		    currentTabPage->SetWindowPos(&m_mainTabControl.wndTop, nX, nY, nXc, nYc, SWP_HIDEWINDOW);
         }
 	}
 }
