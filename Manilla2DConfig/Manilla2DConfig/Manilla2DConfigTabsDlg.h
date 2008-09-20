@@ -39,8 +39,6 @@ private:
     NameAndEnabledState_vector_t m_newWidgetVector;
     NameAndEnabledState_vector_t m_currentWidgetVector;
 
-    TodayScreenRegBackup m_todayScreenRegBackup;
-
     CListCtrl m_mainListControl;
     CButton m_moveUpButton;
     CButton m_moveDownButton;
@@ -51,7 +49,4 @@ private:
 
     void PopulateWidgetVectorsFromCurrentHTCHomeSettingsXmlFile();
 	void WriteHTCHomeSettingsXmlFileFromNewWidgetVector();
-	
-	void BackupTodayScreenItemsRegHive();
-	void RestoreTodayScreenItemsRegHive();
 };

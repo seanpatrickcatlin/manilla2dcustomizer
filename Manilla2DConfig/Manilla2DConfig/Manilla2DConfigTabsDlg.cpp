@@ -14,8 +14,6 @@ CManilla2DConfigTabsDlg::CManilla2DConfigTabsDlg(CWnd* pParent /*=NULL*/)
 	: CM2DCTabPage(CManilla2DConfigTabsDlg::IDD, pParent)
 {
     m_bPopulatingListControl = false;
-    m_todayScreenRegBackup.dateEnabled = 0;
-    m_todayScreenRegBackup.itemVector.clear();
 }
 
 CManilla2DConfigTabsDlg::~CManilla2DConfigTabsDlg()
@@ -58,14 +56,7 @@ void CManilla2DConfigTabsDlg::OnOK()
 {
 	if(CompareNameAndEnabledStateVectors(&m_newWidgetVector, &m_currentWidgetVector))
     {
-        CWaitCursor wait;
-
-        BackupTodayScreenItemsRegHive();
-        DisableAllTodayScreenItems();
-        RefreshTodayScreen();
         WriteHTCHomeSettingsXmlFileFromNewWidgetVector();
-        RestoreTodayScreenItemsRegHive();
-        RefreshTodayScreen();
     }
 
     CDialog::OnOK();
@@ -128,7 +119,7 @@ void CManilla2DConfigTabsDlg::OnBnClickedRestoreDefaultsButton()
     RestoreTodayScreenItemsRegHive();
     RefreshTodayScreen();
 
-    OnCancel();
+    ::SendMessage(GetParent()->GetSafeHwnd(), WM_COMMAND, IDCANCEL, NULL);
 }
 
 void CManilla2DConfigTabsDlg::OnLvnItemchangedMainListControl(NMHDR *pNMHDR, LRESULT *pResult)
@@ -448,107 +439,5 @@ void CManilla2DConfigTabsDlg::WriteHTCHomeSettingsXmlFileFromNewWidgetVector()
             fflush(errorDump);
             fclose(errorDump);
 		}
-    }
-}
-
-void CManilla2DConfigTabsDlg::BackupTodayScreenItemsRegHive()
-{
-    m_todayScreenRegBackup.dateEnabled = FALSE;
-    m_todayScreenRegBackup.itemVector.clear();
-
-    HKEY mainHKey;
-    DWORD enabledState = 0;
-    DWORD varSizeDword = sizeof(DWORD);
-    DWORD varTypeDword = REG_DWORD;
-    CString mainKeyName, subKeyName, valueName;
-
-    // backup the date enabled state
-    mainKeyName = "\\Software\\Microsoft\\Today";
-    
-    if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, mainKeyName, 0, 0, &mainHKey) == ERROR_SUCCESS)
-    {
-        valueName = "Date";
-
-        RegQueryValueEx(mainHKey, valueName, NULL, &varTypeDword, (LPBYTE)&enabledState, &varSizeDword);
-
-        RegCloseKey(mainHKey);
-    }
-
-    m_todayScreenRegBackup.dateEnabled = enabledState;
-
-    // enumerate the sub items of the today screen
-    mainKeyName = "\\Software\\Microsoft\\Today\\Items";
-
-    if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, mainKeyName, 0, 0, &mainHKey) == ERROR_SUCCESS)
-    {
-        HKEY subHKey;
-        DWORD subKeyIndex = 0;
-        DWORD subKeyBufferSize = MAX_PATH;
-        TCHAR subKeyBuffer[MAX_PATH];
-
-        LONG retVal = RegEnumKeyEx(mainHKey, subKeyIndex, subKeyBuffer, &subKeyBufferSize, NULL, NULL, NULL, NULL);
-
-        while(retVal == ERROR_SUCCESS)
-        {
-            enabledState = 0;
-
-            subKeyName = "\\Software\\Microsoft\\Today\\Items\\";
-            subKeyName += subKeyBuffer;
-
-            if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, subKeyName, 0, 0, &subHKey) == ERROR_SUCCESS)
-            {
-                valueName = "Enabled";
-
-                RegQueryValueEx(subHKey, valueName, NULL, &varTypeDword, (LPBYTE)&enabledState, &varSizeDword);
-
-                RegCloseKey(subHKey);
-
-                NameAndEnabledStateItem newRegEntry;
-                newRegEntry.name = subKeyBuffer;
-                newRegEntry.enabled = enabledState;
-
-                m_todayScreenRegBackup.itemVector.push_back(newRegEntry);
-            }
-
-            subKeyIndex++;
-            subKeyBufferSize = MAX_PATH;
-            retVal = RegEnumKeyEx(mainHKey, subKeyIndex, subKeyBuffer, &subKeyBufferSize, NULL, NULL, NULL, NULL);
-        }
-
-        RegCloseKey(mainHKey);
-    }
-}
-
-void CManilla2DConfigTabsDlg::RestoreTodayScreenItemsRegHive()
-{
-    HKEY hKey;
-    DWORD enabledState = 0;
-    CString keyName, valueName;
-
-    // restore the date enabled state
-    keyName = "\\Software\\Microsoft\\Today";
-    
-    if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, keyName, 0, 0, &hKey) == ERROR_SUCCESS)
-    {
-        valueName = "Date";
-        enabledState = m_todayScreenRegBackup.dateEnabled;
-        RegSetValueEx(hKey, valueName, NULL, REG_DWORD, (CONST BYTE*)&enabledState, sizeof(DWORD));
-        RegFlushKey(hKey);
-        RegCloseKey(hKey);
-    }
-
-    for(size_t i=0; i<m_todayScreenRegBackup.itemVector.size(); i++)
-    {
-        keyName = "\\Software\\Microsoft\\Today\\Items\\";
-        keyName += m_todayScreenRegBackup.itemVector[i].name;
-
-        if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, keyName, 0, 0, &hKey) == ERROR_SUCCESS)
-        {
-            valueName = "Enabled";
-            enabledState = m_todayScreenRegBackup.itemVector[i].enabled;
-            RegSetValueEx(hKey, valueName, NULL, REG_DWORD, (CONST BYTE*)&enabledState, sizeof(DWORD));
-            RegFlushKey(hKey);
-            RegCloseKey(hKey);
-        }
     }
 }
