@@ -69,10 +69,10 @@ BOOL CManilla2DConfigDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-    CCommandBar* cmdBar = new CCommandBar(GetSafeHwnd());
-    cmdBar->Create(this);
-    cmdBar->InsertMenuBar(IDR_MENU1);
-    cmdBar->Show(TRUE);
+	// Set the icon for this dialog.  The framework does this automatically
+	//  when the application's main window is not a dialog
+	SetIcon(m_hIcon, TRUE);			// Set big icon
+	SetIcon(m_hIcon, FALSE);		// Set small icon
 
     for(size_t i=0; i<m_mainTabVector.size(); i++)
     {
@@ -83,11 +83,6 @@ BOOL CManilla2DConfigDlg::OnInitDialog()
             currentTabPage->Create(currentTabPage->GetIDD(), &m_mainTabControl);
         }
     }
-
-	// Set the icon for this dialog.  The framework does this automatically
-	//  when the application's main window is not a dialog
-	SetIcon(m_hIcon, TRUE);			// Set big icon
-	SetIcon(m_hIcon, FALSE);		// Set small icon
 
     for(size_t i=0; i<m_mainTabVector.size(); i++)
     {
@@ -115,6 +110,9 @@ BOOL CManilla2DConfigDlg::OnInitDialog()
         page1->ShowWindow(SW_SHOW);
         page1->GetFocus();
     }
+
+    m_cmdBar.Create(this);
+    m_cmdBar.InsertMenuBar(IDR_OKCANCELMENU);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

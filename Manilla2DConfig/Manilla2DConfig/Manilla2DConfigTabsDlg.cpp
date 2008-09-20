@@ -29,7 +29,6 @@ void CManilla2DConfigTabsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_MAIN_LIST_CONTROL, m_mainListControl);
     DDX_Control(pDX, IDC_MOVE_UP_BUTTON, m_moveUpButton);
     DDX_Control(pDX, IDC_MOVE_DOWN_BUTTON, m_moveDownButton);
-    DDX_Control(pDX, IDC_CANCEL_BUTTON, m_cancelButton);
     DDX_Control(pDX, IDC_RESTORE_DEFAULTS_BUTTON, m_restoreDefaultsButton);
 }
 
@@ -37,7 +36,6 @@ void CManilla2DConfigTabsDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CManilla2DConfigTabsDlg, CDialog)
     ON_BN_CLICKED(IDC_MOVE_UP_BUTTON, &CManilla2DConfigTabsDlg::OnBnClickedMoveUpButton)
     ON_BN_CLICKED(IDC_MOVE_DOWN_BUTTON, &CManilla2DConfigTabsDlg::OnBnClickedMoveDownButton)
-    ON_BN_CLICKED(IDC_CANCEL_BUTTON, &CManilla2DConfigTabsDlg::OnBnClickedCancelButton)
     ON_BN_CLICKED(IDC_RESTORE_DEFAULTS_BUTTON, &CManilla2DConfigTabsDlg::OnBnClickedRestoreDefaultsButton)
     ON_NOTIFY(LVN_ITEMCHANGED, IDC_MAIN_LIST_CONTROL, &CManilla2DConfigTabsDlg::OnLvnItemchangedMainListControl)
     ON_NOTIFY(NM_CLICK, IDC_MAIN_LIST_CONTROL, &CManilla2DConfigTabsDlg::OnNMClickMainListControl)
@@ -117,11 +115,6 @@ void CManilla2DConfigTabsDlg::OnBnClickedMoveDownButton()
 
         UpdateListControlFromNewWidgetVector();
     }
-}
-
-void CManilla2DConfigTabsDlg::OnBnClickedCancelButton()
-{
-    OnCancel();
 }
 
 void CManilla2DConfigTabsDlg::OnBnClickedRestoreDefaultsButton()

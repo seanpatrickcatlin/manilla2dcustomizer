@@ -29,7 +29,6 @@ protected:
     public:
     afx_msg void OnBnClickedMoveUpButton();
     afx_msg void OnBnClickedMoveDownButton();
-    afx_msg void OnBnClickedCancelButton();
     afx_msg void OnBnClickedRestoreDefaultsButton();
     afx_msg void OnNMClickMainListControl(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnLvnItemchangedMainListControl(NMHDR *pNMHDR, LRESULT *pResult);
@@ -45,7 +44,6 @@ private:
     CListCtrl m_mainListControl;
     CButton m_moveUpButton;
     CButton m_moveDownButton;
-    CButton m_cancelButton;
     CButton m_restoreDefaultsButton;
 
     int GetSelectedItemIndex();

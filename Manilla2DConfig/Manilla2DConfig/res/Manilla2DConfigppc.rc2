@@ -10,6 +10,12 @@
 /////////////////////////////////////////////////////////////////////////////
 // Add manually edited resources here...
 
+IDR_OKCANCELMENU MENU DISCARDABLE
+BEGIN
+MENUITEM "Apply", IDOK
+MENUITEM "Cancel", IDCANCEL
+END
+
 /////////////////////////////////////////////////////////////////////////////
 HI_RES_AWARE CEUX {1}    // turn off the emulation layer
             // Remove this resource to enable pixel-

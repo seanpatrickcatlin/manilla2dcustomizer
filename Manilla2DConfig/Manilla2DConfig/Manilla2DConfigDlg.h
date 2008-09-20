@@ -42,4 +42,5 @@ private:
     void SetRectangle();
     vector<CM2DCTabPage*> m_mainTabVector;
     int m_currentTabFocus;
+    CCommandBar m_cmdBar;
 };
