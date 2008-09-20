@@ -42,3 +42,7 @@ CString GetPathToApplicationDirectory();
 CString GetPathToRunningBinary();
 CString GetPathToActualHTCHomeSettingsXmlFile();
 CString GetPathToBackupHTCHomeSettingsXmlFile();
+
+void BackupTodayScreenItemsRegHive();
+void RestoreTodayScreenItemsRegHive();
+

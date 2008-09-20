@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <time.h>
 
+TodayScreenRegBackup g_todayScreenRegBackup;
+
 void PrintNameAndEnabledStateContents(NameAndEnabledState_vector_t* nameAndStateVector)
 {
 	if(nameAndStateVector == NULL)
@@ -374,5 +376,108 @@ void DisableAllTodayScreenItems()
 
         RegFlushKey(mainHKey);
         RegCloseKey(mainHKey);
+    }
+}
+
+
+void BackupTodayScreenItemsRegHive()
+{
+    g_todayScreenRegBackup.dateEnabled = FALSE;
+    g_todayScreenRegBackup.itemVector.clear();
+
+    HKEY mainHKey;
+    DWORD enabledState = 0;
+    DWORD varSizeDword = sizeof(DWORD);
+    DWORD varTypeDword = REG_DWORD;
+    CString mainKeyName, subKeyName, valueName;
+
+    // backup the date enabled state
+    mainKeyName = "\\Software\\Microsoft\\Today";
+    
+    if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, mainKeyName, 0, 0, &mainHKey) == ERROR_SUCCESS)
+    {
+        valueName = "Date";
+
+        RegQueryValueEx(mainHKey, valueName, NULL, &varTypeDword, (LPBYTE)&enabledState, &varSizeDword);
+
+        RegCloseKey(mainHKey);
+    }
+
+    g_todayScreenRegBackup.dateEnabled = enabledState;
+
+    // enumerate the sub items of the today screen
+    mainKeyName = "\\Software\\Microsoft\\Today\\Items";
+
+    if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, mainKeyName, 0, 0, &mainHKey) == ERROR_SUCCESS)
+    {
+        HKEY subHKey;
+        DWORD subKeyIndex = 0;
+        DWORD subKeyBufferSize = MAX_PATH;
+        TCHAR subKeyBuffer[MAX_PATH];
+
+        LONG retVal = RegEnumKeyEx(mainHKey, subKeyIndex, subKeyBuffer, &subKeyBufferSize, NULL, NULL, NULL, NULL);
+
+        while(retVal == ERROR_SUCCESS)
+        {
+            enabledState = 0;
+
+            subKeyName = "\\Software\\Microsoft\\Today\\Items\\";
+            subKeyName += subKeyBuffer;
+
+            if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, subKeyName, 0, 0, &subHKey) == ERROR_SUCCESS)
+            {
+                valueName = "Enabled";
+
+                RegQueryValueEx(subHKey, valueName, NULL, &varTypeDword, (LPBYTE)&enabledState, &varSizeDword);
+
+                RegCloseKey(subHKey);
+
+                NameAndEnabledStateItem newRegEntry;
+                newRegEntry.name = subKeyBuffer;
+                newRegEntry.enabled = enabledState;
+
+                g_todayScreenRegBackup.itemVector.push_back(newRegEntry);
+            }
+
+            subKeyIndex++;
+            subKeyBufferSize = MAX_PATH;
+            retVal = RegEnumKeyEx(mainHKey, subKeyIndex, subKeyBuffer, &subKeyBufferSize, NULL, NULL, NULL, NULL);
+        }
+
+        RegCloseKey(mainHKey);
+    }
+}
+
+void RestoreTodayScreenItemsRegHive()
+{
+    HKEY hKey;
+    DWORD enabledState = 0;
+    CString keyName, valueName;
+
+    // restore the date enabled state
+    keyName = "\\Software\\Microsoft\\Today";
+    
+    if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, keyName, 0, 0, &hKey) == ERROR_SUCCESS)
+    {
+        valueName = "Date";
+        enabledState = g_todayScreenRegBackup.dateEnabled;
+        RegSetValueEx(hKey, valueName, NULL, REG_DWORD, (CONST BYTE*)&enabledState, sizeof(DWORD));
+        RegFlushKey(hKey);
+        RegCloseKey(hKey);
+    }
+
+    for(size_t i=0; i<g_todayScreenRegBackup.itemVector.size(); i++)
+    {
+        keyName = "\\Software\\Microsoft\\Today\\Items\\";
+        keyName += g_todayScreenRegBackup.itemVector[i].name;
+
+        if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, keyName, 0, 0, &hKey) == ERROR_SUCCESS)
+        {
+            valueName = "Enabled";
+            enabledState = g_todayScreenRegBackup.itemVector[i].enabled;
+            RegSetValueEx(hKey, valueName, NULL, REG_DWORD, (CONST BYTE*)&enabledState, sizeof(DWORD));
+            RegFlushKey(hKey);
+            RegCloseKey(hKey);
+        }
     }
 }

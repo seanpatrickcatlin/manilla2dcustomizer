@@ -119,6 +119,12 @@ BOOL CManilla2DConfigDlg::OnInitDialog()
 
 void CManilla2DConfigDlg::OnOK()
 {
+    CWaitCursor wait;
+
+    BackupTodayScreenItemsRegHive();
+    DisableAllTodayScreenItems();
+    RefreshTodayScreen();
+
     for(size_t i=0; i<m_mainTabVector.size(); i++)
     {
         CM2DCTabPage* currentTabPage = m_mainTabVector[i];
@@ -128,6 +134,9 @@ void CManilla2DConfigDlg::OnOK()
             currentTabPage->OnOK();
         }
     }
+
+    RestoreTodayScreenItemsRegHive();
+    RefreshTodayScreen();
 
     CDialog::OnOK();
 }
