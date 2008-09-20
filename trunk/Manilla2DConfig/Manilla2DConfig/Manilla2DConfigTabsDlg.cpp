@@ -448,7 +448,6 @@ void CManilla2DConfigTabsDlg::WriteHTCHomeSettingsXmlFileFromNewWidgetVector()
             fflush(errorDump);
             fclose(errorDump);
 		}
-
     }
 }
 

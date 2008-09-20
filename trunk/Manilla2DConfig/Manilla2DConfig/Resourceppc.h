@@ -13,6 +13,9 @@
 #define IDC_RESTORE_DEFAULTS_BUTTON     1006
 #define IDC_MAIN_LIST_CONTROL           1007
 #define IDC_MAIN_TAB_CONTROL            1008
+#define IDC_RADIO1                      1009
+#define IDC_LAUNCHER_THREE_COL_RADIO    1010
+#define IDC_LAUNCHER_FOUR_COL_RADIO     1011
 
 // Next default values for new objects
 // 
@@ -20,7 +23,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        130
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1009
+#define _APS_NEXT_CONTROL_VALUE         1012
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
