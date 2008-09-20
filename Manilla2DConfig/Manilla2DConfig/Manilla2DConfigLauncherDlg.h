@@ -6,8 +6,6 @@
 
 class CManilla2DConfigLauncherDlg : public CM2DCTabPage
 {
-	//DECLARE_DYNAMIC(CManilla2DConfigLauncherDlg)
-
 public:
 	CManilla2DConfigLauncherDlg(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CManilla2DConfigLauncherDlg();
@@ -26,4 +24,13 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
+
+private:
+    int m_initialNumberOfColumns;
+
+    CButton m_launcherThreeColumnRadioButton;
+    CButton m_launcherFourColumnRadioButton;
+
+    int GetNumberOfLauncherColumnsFromHTCHomeSettingsXml();
+    void SetNumberOfLauncherColumnsFromHTCHomeSettingsXml(int numberOfColumns);
 };
