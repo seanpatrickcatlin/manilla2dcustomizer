@@ -88,18 +88,6 @@ codeINSTALL_INIT Install_Init(HWND hwndParent, BOOL fFirstCall,
                               BOOL fPreviouslyInstalled, LPCTSTR pszInstallDir)
 {
     AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
-    // is there some way to non destructively
-    // 1.) copy the directory contents to a new direntory
-    // 2.) Delete the install directory
-    // 3.) Copy the old files back over in the Install_Exix method?
-    /*
-    if((fFirstCall == TRUE) && (fPreviouslyInstalled == TRUE))
-    {
-
-    }
-    */
-
     return codeINSTALL_INIT_CONTINUE;
 }
 
@@ -118,7 +106,8 @@ codeUNINSTALL_INIT Uninstall_Init(HWND hwndParent, LPCTSTR pszInstallDir)
 
     int retVal = MessageBox(
         hwndParent,
-        TEXT("Would you like to delete your installed M2DC themes?"),
+        //TEXT("Would you like to keep your M2DC themes and settings?"),
+        TEXT("Would you like to keep your M2DC settings?"),
         TEXT("Uninstall M2DC"),
         MB_YESNOCANCEL|MB_ICONQUESTION);
 
@@ -127,23 +116,9 @@ codeUNINSTALL_INIT Uninstall_Init(HWND hwndParent, LPCTSTR pszInstallDir)
         return codeUNINSTALL_INIT_CANCEL;
     }
 
-    TCHAR themeDirectoryPath[MAX_PATH];
-
-    _tcscpy(themeDirectoryPath, pszInstallDir);
-    _tcscat(themeDirectoryPath, TEXT("\\Themes"));
-
-    if(retVal == IDYES)
+    if(retVal == IDNO)
     {
-        RecursivelyDeleteDirectory(themeDirectoryPath);
-    }
-
-    TCHAR xmlBackupPath[MAX_PATH];
-    _tcscpy(xmlBackupPath, pszInstallDir);
-    _tcscat(xmlBackupPath, TEXT("\\HTCHomeSettingsBackup-BACKUP.xml"));
-
-    if(FileExists(xmlBackupPath))
-    {
-        DeleteFile(xmlBackupPath);
+        RecursivelyDeleteDirectory(pszInstallDir);
     }
 
     return codeUNINSTALL_INIT_CONTINUE;
