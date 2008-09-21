@@ -365,6 +365,10 @@
 				RelativePath=".\tinyxml.h"
 				>
 			</File>
+			<File
+				RelativePath=".\version.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -381,6 +385,18 @@
 			</File>
 			<File
 				RelativePath=".\res\Manilla2DConfigppc.rc2"
+				>
+			</File>
+			<File
+				RelativePath=".\version.rc"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Other Files"
+			>
+			<File
+				RelativePath=".\M2DC.xml"
 				>
 			</File>
 		</Filter>
