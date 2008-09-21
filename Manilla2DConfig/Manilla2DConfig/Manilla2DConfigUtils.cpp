@@ -80,7 +80,7 @@ CString GetPathToActualHTCHomeSettingsXmlFile()
 
 CString GetPathToBackupHTCHomeSettingsXmlFile()
 {
-	CString retVal = GetPathToApplicationInstallationDirectory();
+	CString retVal = GetPathToM2DCInstallDirectory();
 	retVal += "\\HTCHomeSettings-BACKUP.xml";
 
 	TRACE(TEXT("GetPathToBackupHTCHomeSettingsXmlFile "));
@@ -129,7 +129,7 @@ CString GetPathToWindowsDirectory()
 	return retVal;
 }
 
-CString GetPathToApplicationInstallationDirectory()
+CString GetPathToM2DCInstallDirectory()
 {
 	CString retVal = GetDirectoryOfFile(GetPathToRunningBinary());
 
@@ -159,7 +159,7 @@ CString GetPathToRunningBinary()
 
 CString GetPathToErrorLogFile()
 {
-	CString retVal = GetPathToApplicationInstallationDirectory();
+	CString retVal = GetPathToM2DCInstallDirectory();
 	retVal += "\\ErrorLog.txt";
 
 	TRACE(TEXT("GetPathToErrorLogFile "));
@@ -167,6 +167,27 @@ CString GetPathToErrorLogFile()
 	TRACE(TEXT("\n"));
 
 	return retVal;
+}
+
+CString GetPathToM2DCDataDirectory()
+{
+     CString retVal = GetPathToAppDataDirectory();
+     retVal += "\\M2DC";
+
+     return retVal;
+}
+
+CString GetPathToAppDataDirectory()
+{
+     CString retVal("\\AppData");
+
+    TCHAR appDataDirStr[MAX_PATH];
+	if(SHGetSpecialFolderPath(NULL, appDataDirStr, CSIDL_APPDATA, 0) == TRUE)
+	{
+		retVal = appDataDirStr;
+	}
+
+     return retVal;
 }
 
 bool FileExists(CString pathToFile)
