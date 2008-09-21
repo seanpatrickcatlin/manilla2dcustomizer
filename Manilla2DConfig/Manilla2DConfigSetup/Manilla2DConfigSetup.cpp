@@ -125,6 +125,15 @@ codeUNINSTALL_INIT Uninstall_Init(HWND hwndParent, LPCTSTR pszInstallDir)
         RecursivelyDeleteDirectory(themeDirectoryPath);
     }
 
+    TCHAR xmlBackupPath[MAX_PATH];
+    _tcscpy(xmlBackupPath, pszInstallDir);
+    _tcscat(xmlBackupPath, TEXT("\\HTCHomeSettingsBackup-BACKUP.xml"));
+
+    if(FileExists(xmlBackupPath))
+    {
+        DeleteFile(xmlBackupPath);
+    }
+
     return codeUNINSTALL_INIT_CONTINUE;
 }
 
