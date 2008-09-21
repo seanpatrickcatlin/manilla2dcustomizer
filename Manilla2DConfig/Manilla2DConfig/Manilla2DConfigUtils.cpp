@@ -80,7 +80,7 @@ CString GetPathToActualHTCHomeSettingsXmlFile()
 
 CString GetPathToBackupHTCHomeSettingsXmlFile()
 {
-	CString retVal = GetPathToApplicationDirectory();
+	CString retVal = GetPathToApplicationInstallationDirectory();
 	retVal += "\\HTCHomeSettings-BACKUP.xml";
 
 	TRACE(TEXT("GetPathToBackupHTCHomeSettingsXmlFile "));
@@ -129,7 +129,7 @@ CString GetPathToWindowsDirectory()
 	return retVal;
 }
 
-CString GetPathToApplicationDirectory()
+CString GetPathToApplicationInstallationDirectory()
 {
 	CString retVal = GetDirectoryOfFile(GetPathToRunningBinary());
 
@@ -159,7 +159,7 @@ CString GetPathToRunningBinary()
 
 CString GetPathToErrorLogFile()
 {
-	CString retVal = GetPathToApplicationDirectory();
+	CString retVal = GetPathToApplicationInstallationDirectory();
 	retVal += "\\ErrorLog.txt";
 
 	TRACE(TEXT("GetPathToErrorLogFile "));
