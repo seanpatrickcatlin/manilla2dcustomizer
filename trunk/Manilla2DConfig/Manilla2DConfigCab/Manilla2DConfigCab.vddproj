@@ -223,7 +223,13 @@
             {
                 "Keys"
                 {
-                    "{B1EBC968-6B66-4532-A885-748B79AF4477}:_D76FBF2B8A4547BCA7CD0B0D6CD67C04"
+                }
+            }
+            "HKCU"
+            {
+                "Keys"
+                {
+                    "{B1EBC968-6B66-4532-A885-748B79AF4477}:_D9F5E6FE48084E2CA92EDB1DC58EE9A6"
                     {
                     "Name" = "8:Software"
                     "Condition" = "8:"
@@ -274,12 +280,6 @@
                         {
                         }
                     }
-                }
-            }
-            "HKCU"
-            {
-                "Keys"
-                {
                 }
             }
             "HKCR"
