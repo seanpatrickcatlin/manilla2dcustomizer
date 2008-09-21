@@ -1,0 +1,10 @@
+; Manilla2DConfigSetup.def : Declares the module parameters for the DLL.
+
+LIBRARY      "Manilla2DConfigSetup"
+
+EXPORTS
+    Install_Init
+    Install_Exit
+    Uninstall_Init
+    Uninstall_Exit 
+    ; Explicit exports can go here
