@@ -88,6 +88,18 @@ codeINSTALL_INIT Install_Init(HWND hwndParent, BOOL fFirstCall,
                               BOOL fPreviouslyInstalled, LPCTSTR pszInstallDir)
 {
     AFX_MANAGE_STATE(AfxGetStaticModuleState());
+
+    // is there some way to non destructively
+    // 1.) copy the directory contents to a new direntory
+    // 2.) Delete the install directory
+    // 3.) Copy the old files back over in the Install_Exix method?
+    /*
+    if((fFirstCall == TRUE) && (fPreviouslyInstalled == TRUE))
+    {
+
+    }
+    */
+
     return codeINSTALL_INIT_CONTINUE;
 }
 
