@@ -195,6 +195,70 @@
 	</References>
 	<Files>
 		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			>
+			<File
+				RelativePath=".\M2DCTabPage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Manilla2DConfig.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Manilla2DConfigDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Manilla2DConfigLauncherDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Manilla2DConfigTabsDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Manilla2DConfigUtils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Resourceppc.h"
+				>
+			</File>
+			<File
+				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\tinystr.h"
+				>
+			</File>
+			<File
+				RelativePath=".\tinyxml.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
+			<File
+				RelativePath=".\res\Manilla2DConfig.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\Manilla2DConfigppc.rc"
+				>
+			</File>
+			<File
+				RelativePath=".\res\Manilla2DConfigppc.rc2"
+				>
+			</File>
+		</Filter>
+		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
@@ -318,70 +382,6 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
-			</File>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
-			>
-			<File
-				RelativePath=".\M2DCTabPage.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Manilla2DConfig.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Manilla2DConfigDlg.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Manilla2DConfigLauncherDlg.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Manilla2DConfigTabsDlg.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Manilla2DConfigUtils.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Resourceppc.h"
-				>
-			</File>
-			<File
-				RelativePath=".\stdafx.h"
-				>
-			</File>
-			<File
-				RelativePath=".\tinystr.h"
-				>
-			</File>
-			<File
-				RelativePath=".\tinyxml.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
-			<File
-				RelativePath=".\res\Manilla2DConfig.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\Manilla2DConfigppc.rc"
-				>
-			</File>
-			<File
-				RelativePath=".\res\Manilla2DConfigppc.rc2"
-				>
 			</File>
 		</Filter>
 		<File
