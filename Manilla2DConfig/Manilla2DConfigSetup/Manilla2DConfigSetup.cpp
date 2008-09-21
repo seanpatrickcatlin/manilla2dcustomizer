@@ -1,6 +1,23 @@
 // Manilla2DConfigSetup.cpp : Defines the initialization routines for the DLL.
 //
 
+/*
+    This file is part of Manilla2DCustomizer.
+
+    Manilla2DCustomizer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Manilla2DCustomizer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Manilla2DCustomizer.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "stdafx.h"
 #include "Manilla2DConfigSetup.h"
 
@@ -155,8 +172,8 @@ codeUNINSTALL_INIT Uninstall_Init(HWND hwndParent, LPCTSTR pszInstallDir)
 
     int retVal = MessageBox(
         hwndParent,
-        TEXT("Uninstall M2DC"),
         TEXT("Would you like to delete your installed M2DC themes?"),
+        TEXT("Uninstall M2DC"),
         MB_YESNOCANCEL|MB_ICONQUESTION);
 
     if(retVal == IDCANCEL)

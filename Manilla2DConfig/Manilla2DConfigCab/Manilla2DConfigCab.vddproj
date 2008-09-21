@@ -14,7 +14,19 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_799773F4E6DB4A21AA03183B34E7F9B9"
+        "MsmKey" = "8:_073009D8C59B42CE80A66C3EDF20007E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_549138ADD0C24C3A9338275E2CEB6150"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C8D2AF36C28548CB9F948EB436A93C2E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -50,6 +62,24 @@
     {
         "File"
         {
+            "{BA458234-9B71-4F46-8107-E91156377184}:_073009D8C59B42CE80A66C3EDF20007E"
+            {
+            "SourcePath" = "8:..\\..\\SupportFiles\\gpl.txt"
+            "TargetName" = "8:gpl.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_1161747F795C4374BE5C432A21F2C1DD"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "Folder"
         {
@@ -82,13 +112,13 @@
         "OSVersionMax" = "8:6.99"
         "NoUninstall" = "11:FALSE"
         "Compress" = "11:TRUE"
-        "CESetupDLL" = "8:"
+        "CESetupDLL" = "8:_C8D2AF36C28548CB9F948EB436A93C2E"
         }
         "ProjectOutput"
         {
-            "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_799773F4E6DB4A21AA03183B34E7F9B9"
+            "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_549138ADD0C24C3A9338275E2CEB6150"
             {
-            "SourcePath" = "8:..\\Manilla2DConfig\\Windows Mobile 6 Professional SDK (ARMV4I)\\Debug\\Manilla2DConfig.exe"
+            "SourcePath" = "8:..\\Manilla2DConfig\\Windows Mobile 6 Professional SDK (ARMV4I)\\Release\\Manilla2DConfig.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_1161747F795C4374BE5C432A21F2C1DD"
@@ -107,6 +137,32 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{07DCD06E-F8D9-47DE-BAC9-BA0879400F24}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_C8D2AF36C28548CB9F948EB436A93C2E"
+            {
+            "SourcePath" = "8:..\\Manilla2DConfigSetup\\Windows Mobile 6 Professional SDK (ARMV4I)\\Release\\Manilla2DConfigSetup.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_1161747F795C4374BE5C432A21F2C1DD"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:0"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{AF125440-459A-4E63-949E-3F19999BB54F}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
@@ -154,7 +210,7 @@
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
-            "Target" = "8:_799773F4E6DB4A21AA03183B34E7F9B9"
+            "Target" = "8:_549138ADD0C24C3A9338275E2CEB6150"
             "Folder" = "8:_154953CE879743F78BDFF6FE1D8C59A9"
             "WorkingFolder" = "8:_1161747F795C4374BE5C432A21F2C1DD"
             }
