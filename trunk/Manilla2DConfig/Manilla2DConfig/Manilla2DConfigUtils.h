@@ -56,7 +56,7 @@ const char* GetConstCharStarFromCString(CString str);
 CString GetDirectoryOfFile(CString fullFilePath);
 CString GetPathToErrorLogFile();
 CString GetPathToWindowsDirectory();
-CString GetPathToApplicationDirectory();
+CString GetPathToApplicationInstallationDirectory();
 CString GetPathToRunningBinary();
 CString GetPathToActualHTCHomeSettingsXmlFile();
 CString GetPathToBackupHTCHomeSettingsXmlFile();
