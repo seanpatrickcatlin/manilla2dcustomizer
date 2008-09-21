@@ -47,6 +47,7 @@ void DisableAllTodayScreenItems();
 CString GetWin32ErrorString(DWORD err);
 
 bool FileExists(CString pathToFile);
+void RecursivelyDeleteDirectory(CString sDirPath);
 
 void LogFileAttributes(FILE* openFile, DWORD dwAttributes);
 
