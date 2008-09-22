@@ -38,6 +38,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_A5920FF4E3334539B2D850F484438DFF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C8D2AF36C28548CB9F948EB436A93C2E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -114,6 +120,24 @@
             {
             "SourcePath" = "8:..\\Manilla2DConfig\\M2DC.xml"
             "TargetName" = "8:M2DC.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_1161747F795C4374BE5C432A21F2C1DD"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{BA458234-9B71-4F46-8107-E91156377184}:_A5920FF4E3334539B2D850F484438DFF"
+            {
+            "SourcePath" = "8:..\\..\\Build\\changelog.txt"
+            "TargetName" = "8:changelog.txt"
             "Tag" = "8:"
             "Folder" = "8:_1161747F795C4374BE5C432A21F2C1DD"
             "Condition" = "8:"
