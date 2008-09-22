@@ -1,0 +1,37 @@
+Manilla 2D Customizer changelog
+
+Sep-21-2008 16:00 CDT
+v0.5.0.44
+* added apptodate support
+* fixed installer issues
+* switched license to gpl 
+
+
+Sep-20-2008 01:25 CDT
+v0.4.29
+* new tabbed layout
+* added a basic launcher tab, can now set to 3 or 4 columns in launcher
+* added "Apply"/"Cancel" softkey actions 
+
+
+Sep-18-2008 22:25 CDT
+v0.3.17
+* added awesome looking new icon (thanks to twolf)
+* No longer has hard coded folder paths so
+  * Non English roms should now be supported
+     (Tested on Italian WM6 Professional emulator image)
+  * installing to storage card should now be supported 
+* Added somewhat extensive error logging,
+   if for some reason the program can't write your new file
+   it should let you know, and tell you where an error log text
+   file is that you can post here or PM to me so that can see
+   exactly what failed .
+
+
+Sep-18-2008 09:35 CDT
+v0.2.5
+* fixed "read-only" problem people were having...
+   now the program should have no problem if the file has been set to "Read Only".
+   I tested by setting the file ot read only in total commander,
+   have not confirmed if this will work if the xml file is part of the original rom
+   as there is no manilla 2d rom for the titan yet
