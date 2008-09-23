@@ -1,5 +1,18 @@
 Manilla 2D Customizer changelog
 
+Sep-??-2008
+v0.6.??
+* modified the apptodate xml file location
+   (now looks for it directly from the subverison repository web access)
+* fixed icon support for apptodate
+* added a restore tab, this tab will tell all the other tabs to
+   restore the default values to M2D
+* some small GUI changes in order to make it look more natural on WM6
+* mostly automated the build process
+   (only needs human interaction to clean up changleog
+   and enter google code upload password)
+
+
 Sep-21-2008 16:00 CDT
 v0.5.0.44
 * added apptodate support
