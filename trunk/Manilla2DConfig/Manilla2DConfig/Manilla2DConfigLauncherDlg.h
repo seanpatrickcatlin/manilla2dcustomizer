@@ -35,6 +35,7 @@ public:
 
     virtual void OnOK();
     virtual void OnCancel();
+    virtual void RestoreDefaults();
 
 protected:
     virtual BOOL CManilla2DConfigLauncherDlg::OnInitDialog();

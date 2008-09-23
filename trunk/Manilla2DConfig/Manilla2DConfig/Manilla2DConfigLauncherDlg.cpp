@@ -99,6 +99,11 @@ void CManilla2DConfigLauncherDlg::OnCancel()
     CDialog::OnCancel();
 }
 
+void CManilla2DConfigLauncherDlg::RestoreDefaults()
+{
+    SetNumberOfLauncherColumnsFromHTCHomeSettingsXml(3);
+}
+
 int CManilla2DConfigLauncherDlg::GetNumberOfLauncherColumnsFromHTCHomeSettingsXml()
 {
     int retVal = -1;
