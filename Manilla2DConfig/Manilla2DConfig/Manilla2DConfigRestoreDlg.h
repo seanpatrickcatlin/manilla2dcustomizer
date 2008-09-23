@@ -21,7 +21,7 @@
 
 // CManilla2DConfigRestoreDlg dialog
 
-class CManilla2DConfigRestoreDlg : public CM2DCTabPage
+class CManilla2DConfigRestoreDlg : public CPropertyPage
 {
 	//DECLARE_DYNAMIC(CManilla2DConfigRestoreDlg)
 
@@ -38,9 +38,8 @@ protected:
 public:
     virtual void OnOK();
     virtual void OnCancel();
-    virtual UINT GetIDD();
-    virtual CString GetTabText();
-    virtual void RestoreDefaults();
+    virtual UINT GetTabStringID() { return IDS_M2DC_RESTORE; };
+    virtual void OnRestoreDefaults();
 
 	DECLARE_MESSAGE_MAP()
 public:

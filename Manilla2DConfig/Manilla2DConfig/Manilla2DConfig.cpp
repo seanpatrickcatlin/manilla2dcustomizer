@@ -62,6 +62,7 @@ BOOL CManilla2DConfigApp::InitInstance()
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
+
 #ifndef _DEBUG
     if(!FileExists(GetPathToActualHTCHomeSettingsXmlFile()))
     {
@@ -74,14 +75,10 @@ BOOL CManilla2DConfigApp::InitInstance()
     }
 #endif
 
-	CManilla2DConfigDlg dlg;
-	m_pMainWnd = &dlg;
-	INT_PTR nResponse = dlg.DoModal();
-	if (nResponse == IDOK)
-	{
-		// TODO: Place code here to handle when the dialog is
-		//  dismissed with OK
-	}
+	CManilla2DConfigDlg dlg(TEXT("Manilla 2D Customizer"));
+	
+    dlg.SetupPages();
+    dlg.DoModal();
 
     if(FileExists(GetPathToErrorLogFile()))
     {

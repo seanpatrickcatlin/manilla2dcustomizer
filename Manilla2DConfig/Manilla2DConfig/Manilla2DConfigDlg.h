@@ -26,18 +26,13 @@
 
 
 // CManilla2DConfigDlg dialog
-class CManilla2DConfigDlg : public CDialog
+class CManilla2DConfigDlg : public CPropertySheet
 {
 // Construction
 public:
-	CManilla2DConfigDlg(CWnd* pParent = NULL);	// standard constructor
+    CManilla2DConfigDlg(UINT nIDCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
+	CManilla2DConfigDlg(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
     virtual ~CManilla2DConfigDlg();
-
-// Dialog Data
-	enum { IDD = IDD_MANILLA2DCONFIG_DIALOG };
-
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
 // Implementation
 protected:
@@ -48,18 +43,12 @@ protected:
     virtual void OnOK();
     virtual void OnCancel();
 
-#if defined(_DEVICE_RESOLUTION_AWARE) && !defined(WIN32_PLATFORM_WFSP)
-	afx_msg void OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/);
-#endif
 	DECLARE_MESSAGE_MAP()
 public:
-    CTabCtrl m_mainTabControl;
-    afx_msg void OnTcnSelchangeMainTabControl(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnRestoreDefaultsCommand();
+    void SetupPages();
 
 private:
-    void SetRectangle();
-    vector<CM2DCTabPage*> m_mainTabVector;
-    int m_currentTabFocus;
+    vector<CPropertyPage*> m_mainTabVector;
     CCommandBar m_cmdBar;
 };

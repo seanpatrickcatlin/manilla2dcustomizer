@@ -21,7 +21,7 @@
 
 // CManilla2DConfigLauncherDlg dialog
 
-class CManilla2DConfigLauncherDlg : public CM2DCTabPage
+class CManilla2DConfigLauncherDlg : public CPropertyPage
 {
 public:
 	CManilla2DConfigLauncherDlg(CWnd* pParent = NULL);   // standard constructor
@@ -30,12 +30,11 @@ public:
 // Dialog Data
 	enum { IDD = IDD_MANILLA2DCONFIG_LAUNCHER_DIALOG };
 
-    virtual UINT GetIDD() { return IDD_MANILLA2DCONFIG_LAUNCHER_DIALOG; };
-    virtual CString GetTabText() { return TEXT("Launcher"); };
+    virtual UINT GetTabStringID() { return IDS_M2DC_LAUNCHER; };
 
     virtual void OnOK();
     virtual void OnCancel();
-    virtual void RestoreDefaults();
+    virtual void OnRestoreDefaults();
 
 protected:
     virtual BOOL CManilla2DConfigLauncherDlg::OnInitDialog();

@@ -71,14 +71,6 @@ IDR_MAINFRAME           ICON                    "res\\Manilla2DConfig.ico"
 // Dialog
 //
 
-IDD_MANILLA2DCONFIG_DIALOG DIALOG  0, 0, 156, 166
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE
-EXSTYLE WS_EX_APPWINDOW | 0x80000000L
-FONT 8, "MS Shell Dlg"
-BEGIN
-    CONTROL         "",IDC_MAIN_TAB_CONTROL,"SysTabControl32",TCS_BOTTOM,0,0,156,166
-END
-
 IDD_MANILLA2DCONFIG_TABS_DIALOG DIALOG  0, 0, 146, 144
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE
 FONT 8, "MS Shell Dlg"
@@ -141,6 +133,19 @@ BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_M2DC_RESTORE        "Restore"
+    IDS_M2DC_LAUNCHER       "Launcher"
+    IDS_M2DC_TABS           "Tabs"
+END
 
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////

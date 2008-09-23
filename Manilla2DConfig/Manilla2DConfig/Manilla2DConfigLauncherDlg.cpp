@@ -26,7 +26,7 @@
 // CManilla2DConfigTabsDlg dialog
 
 CManilla2DConfigLauncherDlg::CManilla2DConfigLauncherDlg(CWnd* pParent /*=NULL*/)
-	: CM2DCTabPage(CManilla2DConfigLauncherDlg::IDD, pParent)
+	: CPropertyPage(CManilla2DConfigLauncherDlg::IDD, IDS_M2DC_LAUNCHER)
 {
     m_initialNumberOfColumns = GetNumberOfLauncherColumnsFromHTCHomeSettingsXml();
 }
@@ -37,19 +37,20 @@ CManilla2DConfigLauncherDlg::~CManilla2DConfigLauncherDlg()
 
 void CManilla2DConfigLauncherDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+	CPropertyPage::DoDataExchange(pDX);
 
     DDX_Control(pDX, IDC_LAUNCHER_THREE_COL_RADIO, m_launcherThreeColumnRadioButton);
     DDX_Control(pDX, IDC_LAUNCHER_FOUR_COL_RADIO, m_launcherFourColumnRadioButton);
 }
 
 
-BEGIN_MESSAGE_MAP(CManilla2DConfigLauncherDlg, CDialog)
+BEGIN_MESSAGE_MAP(CManilla2DConfigLauncherDlg, CPropertyPage)
+    ON_COMMAND(ID_RESTORE_DEFAULTS_CMD, &CManilla2DConfigLauncherDlg::OnRestoreDefaults)
 END_MESSAGE_MAP()
 
 BOOL CManilla2DConfigLauncherDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	CPropertyPage::OnInitDialog();
 
     if(m_initialNumberOfColumns == 3)
     {
@@ -90,16 +91,14 @@ void CManilla2DConfigLauncherDlg::OnOK()
         CWaitCursor wait;
         SetNumberOfLauncherColumnsFromHTCHomeSettingsXml(currentColumnCount);
     }
-
-    CDialog::OnOK();
 }
 
 void CManilla2DConfigLauncherDlg::OnCancel()
 {
-    CDialog::OnCancel();
+    // nothign to do here
 }
 
-void CManilla2DConfigLauncherDlg::RestoreDefaults()
+void CManilla2DConfigLauncherDlg::OnRestoreDefaults()
 {
     SetNumberOfLauncherColumnsFromHTCHomeSettingsXml(3);
 }

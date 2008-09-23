@@ -45,5 +45,3 @@ public:
 
 	DECLARE_MESSAGE_MAP()
 };
-
-extern CManilla2DConfigApp theApp;
