@@ -21,7 +21,6 @@
 #pragma once
 
 #include "afxcmn.h"
-#include "M2DCTabPage.h"
 #include "Manilla2DConfigUtils.h"
 
 
@@ -50,5 +49,5 @@ public:
 
 private:
     vector<CPropertyPage*> m_mainTabVector;
-    CCommandBar m_cmdBar;
+    //CCommandBar m_cmdBar;
 };

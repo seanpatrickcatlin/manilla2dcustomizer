@@ -58,7 +58,7 @@ CManilla2DConfigDlg::~CManilla2DConfigDlg()
 BEGIN_MESSAGE_MAP(CManilla2DConfigDlg, CPropertySheet)
     ON_COMMAND(ID_RESTORE_DEFAULTS_CMD, CManilla2DConfigDlg::OnRestoreDefaultsCommand)
     ON_COMMAND(IDOK, CManilla2DConfigDlg::OnOK)
-    ON_COMMAND(IDCANCEL, CManilla2DConfigDlg::OnOK)
+    ON_COMMAND(IDCANCEL, CManilla2DConfigDlg::OnCancel)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigDlg message handlers
@@ -72,8 +72,8 @@ BOOL CManilla2DConfigDlg::OnInitDialog()
 
 	CPropertySheet::OnInitDialog();
 
-    m_cmdBar.Create(this);
-    m_cmdBar.InsertMenuBar(IDR_OKCANCELMENU);
+//    m_cmdBar.Create(this);
+//    m_cmdBar.InsertMenuBar(IDR_OKCANCELMENU);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
