@@ -18,7 +18,7 @@
 #define COMPANY_NAME  "snctln"
 #define COPYRIGHT_BLURB  "Copyright (c) 2008"
 
-#define PRODUCT_NAME  "Manilla 2D Customizer"
+#define PRODUCT_NAME  "Manilla 2D Customizer Setup"
 
 #define PRODUCT_VERSION_MAJOR   0
 #define PRODUCT_VERSION_MINOR   5
