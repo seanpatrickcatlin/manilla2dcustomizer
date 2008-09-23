@@ -212,6 +212,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Manilla2DConfigRestoreDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Manilla2DConfigTabsDlg.cpp"
 				>
 			</File>
@@ -339,6 +343,10 @@
 			</File>
 			<File
 				RelativePath=".\Manilla2DConfigLauncherDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Manilla2DConfigRestoreDlg.h"
 				>
 			</File>
 			<File

@@ -7,6 +7,7 @@
 #define IDD_MANILLA2DCONFIG_LAUNCHER_DIALOG 105
 #define IDR_MAINFRAME                   128
 #define IDR_OKCANCELMENU                129
+#define IDD_MANILLA2DCONFIG_RESTORE_DIALOG 130
 #define IDC_STATIC_1                    200
 #define IDC_MOVE_UP_BUTTON              1001
 #define IDC_MOVE_DOWN_BUTTON            1005
@@ -16,31 +17,19 @@
 #define IDC_RADIO1                      1009
 #define IDC_LAUNCHER_THREE_COL_RADIO    1010
 #define IDC_LAUNCHER_FOUR_COL_RADIO     1011
+#define IDC_BUTTON1                     1012
+#define IDC_RESTORE_BUTTON              1013
+#define IDC_TAB_CAPTION                 1014
+#define IDC_RESTORE_CAPTION             1015
+#define IDC_LAUNCHER_CAPTION            1016
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        130
+#define _APS_NEXT_RESOURCE_VALUE        131
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1012
+#define _APS_NEXT_CONTROL_VALUE         1017
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
-
-/*
-    This file is part of Manilla2DCustomizer.
-
-    Manilla2DCustomizer is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Manilla2DCustomizer is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Manilla2DCustomizer.  If not, see <http://www.gnu.org/licenses/>.
-*/

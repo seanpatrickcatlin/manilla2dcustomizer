@@ -23,6 +23,7 @@
 #include "Manilla2DConfig.h"
 #include "Manilla2DConfigDlg.h"
 #include "Manilla2DConfigTabsDlg.h"
+#include "Manilla2DConfigRestoreDlg.h"
 #include "Manilla2DConfigLauncherDlg.h"
 
 #ifdef _DEBUG
@@ -38,13 +39,19 @@ CManilla2DConfigDlg::CManilla2DConfigDlg(CWnd* pParent /*=NULL*/)
 
     // here is where we add new tabpages, the rest should be done automatically
 
-    CM2DCTabPage* newTabPage = new CManilla2DConfigTabsDlg(); 
+    CM2DCTabPage* newTabPage = new CManilla2DConfigTabsDlg(this); 
     if(newTabPage != NULL)
     {
         m_mainTabVector.push_back(newTabPage);
     }
 
-    newTabPage = new CManilla2DConfigLauncherDlg();
+    newTabPage = new CManilla2DConfigLauncherDlg(this);
+    if(newTabPage != NULL)
+    {
+        m_mainTabVector.push_back(newTabPage);
+    }
+
+    newTabPage = new CManilla2DConfigRestoreDlg(this);
     if(newTabPage != NULL)
     {
         m_mainTabVector.push_back(newTabPage);
@@ -78,6 +85,7 @@ BEGIN_MESSAGE_MAP(CManilla2DConfigDlg, CDialog)
 #endif
 	//}}AFX_MSG_MAP
     ON_NOTIFY(TCN_SELCHANGE, IDC_MAIN_TAB_CONTROL, &CManilla2DConfigDlg::OnTcnSelchangeMainTabControl)
+    ON_COMMAND(ID_RESTORE_DEFAULTS_CMD, &CManilla2DConfigDlg::OnRestoreDefaultsCommand)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigDlg message handlers
@@ -97,7 +105,7 @@ BOOL CManilla2DConfigDlg::OnInitDialog()
 
         if(currentTabPage != NULL)
         {
-            currentTabPage->Create(currentTabPage->GetIDD(), &m_mainTabControl);
+            currentTabPage->Create(currentTabPage->GetIDD(), this);
         }
     }
 
@@ -171,6 +179,30 @@ void CManilla2DConfigDlg::OnCancel()
     }
 
     CDialog::OnCancel();
+}
+
+void CManilla2DConfigDlg::OnRestoreDefaultsCommand()
+{
+    CWaitCursor wait;
+
+    BackupTodayScreenItemsRegHive();
+    DisableAllTodayScreenItems();
+    RefreshTodayScreen();
+
+    for(size_t i=0; i<m_mainTabVector.size(); i++)
+    {
+        CM2DCTabPage* currentTabPage = m_mainTabVector[i];
+
+        if(currentTabPage != NULL)
+        {
+            currentTabPage->RestoreDefaults();
+        }
+    }
+
+    RestoreTodayScreenItemsRegHive();
+    RefreshTodayScreen();
+
+    OnCancel();
 }
 
 #if defined(_DEVICE_RESOLUTION_AWARE) && !defined(WIN32_PLATFORM_WFSP)

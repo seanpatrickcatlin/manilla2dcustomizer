@@ -47,6 +47,7 @@ protected:
 	virtual BOOL OnInitDialog();
     virtual void OnOK();
     virtual void OnCancel();
+
 #if defined(_DEVICE_RESOLUTION_AWARE) && !defined(WIN32_PLATFORM_WFSP)
 	afx_msg void OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/);
 #endif
@@ -54,6 +55,7 @@ protected:
 public:
     CTabCtrl m_mainTabControl;
     afx_msg void OnTcnSelchangeMainTabControl(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnRestoreDefaultsCommand();
 
 private:
     void SetRectangle();

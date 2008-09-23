@@ -36,17 +36,17 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-    virtual BOOL OnInitDialog();
+    BOOL OnInitDialog();
     virtual void OnOK();
     virtual void OnCancel();
     virtual CString GetTabText();
+    virtual void RestoreDefaults();
 
 	DECLARE_MESSAGE_MAP()
 
     public:
     afx_msg void OnBnClickedMoveUpButton();
     afx_msg void OnBnClickedMoveDownButton();
-    afx_msg void OnBnClickedRestoreDefaultsButton();
     afx_msg void OnNMClickMainListControl(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnLvnItemchangedMainListControl(NMHDR *pNMHDR, LRESULT *pResult);
 
@@ -59,7 +59,6 @@ private:
     CListCtrl m_mainListControl;
     CButton m_moveUpButton;
     CButton m_moveDownButton;
-    CButton m_restoreDefaultsButton;
 
     int GetSelectedItemIndex();
     void UpdateListControlFromNewWidgetVector();

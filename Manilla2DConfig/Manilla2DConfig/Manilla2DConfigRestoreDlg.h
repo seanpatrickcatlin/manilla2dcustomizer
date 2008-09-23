@@ -17,17 +17,32 @@
 
 #pragma once
 
-// CM2DCTabPage dialog
+#include "M2DCTabPage.h"
 
-class CM2DCTabPage : public CDialog
+// CManilla2DConfigRestoreDlg dialog
+
+class CManilla2DConfigRestoreDlg : public CM2DCTabPage
 {
-public:
-    CM2DCTabPage(UINT nIDTemplate, CWnd* pParent = NULL) { CDialog(nIDTemplate, pParent); };
-    virtual ~CM2DCTabPage() { };
+	//DECLARE_DYNAMIC(CManilla2DConfigRestoreDlg)
 
-    virtual UINT GetIDD() = 0;
-    virtual void OnOK() = 0;
-    virtual void OnCancel() = 0;
-    virtual CString GetTabText() = 0;
-    virtual void RestoreDefaults() = 0;
+public:
+	CManilla2DConfigRestoreDlg(CWnd* pParent = NULL);   // standard constructor
+	virtual ~CManilla2DConfigRestoreDlg();
+
+// Dialog Data
+	enum { IDD = IDD_MANILLA2DCONFIG_RESTORE_DIALOG };
+
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+
+public:
+    virtual void OnOK();
+    virtual void OnCancel();
+    virtual UINT GetIDD();
+    virtual CString GetTabText();
+    virtual void RestoreDefaults();
+
+	DECLARE_MESSAGE_MAP()
+public:
+    afx_msg void OnBnClickedRestoreButton();
 };
