@@ -62,6 +62,18 @@ BOOL CManilla2DConfigApp::InitInstance()
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
+#ifndef _DEBUG
+    if(!FileExists(GetPathToActualHTCHomeSettingsXmlFile()))
+    {
+        CString msg = TEXT("Unable to find Manilla 2D settings file.\n");
+        msg += TEXT("Is Manilla 2D installed?\n");
+        msg += TEXT("Exiting...");
+
+        AfxMessageBox(msg);
+        return FALSE;
+    }
+#endif
+
 	CManilla2DConfigDlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
