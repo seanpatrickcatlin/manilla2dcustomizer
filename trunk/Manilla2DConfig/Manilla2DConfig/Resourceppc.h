@@ -2,12 +2,14 @@
 // Microsoft Visual C++ generated include file.
 // Used by Manilla2DConfigppc.rc
 //
-#define IDD_MANILLA2DCONFIG_DIALOG      102
 #define IDD_MANILLA2DCONFIG_TABS_DIALOG 104
 #define IDD_MANILLA2DCONFIG_LAUNCHER_DIALOG 105
 #define IDR_MAINFRAME                   128
 #define IDR_OKCANCELMENU                129
 #define IDD_MANILLA2DCONFIG_RESTORE_DIALOG 130
+#define IDS_M2DC_RESTORE                132
+#define IDS_M2DC_LAUNCHER               133
+#define IDS_M2DC_TABS                   134
 #define IDC_STATIC_1                    200
 #define IDC_MOVE_UP_BUTTON              1001
 #define IDC_MOVE_DOWN_BUTTON            1005
@@ -27,7 +29,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        131
+#define _APS_NEXT_RESOURCE_VALUE        133
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1017
 #define _APS_NEXT_SYMED_VALUE           101

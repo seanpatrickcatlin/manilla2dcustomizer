@@ -28,7 +28,7 @@
 // CManilla2DConfigTabsDlg dialog
 
 CManilla2DConfigTabsDlg::CManilla2DConfigTabsDlg(CWnd* pParent /*=NULL*/)
-	: CM2DCTabPage(CManilla2DConfigTabsDlg::IDD, pParent)
+	: CPropertyPage(CManilla2DConfigTabsDlg::IDD, IDS_M2DC_TABS)
 {
     m_bPopulatingListControl = false;
 }
@@ -39,7 +39,7 @@ CManilla2DConfigTabsDlg::~CManilla2DConfigTabsDlg()
 
 void CManilla2DConfigTabsDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+	CPropertyPage::DoDataExchange(pDX);
 
     DDX_Control(pDX, IDC_MAIN_LIST_CONTROL, m_mainListControl);
     DDX_Control(pDX, IDC_MOVE_UP_BUTTON, m_moveUpButton);
@@ -47,16 +47,17 @@ void CManilla2DConfigTabsDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CManilla2DConfigTabsDlg, CDialog)
+BEGIN_MESSAGE_MAP(CManilla2DConfigTabsDlg, CPropertyPage)
     ON_BN_CLICKED(IDC_MOVE_UP_BUTTON, &CManilla2DConfigTabsDlg::OnBnClickedMoveUpButton)
     ON_BN_CLICKED(IDC_MOVE_DOWN_BUTTON, &CManilla2DConfigTabsDlg::OnBnClickedMoveDownButton)
     ON_NOTIFY(LVN_ITEMCHANGED, IDC_MAIN_LIST_CONTROL, &CManilla2DConfigTabsDlg::OnLvnItemchangedMainListControl)
     ON_NOTIFY(NM_CLICK, IDC_MAIN_LIST_CONTROL, &CManilla2DConfigTabsDlg::OnNMClickMainListControl)
+    ON_COMMAND(ID_RESTORE_DEFAULTS_CMD, &CManilla2DConfigTabsDlg::OnRestoreDefaults)
 END_MESSAGE_MAP()
 
 BOOL CManilla2DConfigTabsDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	CPropertyPage::OnInitDialog();
 	
     m_mainListControl.SetExtendedStyle(m_mainListControl.GetExtendedStyle()|LVS_EX_CHECKBOXES);
 
@@ -73,18 +74,11 @@ void CManilla2DConfigTabsDlg::OnOK()
     {
         WriteHTCHomeSettingsXmlFileFromNewWidgetVector();
     }
-
-    CDialog::OnOK();
 }
 
 void CManilla2DConfigTabsDlg::OnCancel()
 {
-    CDialog::OnCancel();
-}
-
-CString CManilla2DConfigTabsDlg::GetTabText()
-{
-    return TEXT("Tabs");
+    // nothing to do here
 }
 
 void CManilla2DConfigTabsDlg::OnBnClickedMoveUpButton()
@@ -123,7 +117,7 @@ void CManilla2DConfigTabsDlg::OnBnClickedMoveDownButton()
     }
 }
 
-void CManilla2DConfigTabsDlg::RestoreDefaults()
+void CManilla2DConfigTabsDlg::OnRestoreDefaults()
 {
     m_newWidgetVector.clear();
 

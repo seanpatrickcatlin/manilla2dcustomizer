@@ -29,7 +29,7 @@
 //IMPLEMENT_DYNAMIC(CManilla2DConfigRestoreDlg, CM2DCTabPage)
 
 CManilla2DConfigRestoreDlg::CManilla2DConfigRestoreDlg(CWnd* pParent /*=NULL*/)
-	: CM2DCTabPage(CManilla2DConfigRestoreDlg::IDD, pParent)
+	: CPropertyPage(CManilla2DConfigRestoreDlg::IDD, IDS_M2DC_RESTORE)
 {
 }
 
@@ -39,36 +39,26 @@ CManilla2DConfigRestoreDlg::~CManilla2DConfigRestoreDlg()
 
 void CManilla2DConfigRestoreDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+	CPropertyPage::DoDataExchange(pDX);
 }
 
 
-BEGIN_MESSAGE_MAP(CManilla2DConfigRestoreDlg, CDialog)
+BEGIN_MESSAGE_MAP(CManilla2DConfigRestoreDlg, CPropertyPage)
     ON_BN_CLICKED(IDC_RESTORE_BUTTON, &CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton)
+    ON_COMMAND(ID_RESTORE_DEFAULTS_CMD, &CManilla2DConfigRestoreDlg::OnRestoreDefaults)
 END_MESSAGE_MAP()
-
-
-UINT CManilla2DConfigRestoreDlg::GetIDD()
-{
-    return CManilla2DConfigRestoreDlg::IDD;
-}
 
 void CManilla2DConfigRestoreDlg::OnOK()
 {
-    CDialog::OnOK();
+    // nothing to do here
 }
 
 void CManilla2DConfigRestoreDlg::OnCancel()
 {
-    CDialog::OnCancel();
+    // nothing to do here
 }
 
-CString CManilla2DConfigRestoreDlg::GetTabText()
-{
-    return TEXT("Restore");
-}
-
-void CManilla2DConfigRestoreDlg::RestoreDefaults()
+void CManilla2DConfigRestoreDlg::OnRestoreDefaults()
 {
     // this is an empty method because there are no defualts to restore
     // on the restore defaults page

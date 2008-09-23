@@ -19,15 +19,14 @@
 
 // CM2DCTabPage dialog
 
-class CM2DCTabPage : public CDialog
+class CM2DCTabPage : public CPropertyPage
 {
 public:
-    CM2DCTabPage(UINT nIDTemplate, CWnd* pParent = NULL) { CDialog(nIDTemplate, pParent); };
+    CM2DCTabPage(UINT nIDTemplate, UINT nIDCaption) { CPropertyPage(nIDTemplate, nIDCaption); };
     virtual ~CM2DCTabPage() { };
 
-    virtual UINT GetIDD() = 0;
     virtual void OnOK() = 0;
     virtual void OnCancel() = 0;
-    virtual CString GetTabText() = 0;
+    virtual UINT GetTabStringID() = 0;
     virtual void RestoreDefaults() = 0;
 };

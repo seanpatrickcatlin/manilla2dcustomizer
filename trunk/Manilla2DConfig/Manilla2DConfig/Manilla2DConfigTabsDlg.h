@@ -22,7 +22,7 @@
 
 // CManilla2DConfigTabsDlg dialog
 
-class CManilla2DConfigTabsDlg : public CM2DCTabPage
+class CManilla2DConfigTabsDlg : public CPropertyPage
 {
 public:
 	CManilla2DConfigTabsDlg(CWnd* pParent = NULL);   // standard constructor
@@ -30,8 +30,6 @@ public:
 
 // Dialog Data
 	enum { IDD = IDD_MANILLA2DCONFIG_TABS_DIALOG };
-    
-    virtual UINT GetIDD() { return IDD_MANILLA2DCONFIG_TABS_DIALOG; };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -39,8 +37,8 @@ protected:
     BOOL OnInitDialog();
     virtual void OnOK();
     virtual void OnCancel();
-    virtual CString GetTabText();
-    virtual void RestoreDefaults();
+    virtual UINT GetTabStringID() { return IDS_M2DC_TABS; };
+    virtual void OnRestoreDefaults();
 
 	DECLARE_MESSAGE_MAP()
 
