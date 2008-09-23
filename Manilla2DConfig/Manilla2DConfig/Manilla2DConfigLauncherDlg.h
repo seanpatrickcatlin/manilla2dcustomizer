@@ -17,8 +17,6 @@
 
 #pragma once
 
-#include "M2DCTabPage.h"
-
 // CManilla2DConfigLauncherDlg dialog
 
 class CManilla2DConfigLauncherDlg : public CPropertyPage

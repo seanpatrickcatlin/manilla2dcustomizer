@@ -65,6 +65,9 @@ BOOL CManilla2DConfigTabsDlg::OnInitDialog()
     PopulateWidgetVectorsFromCurrentHTCHomeSettingsXmlFile();
     UpdateListControlFromNewWidgetVector();
 
+    m_cmdBar.Create(this);
+    m_cmdBar.InsertMenuBar(IDR_OKCANCELMENU);
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 

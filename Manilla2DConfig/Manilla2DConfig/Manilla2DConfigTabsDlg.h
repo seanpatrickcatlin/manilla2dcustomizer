@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "M2DCTabPage.h"
 #include "Manilla2DConfigUtils.h"
 
 // CManilla2DConfigTabsDlg dialog
@@ -49,6 +48,7 @@ protected:
     afx_msg void OnLvnItemchangedMainListControl(NMHDR *pNMHDR, LRESULT *pResult);
 
 private:
+    CCommandBar m_cmdBar;
 	bool m_bPopulatingListControl;
 
     NameAndEnabledState_vector_t m_newWidgetVector;

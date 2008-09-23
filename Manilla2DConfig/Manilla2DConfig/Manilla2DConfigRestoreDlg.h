@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "M2DCTabPage.h"
+#include "Manilla2DConfigUtils.h"
 
 // CManilla2DConfigRestoreDlg dialog
 
