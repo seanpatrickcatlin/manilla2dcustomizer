@@ -56,24 +56,18 @@ CManilla2DConfigDlg::~CManilla2DConfigDlg()
 }
 
 BEGIN_MESSAGE_MAP(CManilla2DConfigDlg, CPropertySheet)
-    ON_COMMAND(ID_RESTORE_DEFAULTS_CMD, CManilla2DConfigDlg::OnRestoreDefaultsCommand)
-    ON_COMMAND(IDOK, CManilla2DConfigDlg::OnOK)
-    ON_COMMAND(IDCANCEL, CManilla2DConfigDlg::OnCancel)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigDlg message handlers
 
 BOOL CManilla2DConfigDlg::OnInitDialog()
 {
+    CPropertySheet::OnInitDialog();
+
 	// Set the icon for this dialog.  The framework does this automatically
 	//  when the application's main window is not a dialog
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
-
-	CPropertySheet::OnInitDialog();
-
-//    m_cmdBar.Create(this);
-//    m_cmdBar.InsertMenuBar(IDR_OKCANCELMENU);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -110,67 +104,4 @@ void CManilla2DConfigDlg::SetupPages()
             AddPage(currentTabPage);
         }
     }
-}
-
-void CManilla2DConfigDlg::OnOK()
-{
-    CWaitCursor wait;
-
-    BackupTodayScreenItemsRegHive();
-    DisableAllTodayScreenItems();
-    RefreshTodayScreen();
-
-    for(size_t i=0; i<m_mainTabVector.size(); i++)
-    {
-        CPropertyPage* currentTabPage = m_mainTabVector[i];
-
-        if(currentTabPage != NULL)
-        {
-            currentTabPage->OnOK();
-        }
-    }
-
-    RestoreTodayScreenItemsRegHive();
-    RefreshTodayScreen();
-
-    EndDialog(IDOK);
-}
-
-void CManilla2DConfigDlg::OnCancel()
-{
-    for(size_t i=0; i<m_mainTabVector.size(); i++)
-    {
-        CPropertyPage* currentTabPage = m_mainTabVector[i];
-
-        if(currentTabPage != NULL)
-        {
-            currentTabPage->OnCancel();
-        }
-    }
-
-    EndDialog(IDCANCEL);
-}
-
-void CManilla2DConfigDlg::OnRestoreDefaultsCommand()
-{
-    CWaitCursor wait;
-
-    BackupTodayScreenItemsRegHive();
-    DisableAllTodayScreenItems();
-    RefreshTodayScreen();
-
-    for(size_t i=0; i<m_mainTabVector.size(); i++)
-    {
-        CPropertyPage* currentTabPage = m_mainTabVector[i];
-
-        if(currentTabPage != NULL)
-        {
-            currentTabPage->SendMessage(WM_COMMAND, ID_RESTORE_DEFAULTS_CMD);
-        }
-    }
-
-    RestoreTodayScreenItemsRegHive();
-    RefreshTodayScreen();
-
-    OnCancel();
 }

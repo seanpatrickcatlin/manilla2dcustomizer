@@ -35,13 +35,15 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
+    LRESULT OnQuerySiblings(WPARAM wParam, LPARAM lParam);
+
 public:
-    virtual void OnOK();
-    virtual void OnCancel();
-    virtual UINT GetTabStringID() { return IDS_M2DC_RESTORE; };
-    virtual void OnRestoreDefaults();
+    BOOL OnInitDialog();
 
 	DECLARE_MESSAGE_MAP()
 public:
     afx_msg void OnBnClickedRestoreButton();
+
+private:
+    CCommandBar m_cmdBar;
 };

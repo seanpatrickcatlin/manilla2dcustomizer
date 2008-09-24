@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <time.h>
 
+bool g_bAlreadyBeganMakingChanges = false;
 TodayScreenRegBackup g_todayScreenRegBackup;
 
 void PrintNameAndEnabledStateContents(NameAndEnabledState_vector_t* nameAndStateVector)
@@ -517,6 +518,29 @@ void RestoreTodayScreenItemsRegHive()
             RegFlushKey(hKey);
             RegCloseKey(hKey);
         }
+    }
+}
+
+void BeginMakingChanges()
+{
+    if(!g_bAlreadyBeganMakingChanges)
+    {
+        g_bAlreadyBeganMakingChanges = true;
+        AfxGetApp()->DoWaitCursor(1);
+        BackupTodayScreenItemsRegHive();
+        DisableAllTodayScreenItems();
+        RefreshTodayScreen();
+    }
+}
+
+void EndMakingChanges()
+{
+    if(g_bAlreadyBeganMakingChanges)
+    {
+        AfxGetApp()->DoWaitCursor(1);
+        RestoreTodayScreenItemsRegHive();
+        RefreshTodayScreen();
+        AfxGetApp()->DoWaitCursor(-1);
     }
 }
 

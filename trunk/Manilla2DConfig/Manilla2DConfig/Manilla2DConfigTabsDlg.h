@@ -35,9 +35,7 @@ protected:
 
     BOOL OnInitDialog();
     virtual void OnOK();
-    virtual void OnCancel();
-    virtual UINT GetTabStringID() { return IDS_M2DC_TABS; };
-    virtual void OnRestoreDefaults();
+    LRESULT OnQuerySiblings(WPARAM wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
 
@@ -49,6 +47,7 @@ protected:
 
 private:
     CCommandBar m_cmdBar;
+
 	bool m_bPopulatingListControl;
 
     NameAndEnabledState_vector_t m_newWidgetVector;

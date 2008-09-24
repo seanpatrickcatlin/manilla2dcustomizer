@@ -39,15 +39,11 @@ protected:
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
-    virtual void OnOK();
-    virtual void OnCancel();
 
 	DECLARE_MESSAGE_MAP()
 public:
-    afx_msg void OnRestoreDefaultsCommand();
     void SetupPages();
 
 private:
     vector<CPropertyPage*> m_mainTabVector;
-    //CCommandBar m_cmdBar;
 };

@@ -28,11 +28,8 @@ public:
 // Dialog Data
 	enum { IDD = IDD_MANILLA2DCONFIG_LAUNCHER_DIALOG };
 
-    virtual UINT GetTabStringID() { return IDS_M2DC_LAUNCHER; };
-
     virtual void OnOK();
-    virtual void OnCancel();
-    virtual void OnRestoreDefaults();
+    LRESULT OnQuerySiblings(WPARAM wParam, LPARAM lParam);
 
 protected:
     virtual BOOL CManilla2DConfigLauncherDlg::OnInitDialog();
@@ -41,6 +38,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+    CCommandBar m_cmdBar;
+
     int m_initialNumberOfColumns;
 
     CButton m_launcherThreeColumnRadioButton;

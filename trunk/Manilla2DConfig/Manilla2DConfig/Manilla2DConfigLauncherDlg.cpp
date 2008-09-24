@@ -45,7 +45,7 @@ void CManilla2DConfigLauncherDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CManilla2DConfigLauncherDlg, CPropertyPage)
-    ON_COMMAND(ID_RESTORE_DEFAULTS_CMD, &CManilla2DConfigLauncherDlg::OnRestoreDefaults)
+    ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigLauncherDlg::OnQuerySiblings)
 END_MESSAGE_MAP()
 
 BOOL CManilla2DConfigLauncherDlg::OnInitDialog()
@@ -70,6 +70,9 @@ BOOL CManilla2DConfigLauncherDlg::OnInitDialog()
         m_launcherFourColumnRadioButton.EnableWindow(FALSE);
     }
 
+    m_cmdBar.Create(this);
+    m_cmdBar.InsertMenuBar(IDR_OKCANCELMENU);
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -88,19 +91,20 @@ void CManilla2DConfigLauncherDlg::OnOK()
 
     if(m_initialNumberOfColumns != currentColumnCount)
     {
-        CWaitCursor wait;
+        BeginMakingChanges();
         SetNumberOfLauncherColumnsFromHTCHomeSettingsXml(currentColumnCount);
     }
 }
 
-void CManilla2DConfigLauncherDlg::OnCancel()
+LRESULT CManilla2DConfigLauncherDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
 {
-    // nothign to do here
-}
+    if(wParam == ID_RESTORE_DEFAULTS)
+    {
+        BeginMakingChanges();
+        SetNumberOfLauncherColumnsFromHTCHomeSettingsXml(3);
+    }
 
-void CManilla2DConfigLauncherDlg::OnRestoreDefaults()
-{
-    SetNumberOfLauncherColumnsFromHTCHomeSettingsXml(3);
+    return 0;
 }
 
 int CManilla2DConfigLauncherDlg::GetNumberOfLauncherColumnsFromHTCHomeSettingsXml()
