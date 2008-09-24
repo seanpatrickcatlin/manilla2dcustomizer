@@ -52,7 +52,7 @@ BEGIN_MESSAGE_MAP(CManilla2DConfigTabsDlg, CPropertyPage)
     ON_BN_CLICKED(IDC_MOVE_DOWN_BUTTON, &CManilla2DConfigTabsDlg::OnBnClickedMoveDownButton)
     ON_NOTIFY(LVN_ITEMCHANGED, IDC_MAIN_LIST_CONTROL, &CManilla2DConfigTabsDlg::OnLvnItemchangedMainListControl)
     ON_NOTIFY(NM_CLICK, IDC_MAIN_LIST_CONTROL, &CManilla2DConfigTabsDlg::OnNMClickMainListControl)
-    ON_COMMAND(ID_RESTORE_DEFAULTS_CMD, &CManilla2DConfigTabsDlg::OnRestoreDefaults)
+    ON_MESSAGE(PSM_QUERYSIBLINGS, &CManilla2DConfigTabsDlg::OnQuerySiblings)
 END_MESSAGE_MAP()
 
 BOOL CManilla2DConfigTabsDlg::OnInitDialog()
@@ -73,15 +73,11 @@ BOOL CManilla2DConfigTabsDlg::OnInitDialog()
 
 void CManilla2DConfigTabsDlg::OnOK()
 {
-	if(CompareNameAndEnabledStateVectors(&m_newWidgetVector, &m_currentWidgetVector))
+    if(CompareNameAndEnabledStateVectors(&m_newWidgetVector, &m_currentWidgetVector))
     {
+        BeginMakingChanges();
         WriteHTCHomeSettingsXmlFileFromNewWidgetVector();
     }
-}
-
-void CManilla2DConfigTabsDlg::OnCancel()
-{
-    // nothing to do here
 }
 
 void CManilla2DConfigTabsDlg::OnBnClickedMoveUpButton()
@@ -120,65 +116,72 @@ void CManilla2DConfigTabsDlg::OnBnClickedMoveDownButton()
     }
 }
 
-void CManilla2DConfigTabsDlg::OnRestoreDefaults()
+LRESULT CManilla2DConfigTabsDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
 {
-    m_newWidgetVector.clear();
+    if(wParam == ID_RESTORE_DEFAULTS)
+    {
+        BeginMakingChanges();
 
-    NameAndEnabledStateItem newTabEntry;
+        m_newWidgetVector.clear();
 
-    newTabEntry.name = TEXT("HomeWidget");
-    newTabEntry.enabled = TRUE;
-    m_newWidgetVector.push_back(newTabEntry);
-    
-    newTabEntry.name = TEXT("OperatorWidget");
-    newTabEntry.enabled = FALSE;
-    m_newWidgetVector.push_back(newTabEntry);
-    
-    newTabEntry.name = TEXT("PeopleWidget");
-    newTabEntry.enabled = TRUE;
-    m_newWidgetVector.push_back(newTabEntry);
-    
-    newTabEntry.name = TEXT("MyFavesWidget");
-    newTabEntry.enabled = FALSE;
-    m_newWidgetVector.push_back(newTabEntry);
-    
-    newTabEntry.name = TEXT("MessagingWidget");
-    newTabEntry.enabled = TRUE;
-    m_newWidgetVector.push_back(newTabEntry);
-    
-    newTabEntry.name = TEXT("EmailWidget");
-    newTabEntry.enabled = TRUE;
-    m_newWidgetVector.push_back(newTabEntry);
-    
-    newTabEntry.name = TEXT("InternetWidget");
-    newTabEntry.enabled = TRUE;
-    m_newWidgetVector.push_back(newTabEntry);
-    
-    newTabEntry.name = TEXT("PhotoWidget");
-    newTabEntry.enabled = TRUE;
-    m_newWidgetVector.push_back(newTabEntry);
-    
-    newTabEntry.name = TEXT("MusicWidget");
-    newTabEntry.enabled = TRUE;
-    m_newWidgetVector.push_back(newTabEntry);
-    
-    newTabEntry.name = TEXT("WeatherWidget");
-    newTabEntry.enabled = TRUE;
-    m_newWidgetVector.push_back(newTabEntry);
-    
-    newTabEntry.name = TEXT("LocationWidget");
-    newTabEntry.enabled = TRUE;
-    m_newWidgetVector.push_back(newTabEntry);
-    
-    newTabEntry.name = TEXT("SettingsWidget");
-    newTabEntry.enabled = TRUE;
-    m_newWidgetVector.push_back(newTabEntry);
-    
-    newTabEntry.name = TEXT("LauncherWidget");
-    newTabEntry.enabled = TRUE;
-    m_newWidgetVector.push_back(newTabEntry);
+        NameAndEnabledStateItem newTabEntry;
 
-    WriteHTCHomeSettingsXmlFileFromNewWidgetVector();
+        newTabEntry.name = TEXT("HomeWidget");
+        newTabEntry.enabled = TRUE;
+        m_newWidgetVector.push_back(newTabEntry);
+        
+        newTabEntry.name = TEXT("OperatorWidget");
+        newTabEntry.enabled = FALSE;
+        m_newWidgetVector.push_back(newTabEntry);
+        
+        newTabEntry.name = TEXT("PeopleWidget");
+        newTabEntry.enabled = TRUE;
+        m_newWidgetVector.push_back(newTabEntry);
+        
+        newTabEntry.name = TEXT("MyFavesWidget");
+        newTabEntry.enabled = FALSE;
+        m_newWidgetVector.push_back(newTabEntry);
+        
+        newTabEntry.name = TEXT("MessagingWidget");
+        newTabEntry.enabled = TRUE;
+        m_newWidgetVector.push_back(newTabEntry);
+        
+        newTabEntry.name = TEXT("EmailWidget");
+        newTabEntry.enabled = TRUE;
+        m_newWidgetVector.push_back(newTabEntry);
+        
+        newTabEntry.name = TEXT("InternetWidget");
+        newTabEntry.enabled = TRUE;
+        m_newWidgetVector.push_back(newTabEntry);
+        
+        newTabEntry.name = TEXT("PhotoWidget");
+        newTabEntry.enabled = TRUE;
+        m_newWidgetVector.push_back(newTabEntry);
+        
+        newTabEntry.name = TEXT("MusicWidget");
+        newTabEntry.enabled = TRUE;
+        m_newWidgetVector.push_back(newTabEntry);
+        
+        newTabEntry.name = TEXT("WeatherWidget");
+        newTabEntry.enabled = TRUE;
+        m_newWidgetVector.push_back(newTabEntry);
+        
+        newTabEntry.name = TEXT("LocationWidget");
+        newTabEntry.enabled = TRUE;
+        m_newWidgetVector.push_back(newTabEntry);
+        
+        newTabEntry.name = TEXT("SettingsWidget");
+        newTabEntry.enabled = TRUE;
+        m_newWidgetVector.push_back(newTabEntry);
+        
+        newTabEntry.name = TEXT("LauncherWidget");
+        newTabEntry.enabled = TRUE;
+        m_newWidgetVector.push_back(newTabEntry);
+
+        WriteHTCHomeSettingsXmlFileFromNewWidgetVector();
+    }
+
+    return 0;
 }
 
 void CManilla2DConfigTabsDlg::OnLvnItemchangedMainListControl(NMHDR *pNMHDR, LRESULT *pResult)

@@ -80,6 +80,9 @@ BOOL CManilla2DConfigApp::InitInstance()
     dlg.SetupPages();
     dlg.DoModal();
 
+    // retore today screen state and reload it
+    EndMakingChanges();
+
     if(FileExists(GetPathToErrorLogFile()))
     {
         CString msg("A log file of errors has been generated ");

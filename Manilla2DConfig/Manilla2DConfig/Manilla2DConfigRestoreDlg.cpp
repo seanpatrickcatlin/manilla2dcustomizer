@@ -42,28 +42,20 @@ void CManilla2DConfigRestoreDlg::DoDataExchange(CDataExchange* pDX)
 	CPropertyPage::DoDataExchange(pDX);
 }
 
+BOOL CManilla2DConfigRestoreDlg::OnInitDialog()
+{
+    CPropertyPage::OnInitDialog();
+
+    m_cmdBar.Create(this);
+    m_cmdBar.InsertMenuBar(IDR_OKCANCELMENU);
+
+    return FALSE;
+}
 
 BEGIN_MESSAGE_MAP(CManilla2DConfigRestoreDlg, CPropertyPage)
     ON_BN_CLICKED(IDC_RESTORE_BUTTON, &CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton)
-    ON_COMMAND(ID_RESTORE_DEFAULTS_CMD, &CManilla2DConfigRestoreDlg::OnRestoreDefaults)
+    ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigRestoreDlg::OnQuerySiblings)
 END_MESSAGE_MAP()
-
-void CManilla2DConfigRestoreDlg::OnOK()
-{
-    // nothing to do here
-}
-
-void CManilla2DConfigRestoreDlg::OnCancel()
-{
-    // nothing to do here
-}
-
-void CManilla2DConfigRestoreDlg::OnRestoreDefaults()
-{
-    // this is an empty method because there are no defualts to restore
-    // on the restore defaults page
-}
-
 
 // CManilla2DConfigRestoreDlg message handlers
 
@@ -72,6 +64,12 @@ void CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton()
     CString caption("This will write all settings back to the original defaults.  Press OK to continue.");
     if(MessageBox(caption, TEXT("Restore defaults?"), MB_OKCANCEL) == IDOK)
     {
-        GetParent()->SendMessage(WM_COMMAND, ID_RESTORE_DEFAULTS_CMD);
+        QuerySiblings(ID_RESTORE_DEFAULTS, NULL);
+        EndDialog(IDCANCEL);
     }
+}
+
+LRESULT CManilla2DConfigRestoreDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
+{
+    return 0;
 }
