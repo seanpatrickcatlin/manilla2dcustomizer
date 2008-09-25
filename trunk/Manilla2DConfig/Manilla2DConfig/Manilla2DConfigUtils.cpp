@@ -97,7 +97,7 @@ CString GetPathToHTCHomeSettingsXmlBackup()
 CString GetPathToHH_FilesZipBackup()
 {
 	CString retVal = GetPathToM2DCInstallDirectory();
-	retVal += "\\HH_Files-BACKUP.xml";
+	retVal += "\\HH_Files-BACKUP.zip";
 
 	TRACE(TEXT("GetPathToHH_FilesZipBackup "));
 	TRACE(retVal);
@@ -274,7 +274,12 @@ void BackupM2DCFiles()
                 if((lstrcmpi(findData.cFileName, TEXT(".")) != 0) && (lstrcmpi(findData.cFileName, TEXT("..")) != 0))
                 {
                     CString fullFilePath = GetPathToWindowsDirectory();
+                    fullFilePath += "\\";
                     fullFilePath += findData.cFileName;
+
+                    TRACE(TEXT("Zip Add: "));
+                    TRACE(fullFilePath);
+                    TRACE(TEXT("\n"));
 
                     ZipAdd(hz, findData.cFileName, fullFilePath);
                 }
@@ -372,7 +377,7 @@ void RestoreM2DCFiles()
             
             GetZipItem(hz, zi, &ze);            // fetch individual details
 
-            CString targetPath = GetPathToM2DCThemesDirectory();
+            CString targetPath = GetPathToWindowsDirectory();
             targetPath += "\\";
             targetPath += ze.name;
 
