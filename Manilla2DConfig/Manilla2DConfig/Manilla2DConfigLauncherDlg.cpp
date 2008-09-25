@@ -71,7 +71,7 @@ BOOL CManilla2DConfigLauncherDlg::OnInitDialog()
     }
 
     m_cmdBar.Create(this);
-    m_cmdBar.InsertMenuBar(IDR_OKCANCELMENU);
+    m_cmdBar.InsertMenuBar(IDR_APPLY_CANCEL_MENU);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

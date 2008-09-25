@@ -21,8 +21,6 @@
 
 using std::vector;
 
-#define ID_RESTORE_DEFAULTS (WM_USER+1)
-
 struct NameAndEnabledStateItem
 {
     CString name;

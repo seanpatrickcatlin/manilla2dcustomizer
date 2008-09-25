@@ -47,7 +47,7 @@ BOOL CManilla2DConfigRestoreDlg::OnInitDialog()
     CPropertyPage::OnInitDialog();
 
     m_cmdBar.Create(this);
-    m_cmdBar.InsertMenuBar(IDR_OKCANCELMENU);
+    m_cmdBar.InsertMenuBar(IDR_APPLY_CANCEL_MENU);
 
     return FALSE;
 }
