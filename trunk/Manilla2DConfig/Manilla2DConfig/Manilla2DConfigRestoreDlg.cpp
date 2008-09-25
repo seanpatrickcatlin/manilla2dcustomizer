@@ -56,6 +56,7 @@ BEGIN_MESSAGE_MAP(CManilla2DConfigRestoreDlg, CPropertyPage)
     ON_BN_CLICKED(IDC_RESTORE_BUTTON, &CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton)
     ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigRestoreDlg::OnQuerySiblings)
     ON_WM_PAINT()
+    ON_BN_CLICKED(IDC_BACKUP_BUTTON, &CManilla2DConfigRestoreDlg::OnBnClickedBackupButton)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigRestoreDlg message handlers
@@ -91,8 +92,8 @@ void CManilla2DConfigRestoreDlg::OnPaint()
 
 void CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton()
 {
-    CString caption("This will write all settings back to the original defaults.  Press OK to continue.");
-    if(MessageBox(caption, TEXT("Restore defaults?"), MB_OKCANCEL) == IDOK)
+    CString caption("This will restore all Manilla 2D settings from your backup copy.\nWould you like to continue?");
+    if(MessageBox(caption, TEXT("Restore Settings?"), MB_YESNO) == IDYES)
     {
         RestoreM2DCFiles();
         EndDialog(IDCANCEL);
@@ -102,4 +103,13 @@ void CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton()
 LRESULT CManilla2DConfigRestoreDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
 {
     return 0;
+}
+void CManilla2DConfigRestoreDlg::OnBnClickedBackupButton()
+{
+    CString caption("This will backup you Manilla 2D settings and delete any previous backups.\nWould you like to continue?");
+    if(MessageBox(caption, TEXT("Backup Settings?"), MB_YESNO) == IDYES)
+    {
+        BackupM2DCFiles();
+        EndDialog(IDCANCEL);
+    }
 }

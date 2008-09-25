@@ -428,7 +428,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\ThirdParty\zip_utils_src\unzip.h"
+				RelativePath=".\unzip.h"
 				>
 			</File>
 			<File
@@ -436,7 +436,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\ThirdParty\zip_utils_src\zip.h"
+				RelativePath=".\zip.h"
 				>
 			</File>
 		</Filter>
