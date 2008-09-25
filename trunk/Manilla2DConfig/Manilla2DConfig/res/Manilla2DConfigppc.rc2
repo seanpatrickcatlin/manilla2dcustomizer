@@ -10,9 +10,15 @@
 /////////////////////////////////////////////////////////////////////////////
 // Add manually edited resources here...
 
-IDR_OKCANCELMENU MENU DISCARDABLE
+IDR_APPLY_CANCEL_MENU MENU DISCARDABLE
 BEGIN
 MENUITEM "Apply", IDOK
+MENUITEM "Cancel", IDCANCEL
+END
+
+IDR_FILE_TREE_DLG_OKCANCEL_MENU MENU DISCARDABLE
+BEGIN
+MENUITEM "OK", IDOK
 MENUITEM "Cancel", IDCANCEL
 END
 

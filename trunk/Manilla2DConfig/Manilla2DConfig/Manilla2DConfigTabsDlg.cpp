@@ -21,6 +21,7 @@
 #include "stdafx.h"
 #include "Manilla2DConfig.h"
 #include "Manilla2DConfigTabsDlg.h"
+#include "FileTreeDlg.h"
 
 #include "tinyxml.h"
 #include "tinystr.h"
@@ -65,7 +66,7 @@ BOOL CManilla2DConfigTabsDlg::OnInitDialog()
     UpdateListControlFromNewWidgetVector();
 
     m_cmdBar.Create(this);
-    m_cmdBar.InsertMenuBar(IDR_OKCANCELMENU);
+    m_cmdBar.InsertMenuBar(IDR_APPLY_CANCEL_MENU);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
