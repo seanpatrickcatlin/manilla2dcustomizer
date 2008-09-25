@@ -61,7 +61,6 @@ BOOL CManilla2DConfigTabsDlg::OnInitDialog()
 	
     m_mainListControl.SetExtendedStyle(m_mainListControl.GetExtendedStyle()|LVS_EX_CHECKBOXES);
 
-    BackupHTCHomeSettingsXmlFileIfNeeded();
     PopulateWidgetVectorsFromCurrentHTCHomeSettingsXmlFile();
     UpdateListControlFromNewWidgetVector();
 
