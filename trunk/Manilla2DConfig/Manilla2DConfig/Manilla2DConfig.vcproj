@@ -45,7 +45,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\ThirdParty\tinyxml_2_5_3;..\..\ThirdParty\zip_utils_src"
+				AdditionalIncludeDirectories="..\..\ThirdParty\zip_utils_src;..\..\ThirdParty\tinyxml_2_5_3"
 				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;$(ARCHFAM);$(_ARCHFAM_);POCKETPC2003_UI_MODEL"
 				MinimalRebuild="true"
 				RuntimeLibrary="1"

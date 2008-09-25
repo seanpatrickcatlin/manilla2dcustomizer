@@ -206,10 +206,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Manilla2DConfig\Manilla2DConfigUtils.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -237,10 +233,6 @@
 			>
 			<File
 				RelativePath=".\Manilla2DConfigSetup.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Manilla2DConfig\Manilla2DConfigUtils.h"
 				>
 			</File>
 			<File
