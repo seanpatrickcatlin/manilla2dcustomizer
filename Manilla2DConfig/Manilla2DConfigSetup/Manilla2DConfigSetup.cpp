@@ -20,7 +20,6 @@
 
 #include "stdafx.h"
 #include "Manilla2DConfigSetup.h"
-#include "..\\Manilla2DConfig\\Manilla2DConfigUtils.h"
 
 #include "ce_setup.h"
 
@@ -53,6 +52,75 @@
 //		Please see MFC Technical Notes 33 and 58 for additional
 //		details.
 //
+
+
+void RecursivelyDeleteDirectory(CString sDirPath)
+{
+    // Declare variables
+    WIN32_FIND_DATA wfd;
+    HANDLE hFile;
+    DWORD dwFileAttr;
+    CString sFile;
+
+    CString sPathFile;
+
+    if(sDirPath[sDirPath.GetLength()-1] != '\\')
+    {
+        sDirPath += '\\';
+    }
+
+    CString sSpec = sDirPath;
+    sSpec += "*.*";
+
+    // Find the first file
+    hFile = FindFirstFile(sSpec, &wfd);
+
+    if(hFile != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            sFile = wfd.cFileName;
+            sPathFile = sDirPath + sFile;
+            // Get the file attributes
+            dwFileAttr = GetFileAttributes(sPathFile);
+
+            // See if file is read-only : if so unset read-only
+            if (dwFileAttr & FILE_ATTRIBUTE_READONLY)
+            {
+                dwFileAttr &= ~FILE_ATTRIBUTE_READONLY;
+                SetFileAttributes(sPathFile, dwFileAttr);
+            }
+
+            // See if the file is a directory
+            if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+            {
+                // Make sure it isn't current or parent directory
+                if (sFile != "." && sFile != "..")
+                {
+                    sPathFile += "\\";
+
+                    // Recursively delete all files in this folder
+                    RecursivelyDeleteDirectory(sPathFile);
+
+                    // Remove the directory
+                    RemoveDirectory(sPathFile);
+                }
+            }
+            else
+            {
+                // Delete the file
+                DeleteFile(sPathFile);
+            }
+        }
+        while(FindNextFile(hFile, &wfd));
+    }
+
+    // Close handle to file
+    FindClose(hFile);
+
+    RemoveDirectory(sDirPath);
+}
+
 
 
 // CManilla2DConfigSetupApp

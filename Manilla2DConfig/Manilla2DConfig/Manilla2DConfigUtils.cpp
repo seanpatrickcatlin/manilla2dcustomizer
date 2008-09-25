@@ -18,10 +18,8 @@
 #include "StdAfx.h"
 #include "Manilla2DConfigUtils.h"
 
-/*
 #include "zip.h"
 #include "unzip.h"
-*/
 
 #include <stdio.h>
 #include <time.h>
@@ -256,7 +254,6 @@ void BackupM2DCFiles()
         CopyFile(GetPathToActualHTCHomeSettingsXmlFile(), GetPathToHTCHomeSettingsXmlBackup(), FALSE);
     }
     
-    /*
     if(!FileExists(GetPathToHH_FilesZipBackup()))
     {
         TRACE(TEXT("Begin Zip HH_ files\n"));
@@ -290,7 +287,6 @@ void BackupM2DCFiles()
         CloseZipZ(hz);
         TRACE(TEXT("End Zip HH_ files\n"));
     }
-    */
 }
 
 const char* GetConstCharStarFromCString(CString str)
@@ -360,7 +356,6 @@ void RestoreM2DCFiles()
         CopyFile(GetPathToHTCHomeSettingsXmlBackup(), GetPathToActualHTCHomeSettingsXmlFile(), FALSE);
     }
 
-/*
     if(FileExists(GetPathToHH_FilesZipBackup()))
     {
         HZIP hz = OpenZip(GetPathToHH_FilesZipBackup(), 0);
@@ -386,7 +381,6 @@ void RestoreM2DCFiles()
 
         CloseZip(hz);
     }
-*/
 }
 
 void DisableAllTodayScreenItems()
