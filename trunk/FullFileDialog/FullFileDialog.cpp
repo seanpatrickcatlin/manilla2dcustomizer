@@ -47,11 +47,12 @@ BOOL CFullFileDialogApp::InitInstance()
 
 	CFullFileDialogDlg dlg(NULL, TEXT("\\"), TEXT("*"));
 	m_pMainWnd = &dlg;
-	INT_PTR nResponse = dlg.DoModal();
-	if (nResponse == IDOK)
+	if(dlg.DoModal() == IDOK)
 	{
-		// TODO: Place code here to handle when the dialog is
-		//  dismissed with OK
+        CString file = dlg.GetFilePath();
+        TRACE(TEXT("\nThe user selected: "));
+        TRACE(file);
+        TRACE(TEXT("\n\n"));
 	}
 
 	// Since the dialog has been closed, return FALSE so that we exit the
