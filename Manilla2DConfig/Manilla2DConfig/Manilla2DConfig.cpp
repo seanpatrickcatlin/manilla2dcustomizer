@@ -75,6 +75,8 @@ BOOL CManilla2DConfigApp::InitInstance()
     }
 #endif
 
+    BackupHTCHomeSettingsXmlFileIfNeeded();
+
 	CManilla2DConfigDlg dlg(TEXT("Manilla 2D Customizer"));
 	
     dlg.SetupPages();
