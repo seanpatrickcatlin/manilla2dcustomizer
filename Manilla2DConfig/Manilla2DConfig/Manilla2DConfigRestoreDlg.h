@@ -37,6 +37,8 @@ protected:
 
     LRESULT OnQuerySiblings(WPARAM wParam, LPARAM lParam);
 
+    void OnPaint();
+
 public:
     BOOL OnInitDialog();
 

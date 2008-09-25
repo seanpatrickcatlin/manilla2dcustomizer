@@ -54,6 +54,7 @@ BEGIN_MESSAGE_MAP(CManilla2DConfigTabsDlg, CPropertyPage)
     ON_NOTIFY(LVN_ITEMCHANGED, IDC_MAIN_LIST_CONTROL, &CManilla2DConfigTabsDlg::OnLvnItemchangedMainListControl)
     ON_NOTIFY(NM_CLICK, IDC_MAIN_LIST_CONTROL, &CManilla2DConfigTabsDlg::OnNMClickMainListControl)
     ON_MESSAGE(PSM_QUERYSIBLINGS, &CManilla2DConfigTabsDlg::OnQuerySiblings)
+    ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 BOOL CManilla2DConfigTabsDlg::OnInitDialog()
@@ -78,6 +79,35 @@ void CManilla2DConfigTabsDlg::OnOK()
         BeginMakingChanges();
         WriteHTCHomeSettingsXmlFileFromNewWidgetVector();
     }
+}
+
+void CManilla2DConfigTabsDlg::OnPaint()
+{
+    CPaintDC dc(this);
+
+    int nWidth = dc.GetDeviceCaps(HORZRES);
+    const int nHeaderHeight = 24;
+
+    // paint title
+    CFont *pCurrentFont = dc.GetCurrentFont();
+    LOGFONT lf;
+    pCurrentFont->GetLogFont(&lf);
+    lf.lfWeight = FW_BOLD;
+
+    CFont newFont;
+    newFont.CreateFontIndirect(&lf);
+    CFont *pSave = dc.SelectObject(&newFont);
+    dc.SetTextColor(RGB(0, 0, 156));
+    dc.DrawText(TEXT("Tab Settings"), CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
+
+    // paint line
+    CPen blackPen(PS_SOLID, 1, RGB(0,0,0));
+    CPen *pOldPen = dc.SelectObject(&blackPen);
+
+    dc.MoveTo(0, nHeaderHeight);
+    dc.LineTo(nWidth, nHeaderHeight);
+
+    dc.SelectObject(pOldPen); 
 }
 
 void CManilla2DConfigTabsDlg::OnBnClickedMoveUpButton()
@@ -118,69 +148,6 @@ void CManilla2DConfigTabsDlg::OnBnClickedMoveDownButton()
 
 LRESULT CManilla2DConfigTabsDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
 {
-    if(wParam == ID_RESTORE_DEFAULTS)
-    {
-        BeginMakingChanges();
-
-        m_newWidgetVector.clear();
-
-        NameAndEnabledStateItem newTabEntry;
-
-        newTabEntry.name = TEXT("HomeWidget");
-        newTabEntry.enabled = TRUE;
-        m_newWidgetVector.push_back(newTabEntry);
-        
-        newTabEntry.name = TEXT("OperatorWidget");
-        newTabEntry.enabled = FALSE;
-        m_newWidgetVector.push_back(newTabEntry);
-        
-        newTabEntry.name = TEXT("PeopleWidget");
-        newTabEntry.enabled = TRUE;
-        m_newWidgetVector.push_back(newTabEntry);
-        
-        newTabEntry.name = TEXT("MyFavesWidget");
-        newTabEntry.enabled = FALSE;
-        m_newWidgetVector.push_back(newTabEntry);
-        
-        newTabEntry.name = TEXT("MessagingWidget");
-        newTabEntry.enabled = TRUE;
-        m_newWidgetVector.push_back(newTabEntry);
-        
-        newTabEntry.name = TEXT("EmailWidget");
-        newTabEntry.enabled = TRUE;
-        m_newWidgetVector.push_back(newTabEntry);
-        
-        newTabEntry.name = TEXT("InternetWidget");
-        newTabEntry.enabled = TRUE;
-        m_newWidgetVector.push_back(newTabEntry);
-        
-        newTabEntry.name = TEXT("PhotoWidget");
-        newTabEntry.enabled = TRUE;
-        m_newWidgetVector.push_back(newTabEntry);
-        
-        newTabEntry.name = TEXT("MusicWidget");
-        newTabEntry.enabled = TRUE;
-        m_newWidgetVector.push_back(newTabEntry);
-        
-        newTabEntry.name = TEXT("WeatherWidget");
-        newTabEntry.enabled = TRUE;
-        m_newWidgetVector.push_back(newTabEntry);
-        
-        newTabEntry.name = TEXT("LocationWidget");
-        newTabEntry.enabled = TRUE;
-        m_newWidgetVector.push_back(newTabEntry);
-        
-        newTabEntry.name = TEXT("SettingsWidget");
-        newTabEntry.enabled = TRUE;
-        m_newWidgetVector.push_back(newTabEntry);
-        
-        newTabEntry.name = TEXT("LauncherWidget");
-        newTabEntry.enabled = TRUE;
-        m_newWidgetVector.push_back(newTabEntry);
-
-        WriteHTCHomeSettingsXmlFileFromNewWidgetVector();
-    }
-
     return 0;
 }
 

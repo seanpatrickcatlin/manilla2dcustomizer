@@ -79,18 +79,29 @@ CString GetPathToActualHTCHomeSettingsXmlFile()
     return retVal;
 }
 
-CString GetPathToBackupHTCHomeSettingsXmlFile()
+CString GetPathToHTCHomeSettingsXmlBackup()
 {
 	CString retVal = GetPathToM2DCInstallDirectory();
 	retVal += "\\HTCHomeSettings-BACKUP.xml";
 
-	TRACE(TEXT("GetPathToBackupHTCHomeSettingsXmlFile "));
+	TRACE(TEXT("GetPathToHTCHomeSettingsXmlBackup "));
 	TRACE(retVal);
 	TRACE(TEXT("\n"));
 
     return retVal;
 }
 
+CString GetPathToHH_FilesZipBackup()
+{
+	CString retVal = GetPathToM2DCInstallDirectory();
+	retVal += "\\HH_Files-BACKUP.xml";
+
+	TRACE(TEXT("GetPathToHH_FilesZipBackup "));
+	TRACE(retVal);
+	TRACE(TEXT("\n"));
+
+    return retVal;
+}
 
 CString GetDirectoryOfFile(CString fullFilePath)
 {
@@ -137,6 +148,24 @@ CString GetPathToM2DCInstallDirectory()
 	TRACE(TEXT("GetPathToApplicationDirectory "));
 	TRACE(retVal);
 	TRACE(TEXT("\n"));
+
+	return retVal;
+}
+
+CString GetPathToM2DCThemesDirectory()
+{
+    CString retVal = GetPathToM2DCInstallDirectory();
+    retVal += "\\";
+    retVal += "Themes";
+
+    TRACE(TEXT("GetPathToM2DCThemesDirectory "));
+	TRACE(retVal);
+	TRACE(TEXT("\n"));
+
+    if(!FileExists(retVal))
+    {
+        CreateDirectory(retVal, NULL);
+    }
 
 	return retVal;
 }
@@ -213,11 +242,11 @@ void RefreshTodayScreen()
     ::SendMessage(HWND_BROADCAST, WM_WININICHANGE, 0xF2, 0);
 }
 
-void BackupHTCHomeSettingsXmlFileIfNeeded()
+void BackupM2DCFiles()
 {
-    if(!FileExists(GetPathToBackupHTCHomeSettingsXmlFile()))
+    if(!FileExists(GetPathToHTCHomeSettingsXmlBackup()))
     {
-        CopyFile(GetPathToActualHTCHomeSettingsXmlFile(), GetPathToBackupHTCHomeSettingsXmlFile(), FALSE);
+        CopyFile(GetPathToActualHTCHomeSettingsXmlFile(), GetPathToHTCHomeSettingsXmlBackup(), FALSE);
     }
 }
 
@@ -279,7 +308,7 @@ CString GetWin32ErrorString(DWORD err)
     return Error;
 } // ErrorString
 
-void RestoreBackupHTCHomeSettingsXmlFileToWindowsDir()
+void RestoreM2DCFiles()
 {
     DWORD dwAttributes = GetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile());
 
@@ -333,7 +362,7 @@ void RestoreBackupHTCHomeSettingsXmlFileToWindowsDir()
 		}
 	}
 
-    CopyFile(GetPathToBackupHTCHomeSettingsXmlFile(), GetPathToActualHTCHomeSettingsXmlFile(), FALSE);
+    CopyFile(GetPathToHTCHomeSettingsXmlBackup(), GetPathToActualHTCHomeSettingsXmlFile(), FALSE);
 
     if(SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), dwAttributes) == 0)
     {
