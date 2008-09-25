@@ -37,9 +37,9 @@ bool TiXmlBase::condenseWhiteSpace = true;
 // Microsoft compiler security
 FILE* TiXmlFOpen( const char* filename, const char* mode )
 {
-	#if defined(_MSC_VER) && (_MSC_VER >= 1400 )
+	#if defined(_MSC_VER) && (_MSC_VER >= 1400 ) && !defined(WINCE)
 		FILE* fp = 0;
-		errno_t err = fopen_s( &fp, filename, mode );
+		errno_t err = fopen( &fp, filename, mode );
 		if ( !err && fp )
 			return fp;
 		return 0;
@@ -683,6 +683,7 @@ int TiXmlElement::QueryDoubleAttribute( const std::string& name, double* dval ) 
 void TiXmlElement::SetAttribute( const char * name, int val )
 {	
 	char buf[64];
+
 	#if defined(TIXML_SNPRINTF)		
 		TIXML_SNPRINTF( buf, sizeof(buf), "%d", val );
 	#else
