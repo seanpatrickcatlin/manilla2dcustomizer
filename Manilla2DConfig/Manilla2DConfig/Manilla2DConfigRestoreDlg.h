@@ -48,4 +48,6 @@ public:
 
 private:
     CCommandBar m_cmdBar;
+public:
+    afx_msg void OnBnClickedBackupButton();
 };

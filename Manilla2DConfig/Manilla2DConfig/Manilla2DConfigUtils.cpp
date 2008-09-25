@@ -18,6 +18,11 @@
 #include "StdAfx.h"
 #include "Manilla2DConfigUtils.h"
 
+/*
+#include "zip.h"
+#include "unzip.h"
+*/
+
 #include <stdio.h>
 #include <time.h>
 
@@ -244,10 +249,48 @@ void RefreshTodayScreen()
 
 void BackupM2DCFiles()
 {
+    CWaitCursor wait;
+
     if(!FileExists(GetPathToHTCHomeSettingsXmlBackup()))
     {
         CopyFile(GetPathToActualHTCHomeSettingsXmlFile(), GetPathToHTCHomeSettingsXmlBackup(), FALSE);
     }
+    
+    /*
+    if(!FileExists(GetPathToHH_FilesZipBackup()))
+    {
+        TRACE(TEXT("Begin Zip HH_ files\n"));
+        CString findString = GetPathToWindowsDirectory();
+        findString += "\\HH_*";
+
+        HZIP hz = CreateZip(GetPathToHH_FilesZipBackup(), 0);
+
+        WIN32_FIND_DATA findData;
+        HANDLE hFindHandle = FindFirstFile(findString, &findData);
+
+        if(hFindHandle != INVALID_HANDLE_VALUE)
+        {
+            BOOL retVal = TRUE;
+
+            while(retVal != FALSE)
+            {
+                if((lstrcmpi(findData.cFileName, TEXT(".")) != 0) && (lstrcmpi(findData.cFileName, TEXT("..")) != 0))
+                {
+                    CString fullFilePath = GetPathToWindowsDirectory();
+                    fullFilePath += findData.cFileName;
+
+                    ZipAdd(hz, findData.cFileName, fullFilePath);
+                }
+
+                retVal = FindNextFile(hFindHandle, &findData);
+            }
+        }
+
+        FindClose(hFindHandle);
+        CloseZipZ(hz);
+        TRACE(TEXT("End Zip HH_ files\n"));
+    }
+    */
 }
 
 const char* GetConstCharStarFromCString(CString str)
@@ -310,85 +353,40 @@ CString GetWin32ErrorString(DWORD err)
 
 void RestoreM2DCFiles()
 {
-    DWORD dwAttributes = GetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile());
+    CWaitCursor wait;
 
-    if(dwAttributes == 0xFFFFFFFF)
+    if(FileExists(GetPathToHTCHomeSettingsXmlBackup()))
     {
-		FILE* errorDump = fopen(GetConstCharStarFromCString(GetPathToErrorLogFile()), "a");
-
-		if(errorDump == NULL)
-		{
-			CString msg("ERROR Backup-1\nUnable to append to ");
-			msg += GetPathToErrorLogFile();
-			AfxMessageBox(msg);
-		}
-		else
-		{
-            fprintf(errorDump, "Unabled to get file attribute of ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
-            fprintf(errorDump, "\n");
-
-            fprintf(errorDump, "ERROR: ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetWin32ErrorString(GetLastError())));
-            fprintf(errorDump, "\n");
-            fflush(errorDump);
-            fclose(errorDump);
-		}
+        CopyFile(GetPathToHTCHomeSettingsXmlBackup(), GetPathToActualHTCHomeSettingsXmlFile(), FALSE);
     }
 
-    if(SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), FILE_ATTRIBUTE_NORMAL) == 0)
-	{
-		FILE* errorDump = fopen(GetConstCharStarFromCString(GetPathToErrorLogFile()), "a");
-
-		if(errorDump == NULL)
-		{
-			CString msg("ERROR Backup-2\nUnable to append to ");
-			msg += GetPathToErrorLogFile();
-			AfxMessageBox(msg);
-		}
-		else
-		{
-            fprintf(errorDump, "Unabled to set file attribute of ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
-            fprintf(errorDump, " to Normal\n");
-
-            fprintf(errorDump, "ERROR: ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetWin32ErrorString(GetLastError())));
-            fprintf(errorDump, "\n");
-
-            LogFileAttributes(errorDump, dwAttributes);
-            fflush(errorDump);
-            fclose(errorDump);
-		}
-	}
-
-    CopyFile(GetPathToHTCHomeSettingsXmlBackup(), GetPathToActualHTCHomeSettingsXmlFile(), FALSE);
-
-    if(SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), dwAttributes) == 0)
+/*
+    if(FileExists(GetPathToHH_FilesZipBackup()))
     {
-		FILE* errorDump = fopen(GetConstCharStarFromCString(GetPathToErrorLogFile()), "a");
+        HZIP hz = OpenZip(GetPathToHH_FilesZipBackup(), 0);
+        ZIPENTRY ze;
 
-		if(errorDump == NULL)
-		{
-			CString msg("ERROR Backup-3\nUnable to append to ");
-			msg += GetPathToErrorLogFile();
-			AfxMessageBox(msg);
-		}
-		else
-		{
-            fprintf(errorDump, "Unabled to retore set file attribute of ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
-            fprintf(errorDump, "\n");
+        // -1 gives overall information about the zipfile
+        GetZipItem(hz,-1,&ze);
 
-            fprintf(errorDump, "ERROR: ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetWin32ErrorString(GetLastError())));
-            fprintf(errorDump, "\n");
+        int numitems = ze.index;
+        
+        for(int zi=0; zi<numitems; zi++)
+        {
+            ZIPENTRY ze;
+            
+            GetZipItem(hz, zi, &ze);            // fetch individual details
 
-            LogFileAttributes(errorDump, dwAttributes);
-            fflush(errorDump);
-            fclose(errorDump);
-		}
+            CString targetPath = GetPathToM2DCThemesDirectory();
+            targetPath += "\\";
+            targetPath += ze.name;
+
+            UnzipItem(hz, zi, targetPath);
+        }
+
+        CloseZip(hz);
     }
+*/
 }
 
 void DisableAllTodayScreenItems()
