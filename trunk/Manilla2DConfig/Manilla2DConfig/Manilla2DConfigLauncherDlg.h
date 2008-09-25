@@ -35,6 +35,8 @@ protected:
     virtual BOOL CManilla2DConfigLauncherDlg::OnInitDialog();
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
+    void OnPaint();
+
 	DECLARE_MESSAGE_MAP()
 
 private:

@@ -55,16 +55,46 @@ BOOL CManilla2DConfigRestoreDlg::OnInitDialog()
 BEGIN_MESSAGE_MAP(CManilla2DConfigRestoreDlg, CPropertyPage)
     ON_BN_CLICKED(IDC_RESTORE_BUTTON, &CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton)
     ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigRestoreDlg::OnQuerySiblings)
+    ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 // CManilla2DConfigRestoreDlg message handlers
+
+void CManilla2DConfigRestoreDlg::OnPaint()
+{
+    CPaintDC dc(this);
+
+    int nWidth = dc.GetDeviceCaps(HORZRES);
+    const int nHeaderHeight = 24;
+
+    // paint title
+    CFont *pCurrentFont = dc.GetCurrentFont();
+    LOGFONT lf;
+    pCurrentFont->GetLogFont(&lf);
+    lf.lfWeight = FW_BOLD;
+
+    CFont newFont;
+    newFont.CreateFontIndirect(&lf);
+    CFont *pSave = dc.SelectObject(&newFont);
+    dc.SetTextColor(RGB(0, 0, 156));
+    dc.DrawText(TEXT("Restore Settings"), CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
+
+    // paint line
+    CPen blackPen(PS_SOLID, 1, RGB(0,0,0));
+    CPen *pOldPen = dc.SelectObject(&blackPen);
+
+    dc.MoveTo(0, nHeaderHeight);
+    dc.LineTo(nWidth, nHeaderHeight);
+
+    dc.SelectObject(pOldPen); 
+}
 
 void CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton()
 {
     CString caption("This will write all settings back to the original defaults.  Press OK to continue.");
     if(MessageBox(caption, TEXT("Restore defaults?"), MB_OKCANCEL) == IDOK)
     {
-        QuerySiblings(ID_RESTORE_DEFAULTS, NULL);
+        RestoreM2DCFiles();
         EndDialog(IDCANCEL);
     }
 }

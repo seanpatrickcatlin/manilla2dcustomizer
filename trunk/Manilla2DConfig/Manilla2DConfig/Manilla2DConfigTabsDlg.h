@@ -45,6 +45,8 @@ protected:
     afx_msg void OnNMClickMainListControl(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnLvnItemchangedMainListControl(NMHDR *pNMHDR, LRESULT *pResult);
 
+    void OnPaint();
+
 private:
     CCommandBar m_cmdBar;
 

@@ -38,8 +38,8 @@ struct TodayScreenRegBackup
 void PrintNameAndEnabledStateVector(NameAndEnabledState_vector_t nameAndStateVector);
 bool CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1, NameAndEnabledState_vector_t* vec2);
 
-void BackupHTCHomeSettingsXmlFileIfNeeded();
-void RestoreBackupHTCHomeSettingsXmlFileToWindowsDir();
+void BackupM2DCFiles();
+void RestoreM2DCFiles();
 
 void RefreshTodayScreen();
 void DisableAllTodayScreenItems();
@@ -59,9 +59,12 @@ CString GetPathToWindowsDirectory();
 CString GetPathToM2DCDataDirectory();
 CString GetPathToAppDataDirectory();
 CString GetPathToM2DCInstallDirectory();
+CString GetPathToM2DCThemesDirectory();
 CString GetPathToRunningBinary();
 CString GetPathToActualHTCHomeSettingsXmlFile();
-CString GetPathToBackupHTCHomeSettingsXmlFile();
+
+CString GetPathToHTCHomeSettingsXmlBackup();
+CString GetPathToHH_FilesZipBackup();
 
 void BackupTodayScreenItemsRegHive();
 void RestoreTodayScreenItemsRegHive();
