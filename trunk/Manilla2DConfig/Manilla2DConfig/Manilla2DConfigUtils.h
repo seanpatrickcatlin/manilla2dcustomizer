@@ -61,7 +61,9 @@ CString GetPathToAppDataDirectory();
 CString GetPathToM2DCInstallDirectory();
 CString GetPathToM2DCThemesDirectory();
 CString GetPathToRunningBinary();
+
 CString GetPathToActualHTCHomeSettingsXmlFile();
+CString GetPathToWorkingHTCHomeSettingsXmlFile();
 
 CString GetPathToHTCHomeSettingsXmlBackup();
 CString GetPathToHH_FilesZipBackup();

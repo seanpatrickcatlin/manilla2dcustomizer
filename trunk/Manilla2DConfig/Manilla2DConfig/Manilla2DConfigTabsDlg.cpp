@@ -263,11 +263,7 @@ void CManilla2DConfigTabsDlg::UpdateListControlFromNewWidgetVector()
 
 void CManilla2DConfigTabsDlg::PopulateWidgetVectorsFromCurrentHTCHomeSettingsXmlFile()
 {
-    CT2CA pszConvertedAnsiString(GetPathToActualHTCHomeSettingsXmlFile());
-
-    std::string temp(pszConvertedAnsiString);
-
-    TiXmlDocument doc(temp.c_str());
+    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
     bool loadOkay = doc.LoadFile();
 
     if(loadOkay)
@@ -316,64 +312,7 @@ void CManilla2DConfigTabsDlg::PopulateWidgetVectorsFromCurrentHTCHomeSettingsXml
 
 void CManilla2DConfigTabsDlg::WriteHTCHomeSettingsXmlFileFromNewWidgetVector()
 {
-	CString filePath = GetPathToActualHTCHomeSettingsXmlFile();
-
-    DWORD dwAttributes = GetFileAttributes(filePath);
-
-    if(dwAttributes == 0xFFFFFFFF)
-    {
-		FILE* errorDump = fopen(GetConstCharStarFromCString(GetPathToErrorLogFile()), "a");
-
-		if(errorDump == NULL)
-		{
-			CString msg("ERROR WriteNew-1\nUnable to append to ");
-			msg += GetPathToErrorLogFile();
-			AfxMessageBox(msg);
-		}
-		else
-		{
-            fprintf(errorDump, "Unabled to get file attribute of ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
-            fprintf(errorDump, "\n");
-
-            fprintf(errorDump, "ERROR: ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetWin32ErrorString(GetLastError())));
-            fprintf(errorDump, "\n");
-            fflush(errorDump);
-            fclose(errorDump);
-		}
-    }
-
-    if(SetFileAttributes(filePath, FILE_ATTRIBUTE_NORMAL) == 0)
-    {
-		FILE* errorDump = fopen(GetConstCharStarFromCString(GetPathToErrorLogFile()), "a");
-
-		if(errorDump == NULL)
-		{
-			CString msg("ERROR WriteNew-2\nUnable to append to ");
-			msg += GetPathToErrorLogFile();
-			AfxMessageBox(msg);
-		}
-		else
-		{
-            fprintf(errorDump, "Unabled to set file attribute of ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
-            fprintf(errorDump, " to Normal\n");
-
-            fprintf(errorDump, "ERROR: ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetWin32ErrorString(GetLastError())));
-            fprintf(errorDump, "\n");
-
-            LogFileAttributes(errorDump, dwAttributes);
-            fflush(errorDump);
-            fclose(errorDump);
-		}
-    }
-
-    CT2CA pszConvertedAnsiString(filePath);
-    std::string temp(pszConvertedAnsiString);
-
-    TiXmlDocument doc(temp.c_str());
+    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToWorkingHTCHomeSettingsXmlFile()));
     bool loadOkay = doc.LoadFile();
 
     if(loadOkay)
@@ -443,30 +382,4 @@ void CManilla2DConfigTabsDlg::WriteHTCHomeSettingsXmlFileFromNewWidgetVector()
     }
 
     m_currentWidgetVector = m_newWidgetVector;
-
-    if(SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), dwAttributes) == 0)
-    {
-		FILE* errorDump = fopen(GetConstCharStarFromCString(GetPathToErrorLogFile()), "a");
-
-		if(errorDump == NULL)
-		{
-			CString msg("ERROR WriteNew-3\nUnable to append to ");
-			msg += GetPathToErrorLogFile();
-			AfxMessageBox(msg);
-		}
-		else
-		{
-            fprintf(errorDump, "Unabled to retore set file attribute of ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
-            fprintf(errorDump, "\n");
-
-            fprintf(errorDump, "ERROR: ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetWin32ErrorString(GetLastError())));
-            fprintf(errorDump, "\n");
-
-            LogFileAttributes(errorDump, dwAttributes);
-            fflush(errorDump);
-            fclose(errorDump);
-		}
-    }
 }

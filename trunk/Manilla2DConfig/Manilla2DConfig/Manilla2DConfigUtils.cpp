@@ -70,6 +70,18 @@ bool CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1, NameA
     return false;
 }
 
+CString GetPathToWorkingHTCHomeSettingsXmlFile()
+{
+	CString retVal = GetPathToM2DCInstallDirectory();
+    retVal += "\\HTCHomeSettings-WorkingCopy.xml";
+
+	TRACE(TEXT("GetPathToWorkingHTCHomeSettingsXmlFile "));
+	TRACE(retVal);
+	TRACE(TEXT("\n"));
+
+    return retVal;
+}
+
 CString GetPathToActualHTCHomeSettingsXmlFile()
 {
 	CString retVal = GetPathToWindowsDirectory();
@@ -556,6 +568,9 @@ void BeginMakingChanges()
         BackupTodayScreenItemsRegHive();
         DisableAllTodayScreenItems();
         RefreshTodayScreen();
+
+        CopyFile(GetPathToActualHTCHomeSettingsXmlFile(), GetPathToWorkingHTCHomeSettingsXmlFile(), FALSE);
+        SetFileAttributes(GetPathToWorkingHTCHomeSettingsXmlFile(), FILE_ATTRIBUTE_NORMAL);
     }
 }
 
@@ -563,6 +578,9 @@ void EndMakingChanges()
 {
     if(g_bAlreadyBeganMakingChanges)
     {
+        CopyFile(GetPathToWorkingHTCHomeSettingsXmlFile(), GetPathToActualHTCHomeSettingsXmlFile(), FALSE);
+        DeleteFile(GetPathToWorkingHTCHomeSettingsXmlFile());
+
         AfxGetApp()->DoWaitCursor(1);
         RestoreTodayScreenItemsRegHive();
         RefreshTodayScreen();

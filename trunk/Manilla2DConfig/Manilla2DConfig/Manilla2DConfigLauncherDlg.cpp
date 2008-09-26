@@ -137,11 +137,7 @@ int CManilla2DConfigLauncherDlg::GetNumberOfLauncherColumnsFromHTCHomeSettingsXm
 
     std::string launcherColStr = "IDLAUNCHERWG_COLUMN";
 
-    CT2CA pszConvertedAnsiString(GetPathToActualHTCHomeSettingsXmlFile());
-
-    std::string temp(pszConvertedAnsiString);
-
-    TiXmlDocument doc(temp.c_str());
+    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
     bool loadOkay = doc.LoadFile();
 
     if(loadOkay)
@@ -207,64 +203,7 @@ void CManilla2DConfigLauncherDlg::SetNumberOfLauncherColumnsFromHTCHomeSettingsX
         startPoint = "5, 2";
     }
 
-	CString filePath = GetPathToActualHTCHomeSettingsXmlFile();
-
-    DWORD dwAttributes = GetFileAttributes(filePath);
-
-    if(dwAttributes == 0xFFFFFFFF)
-    {
-		FILE* errorDump = fopen(GetConstCharStarFromCString(GetPathToErrorLogFile()), "a");
-
-		if(errorDump == NULL)
-		{
-			CString msg("ERROR WriteNew-1L\nUnable to append to ");
-			msg += GetPathToErrorLogFile();
-			AfxMessageBox(msg);
-		}
-		else
-		{
-            fprintf(errorDump, "Unabled to get file attribute of ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
-            fprintf(errorDump, "\n");
-
-            fprintf(errorDump, "ERROR: ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetWin32ErrorString(GetLastError())));
-            fprintf(errorDump, "\n");
-            fflush(errorDump);
-            fclose(errorDump);
-		}
-    }
-
-    if(SetFileAttributes(filePath, FILE_ATTRIBUTE_NORMAL) == 0)
-    {
-		FILE* errorDump = fopen(GetConstCharStarFromCString(GetPathToErrorLogFile()), "a");
-
-		if(errorDump == NULL)
-		{
-            CString msg("ERROR WriteNew-2L\nUnable to append to ");
-			msg += GetPathToErrorLogFile();
-			AfxMessageBox(msg);
-		}
-		else
-		{
-            fprintf(errorDump, "Unabled to set file attribute of ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
-            fprintf(errorDump, " to Normal\n");
-
-            fprintf(errorDump, "ERROR: ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetWin32ErrorString(GetLastError())));
-            fprintf(errorDump, "\n");
-
-            LogFileAttributes(errorDump, dwAttributes);
-            fflush(errorDump);
-            fclose(errorDump);
-		}
-    }
-
-    CT2CA pszConvertedAnsiString(filePath);
-    std::string temp(pszConvertedAnsiString);
-
-    TiXmlDocument doc(temp.c_str());
+    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToWorkingHTCHomeSettingsXmlFile()));
     bool loadOkay = doc.LoadFile();
 
     if(loadOkay)
@@ -311,31 +250,5 @@ void CManilla2DConfigLauncherDlg::SetNumberOfLauncherColumnsFromHTCHomeSettingsX
         }
 
         doc.SaveFile();
-    }
-
-    if(SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), dwAttributes) == 0)
-    {
-		FILE* errorDump = fopen(GetConstCharStarFromCString(GetPathToErrorLogFile()), "a");
-
-		if(errorDump == NULL)
-		{
-			CString msg("ERROR WriteNew-3L\nUnable to append to ");
-			msg += GetPathToErrorLogFile();
-			AfxMessageBox(msg);
-		}
-		else
-		{
-            fprintf(errorDump, "Unabled to retore set file attribute of ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
-            fprintf(errorDump, "\n");
-
-            fprintf(errorDump, "ERROR: ");
-            fprintf(errorDump, GetConstCharStarFromCString(GetWin32ErrorString(GetLastError())));
-            fprintf(errorDump, "\n");
-
-            LogFileAttributes(errorDump, dwAttributes);
-            fflush(errorDump);
-            fclose(errorDump);
-		}
     }
 }
