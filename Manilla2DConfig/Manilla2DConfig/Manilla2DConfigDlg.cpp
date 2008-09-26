@@ -74,7 +74,7 @@ BOOL CManilla2DConfigDlg::OnInitDialog()
 
 void CManilla2DConfigDlg::SetupPages()
 {
-    m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+    m_hIcon = AfxGetApp()->LoadIcon(IDR_M2DC_ICO);
 
     // here is where we add new tabpages, the rest should be done automatically
     CPropertyPage* newTabPage = new CManilla2DConfigTabsDlg(this); 

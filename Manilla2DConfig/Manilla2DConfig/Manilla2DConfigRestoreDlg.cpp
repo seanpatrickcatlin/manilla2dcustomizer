@@ -29,7 +29,7 @@
 //IMPLEMENT_DYNAMIC(CManilla2DConfigRestoreDlg, CM2DCTabPage)
 
 CManilla2DConfigRestoreDlg::CManilla2DConfigRestoreDlg(CWnd* pParent /*=NULL*/)
-	: CPropertyPage(CManilla2DConfigRestoreDlg::IDD, IDS_M2DC_RESTORE)
+	: CPropertyPage(CManilla2DConfigRestoreDlg::IDD, IDS_M2DC_RESTORE_STR)
 {
 }
 
@@ -47,16 +47,16 @@ BOOL CManilla2DConfigRestoreDlg::OnInitDialog()
     CPropertyPage::OnInitDialog();
 
     m_cmdBar.Create(this);
-    m_cmdBar.InsertMenuBar(IDR_APPLY_CANCEL_MENU);
+    m_cmdBar.InsertMenuBar(IDR_M2DC_APPLY_CANCEL_MENU);
 
     return FALSE;
 }
 
 BEGIN_MESSAGE_MAP(CManilla2DConfigRestoreDlg, CPropertyPage)
-    ON_BN_CLICKED(IDC_RESTORE_BUTTON, &CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton)
+    ON_BN_CLICKED(IDC_M2DC_RESTORE_RESTORE_BTN, &CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton)
     ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigRestoreDlg::OnQuerySiblings)
     ON_WM_PAINT()
-    ON_BN_CLICKED(IDC_BACKUP_BUTTON, &CManilla2DConfigRestoreDlg::OnBnClickedBackupButton)
+    ON_BN_CLICKED(IDC_M2DC_RESTORE_BACKUP_BTN, &CManilla2DConfigRestoreDlg::OnBnClickedBackupButton)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigRestoreDlg message handlers

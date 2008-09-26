@@ -10,7 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Add manually edited resources here...
 
-IDR_APPLY_CANCEL_MENU MENU DISCARDABLE
+IDR_M2DC_APPLY_CANCEL_MENU MENU DISCARDABLE
 BEGIN
 MENUITEM "Apply", IDOK
 MENUITEM "Cancel", IDCANCEL

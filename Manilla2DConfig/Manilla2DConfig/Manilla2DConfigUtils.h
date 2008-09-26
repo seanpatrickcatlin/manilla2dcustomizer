@@ -74,5 +74,8 @@ void RestoreTodayScreenItemsRegHive();
 void BeginMakingChanges();
 void EndMakingChanges();
 
-CString GetPathToHH_ImageFiles();
+CString GetPathToHH_ImageFilesFromActualXml();
 void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector);
+
+bool IsM2DCThemeSupportEnabled();
+bool EnableM2DCThemeSupport();
