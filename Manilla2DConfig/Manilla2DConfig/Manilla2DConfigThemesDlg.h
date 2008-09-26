@@ -44,6 +44,9 @@ public:
 
 	DECLARE_MESSAGE_MAP()
 
+protected:
+    virtual BOOL OnSetActive();
+
 private:
     CCommandBar m_cmdBar;
 };

@@ -20,6 +20,7 @@
 
 #include "stdafx.h"
 #include "Manilla2DConfig.h"
+#include "Manilla2DConfigDlg.h"
 #include "Manilla2DConfigUtils.h"
 #include "Manilla2DConfigThemesDlg.h"
 
@@ -86,6 +87,34 @@ void CManilla2DConfigThemesDlg::OnPaint()
     dc.LineTo(nWidth, nHeaderHeight);
 
     dc.SelectObject(pOldPen); 
+}
+
+BOOL CManilla2DConfigThemesDlg::OnSetActive()
+{
+    BOOL retVal = TRUE;
+
+    CPropertyPage::OnSetActive();
+
+    if(!IsM2DCThemeSupportEnabled())
+    {
+        CString enableStr = TEXT("M2DC theme support has not been activated.\n");
+        enableStr += "Would you Like to enable this feature now?";
+
+        if(MessageBox(enableStr, TEXT("M2DC Themes"), MB_YESNO) == IDNO)
+        {
+            retVal = FALSE;
+        }
+
+        if(retVal == TRUE)
+        {
+            if(!EnableM2DCThemeSupport())
+            {
+                retVal = FALSE;
+            }
+        }
+    }
+
+    return retVal;
 }
 
 LRESULT CManilla2DConfigThemesDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
