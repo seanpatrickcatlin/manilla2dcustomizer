@@ -777,7 +777,13 @@ CString GetPathToHH_ImageFilesFromActualXml()
 
 bool IsM2DCThemeSupportEnabled()
 {
-    return FileExists(GetPathToHH_FilesZipBackup());
+    // check to see if the Zip file exists
+
+    // check to see if the local themes folder exists and is not empty
+
+    // check to make sure that the xml file in \Windows references the local theme folder
+
+    return false;
 }
 
 bool EnableM2DCThemeSupport()
@@ -789,7 +795,7 @@ bool EnableM2DCThemeSupport()
 
     if(MessageBox(NULL, enableMessage, TEXT("Enable M2DC Themes?"), MB_YESNO) == IDYES)
     {
-        BackupHH_Files(true);
+        //BackupHH_Files(true);
 
         // Make a directory in the install folder to contain the new themeRe 
 
