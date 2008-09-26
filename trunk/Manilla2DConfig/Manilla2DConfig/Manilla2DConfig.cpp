@@ -75,7 +75,7 @@ BOOL CManilla2DConfigApp::InitInstance()
     }
 #endif
 
-    BackupM2DCFiles();
+    BackupHTCHomeSettingsXml(true);
 
 	CManilla2DConfigDlg dlg(TEXT("Manilla 2D Customizer"));
 	

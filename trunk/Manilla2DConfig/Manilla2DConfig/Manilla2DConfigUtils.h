@@ -39,6 +39,8 @@ void PrintNameAndEnabledStateVector(NameAndEnabledState_vector_t nameAndStateVec
 bool CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1, NameAndEnabledState_vector_t* vec2);
 
 void BackupM2DCFiles();
+void BackupHTCHomeSettingsXml(bool onlyIfNeeded = true);
+void BackupHH_Images(bool onlyIfNeeded = true);
 void RestoreM2DCFiles();
 
 void RefreshTodayScreen();
@@ -48,8 +50,6 @@ CString GetWin32ErrorString(DWORD err);
 
 bool FileExists(CString pathToFile);
 void RecursivelyDeleteDirectory(CString sDirPath);
-
-void LogFileAttributes(FILE* openFile, DWORD dwAttributes);
 
 const char* GetConstCharStarFromCString(CString str);
 
