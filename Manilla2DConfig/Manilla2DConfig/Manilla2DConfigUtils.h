@@ -73,3 +73,6 @@ void RestoreTodayScreenItemsRegHive();
 
 void BeginMakingChanges();
 void EndMakingChanges();
+
+CString GetPathToHH_ImageFiles();
+void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector);
