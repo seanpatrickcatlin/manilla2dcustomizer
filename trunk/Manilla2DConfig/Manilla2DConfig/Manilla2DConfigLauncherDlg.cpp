@@ -45,8 +45,8 @@ void CManilla2DConfigLauncherDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CManilla2DConfigLauncherDlg, CPropertyPage)
-    ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigLauncherDlg::OnQuerySiblings)
     ON_WM_PAINT()
+    ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigLauncherDlg::OnQuerySiblings)
 END_MESSAGE_MAP()
 
 BOOL CManilla2DConfigLauncherDlg::OnInitDialog()
@@ -106,6 +106,11 @@ void CManilla2DConfigLauncherDlg::OnPaint()
     dc.SelectObject(pOldPen); 
 }
 
+LRESULT CManilla2DConfigLauncherDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
+{
+    return 0;
+}
+
 void CManilla2DConfigLauncherDlg::OnOK()
 {
     int currentColumnCount = -1;
@@ -124,11 +129,6 @@ void CManilla2DConfigLauncherDlg::OnOK()
         BeginMakingChanges();
         SetNumberOfLauncherColumnsFromHTCHomeSettingsXml(currentColumnCount);
     }
-}
-
-LRESULT CManilla2DConfigLauncherDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
-{
-    return 0;
 }
 
 int CManilla2DConfigLauncherDlg::GetNumberOfLauncherColumnsFromHTCHomeSettingsXml()

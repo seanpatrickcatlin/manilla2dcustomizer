@@ -226,6 +226,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Manilla2DConfigThemesDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Manilla2DConfigUtils.cpp"
 				>
 			</File>
@@ -405,6 +409,10 @@
 			</File>
 			<File
 				RelativePath=".\Manilla2DConfigTabsDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Manilla2DConfigThemesDlg.h"
 				>
 			</File>
 			<File

@@ -23,6 +23,7 @@
 #include "Manilla2DConfig.h"
 #include "Manilla2DConfigDlg.h"
 #include "Manilla2DConfigTabsDlg.h"
+#include "Manilla2DConfigThemesDlg.h"
 #include "Manilla2DConfigRestoreDlg.h"
 #include "Manilla2DConfigLauncherDlg.h"
 
@@ -84,6 +85,12 @@ void CManilla2DConfigDlg::SetupPages()
     }
 
     newTabPage = new CManilla2DConfigLauncherDlg(this);
+    if(newTabPage != NULL)
+    {
+        m_mainTabVector.push_back(newTabPage);
+    }
+
+    newTabPage = new CManilla2DConfigThemesDlg(this);
     if(newTabPage != NULL)
     {
         m_mainTabVector.push_back(newTabPage);

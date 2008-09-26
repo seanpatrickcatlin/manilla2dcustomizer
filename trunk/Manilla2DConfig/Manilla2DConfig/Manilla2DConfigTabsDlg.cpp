@@ -49,12 +49,12 @@ void CManilla2DConfigTabsDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CManilla2DConfigTabsDlg, CPropertyPage)
+    ON_WM_PAINT()
+    ON_MESSAGE(PSM_QUERYSIBLINGS, &CManilla2DConfigTabsDlg::OnQuerySiblings)
     ON_BN_CLICKED(IDC_M2DC_TABS_UP_BTN, &CManilla2DConfigTabsDlg::OnBnClickedMoveUpButton)
+    ON_NOTIFY(NM_CLICK, IDC_M2DC_TABS_MAIN_LC, &CManilla2DConfigTabsDlg::OnNMClickMainListControl)
     ON_BN_CLICKED(IDC_M2DC_TABS_DOWN_BTN, &CManilla2DConfigTabsDlg::OnBnClickedMoveDownButton)
     ON_NOTIFY(LVN_ITEMCHANGED, IDC_M2DC_TABS_MAIN_LC, &CManilla2DConfigTabsDlg::OnLvnItemchangedMainListControl)
-    ON_NOTIFY(NM_CLICK, IDC_M2DC_TABS_MAIN_LC, &CManilla2DConfigTabsDlg::OnNMClickMainListControl)
-    ON_MESSAGE(PSM_QUERYSIBLINGS, &CManilla2DConfigTabsDlg::OnQuerySiblings)
-    ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 BOOL CManilla2DConfigTabsDlg::OnInitDialog()
