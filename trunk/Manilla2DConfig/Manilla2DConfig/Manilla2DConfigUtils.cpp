@@ -21,6 +21,9 @@
 #include "zip.h"
 #include "unzip.h"
 
+#include "tinyxml.h"
+#include "tinystr.h"
+
 #include <stdio.h>
 #include <time.h>
 
@@ -290,47 +293,28 @@ void BackupHH_Images(bool onlyIfNeeded)
         }
 
         TRACE(TEXT("Begin Zip HH_ files\n"));
-        CString findString = GetPathToWindowsDirectory();
-        findString += "\\HH_*";
 
         HZIP hz = CreateZip(GetPathToHH_FilesZipBackup(), 0);
 
         CString htcHomeXml = GetPathToActualHTCHomeSettingsXmlFile();
         CString archiveXml = htcHomeXml;
-        archiveXml.Replace("\\", "/");
+        archiveXml.Replace(TEXT("\\"), TEXT("/"));
 
         ZipAdd(hz, archiveXml, htcHomeXml);
 
-        WIN32_FIND_DATA findData;
-        HANDLE hFindHandle = FindFirstFile(findString, &findData);
+        std::vector<CString> hh_strVector;
+        GetVectorOfHH_FilesCurrentlyInUse(&hh_strVector);
 
-        if(hFindHandle != INVALID_HANDLE_VALUE)
+        for(size_t i=0; i<hh_strVector.size(); i++)
         {
-            BOOL retVal = TRUE;
+            CString fullFilePath = hh_strVector[i];
 
-            while(retVal != FALSE)
-            {
-                if((lstrcmpi(findData.cFileName, TEXT(".")) != 0) && (lstrcmpi(findData.cFileName, TEXT("..")) != 0))
-                {
-                    CString fullFilePath = GetPathToWindowsDirectory();
-                    fullFilePath += "\\";
-                    fullFilePath += findData.cFileName;
+            CString archiveFilePath = fullFilePath;
+            archiveFilePath.Replace(TEXT("\\"), TEXT("/"));
 
-                    TRACE(TEXT("Zip Add: "));
-                    TRACE(fullFilePath);
-                    TRACE(TEXT("\n"));
-
-                    CString archiveFilePath = fullFilePath;
-                    archiveFilePath.Replace(TEXT("\\"), TEXT("/"));
-
-                    ZipAdd(hz, archiveFilePath, fullFilePath);
-                }
-
-                retVal = FindNextFile(hFindHandle, &findData);
-            }
+            ZipAdd(hz, archiveFilePath, fullFilePath);
         }
 
-        FindClose(hFindHandle);
         CloseZipZ(hz);
         TRACE(TEXT("End Zip HH_ files\n"));
     }
@@ -654,3 +638,102 @@ void RecursivelyDeleteDirectory(CString sDirPath)
     RemoveDirectory(sDirPath);
 }
 
+void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector)
+{
+    if(pPathVector != NULL)
+    {
+        CString basePath = GetPathToHH_ImageFiles();
+
+        if(basePath[basePath.GetLength()-1] != '\\')
+        {
+            basePath += '\\';
+        }
+
+        TiXmlDocument doc(GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
+        bool loadOkay = doc.LoadFile();
+
+        if(loadOkay)
+        {
+            TiXmlHandle docHandle(&doc);
+
+            TiXmlElement* imageListElement = docHandle.FirstChild("HTCHome").FirstChild("ImageList").Element();
+
+            if(imageListElement != NULL)
+            {
+                TiXmlElement* imageListItemElement = imageListElement->FirstChildElement();
+
+                while(imageListItemElement != NULL)
+                {
+                    CString currentFilePath(imageListItemElement->Attribute("name"));
+
+                    if(currentFilePath.Find(TEXT("HH_")) != -1)
+                    {
+                        if(currentFilePath.Find('\\') == -1)
+                        {
+                            currentFilePath = basePath + currentFilePath;
+
+                            pPathVector->push_back(currentFilePath);
+                        }
+                    }
+
+                    imageListItemElement = imageListItemElement->NextSiblingElement();
+                }
+            }
+
+            TiXmlNode* widgetPropertyNode = docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").Node();
+
+            if(widgetPropertyNode != NULL)
+            {
+                TiXmlNode* widgetPropertyChildNode = widgetPropertyNode->FirstChild();
+
+                while(widgetPropertyChildNode != NULL)
+                {
+                    TiXmlElement* widgetPropertyChildElement = widgetPropertyChildNode->FirstChildElement();
+
+                    while(widgetPropertyChildElement != NULL)
+                    {
+                        CString currentValue(widgetPropertyChildElement->Attribute("value"));
+
+                        if(currentValue.Find(TEXT("HH_")) != -1)
+                        {
+                            if(currentValue.Find('\\') == -1)
+                            {
+                                currentValue = basePath + currentValue;
+                            }
+
+                            pPathVector->push_back(currentValue);
+                        }
+
+                        widgetPropertyChildElement = widgetPropertyChildElement->NextSiblingElement();
+                    }
+
+                    widgetPropertyChildNode = widgetPropertyChildNode->NextSibling();
+                }
+            }
+        }
+    }
+}
+
+CString GetPathToHH_ImageFiles()
+{
+    CString retVal;
+
+    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
+    bool loadOkay = doc.LoadFile();
+
+    if(loadOkay)
+    {
+        TiXmlHandle docHandle(&doc);
+
+        TiXmlElement* imageListElement = docHandle.FirstChild("HTCHome").FirstChild("ImageList").Element();
+
+        if(imageListElement != NULL)
+        {
+            {
+                retVal = imageListElement->Attribute("path");
+            }
+        }
+    }
+
+    return retVal;
+}

@@ -142,40 +142,26 @@ int CManilla2DConfigLauncherDlg::GetNumberOfLauncherColumnsFromHTCHomeSettingsXm
 
     if(loadOkay)
     {
-        TiXmlNode* htcHomeNode = NULL;
+        TiXmlHandle docHandle(&doc);
 
-        htcHomeNode = doc.FirstChild("HTCHome");
+        TiXmlElement* lwElement =
+            docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").FirstChild("LauncherWidget").Element();
 
-        if(htcHomeNode != NULL)
+        if(lwElement != NULL)
         {
-            TiXmlNode* wpNode = htcHomeNode->FirstChild("WidgetProperty");
+            TiXmlElement* lwItemElement = lwElement->FirstChildElement();
 
-            if(wpNode != NULL)
+            while(lwItemElement != NULL)
             {
-                TiXmlNode* lwNode = wpNode->FirstChild("LauncherWidget");
+                std::string currentPropertyName = lwItemElement->Attribute("name");
 
-                if(lwNode != NULL)
+                if(currentPropertyName.compare(launcherColStr) == 0)
                 {
-                    TiXmlElement* lwElement = lwNode->ToElement();
-
-                    if(lwElement != NULL)
-                    {
-                        TiXmlElement* lwItemElement = lwElement->FirstChildElement();
-
-                        while(lwItemElement != NULL)
-                        {
-                            std::string currentPropertyName = lwItemElement->Attribute("name");
-
-                            if(currentPropertyName.compare(launcherColStr) == 0)
-                            {
-                                lwItemElement->QueryIntAttribute("value", &retVal);
-                                break;
-                            }
-
-                            lwItemElement = lwItemElement->NextSiblingElement();
-                        }
-                    }
+                    lwItemElement->QueryIntAttribute("value", &retVal);
+                    break;
                 }
+
+                lwItemElement = lwItemElement->NextSiblingElement();
             }
         }
     }
@@ -208,47 +194,33 @@ void CManilla2DConfigLauncherDlg::SetNumberOfLauncherColumnsFromHTCHomeSettingsX
 
     if(loadOkay)
     {
-        TiXmlNode* htcHomeNode = NULL;
+        TiXmlHandle docHandle(&doc);
 
-        htcHomeNode = doc.FirstChild("HTCHome");
+        TiXmlElement* lwElement =
+            docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").FirstChild("LauncherWidget").Element();
 
-        if(htcHomeNode != NULL)
+        if(lwElement != NULL)
         {
-            TiXmlNode* wpNode = htcHomeNode->FirstChild("WidgetProperty");
+            TiXmlElement* lwItemElement = lwElement->FirstChildElement();
 
-            if(wpNode != NULL)
+            while(lwItemElement != NULL)
             {
-                TiXmlNode* lwNode = wpNode->FirstChild("LauncherWidget");
+                std::string currentPropertyName = lwItemElement->Attribute("name");
 
-                if(lwNode != NULL)
+                if(currentPropertyName.compare(launcherColStr) == 0)
                 {
-                    TiXmlElement* lwElement = lwNode->ToElement();
-
-                    if(lwElement != NULL)
-                    {
-                        TiXmlElement* lwItemElement = lwElement->FirstChildElement();
-
-                        while(lwItemElement != NULL)
-                        {
-                            std::string currentPropertyName = lwItemElement->Attribute("name");
-
-                            if(currentPropertyName.compare(launcherColStr) == 0)
-                            {
-                                lwItemElement->SetAttribute("value", colStr.c_str());
-                            }
-
-                            if(currentPropertyName.compare(launcherStartPointStr) == 0)
-                            {
-                                lwItemElement->SetAttribute("value", startPoint.c_str());
-                            }
-
-                            lwItemElement = lwItemElement->NextSiblingElement();
-                        }
-                    }
+                    lwItemElement->SetAttribute("value", colStr.c_str());
                 }
-            }
-        }
 
-        doc.SaveFile();
+                if(currentPropertyName.compare(launcherStartPointStr) == 0)
+                {
+                    lwItemElement->SetAttribute("value", startPoint.c_str());
+                }
+
+                lwItemElement = lwItemElement->NextSiblingElement();
+            }
+
+            doc.SaveFile();
+        }
     }
 }

@@ -268,41 +268,28 @@ void CManilla2DConfigTabsDlg::PopulateWidgetVectorsFromCurrentHTCHomeSettingsXml
 
     if(loadOkay)
     {
-        TiXmlNode* htcHomeNode = NULL;
+        TiXmlHandle docHandle(&doc);
 
-        htcHomeNode = doc.FirstChild("HTCHome");
+        TiXmlElement* tabElement = docHandle.FirstChild("HTCHome").FirstChild("Tabs").Element();
 
-        if(htcHomeNode != NULL)
+        if(tabElement != NULL)
         {
-            TiXmlNode* tabNode = NULL;
-            TiXmlElement* tabElement = NULL;
+            TiXmlElement* tabItemElement = NULL;
 
-            tabNode = htcHomeNode->FirstChild("Tabs");
+            tabItemElement = tabElement->FirstChildElement();
 
-            if(tabNode != NULL)
+            while(tabItemElement != NULL)
             {
-                tabElement = tabNode->ToElement();
+                NameAndEnabledStateItem newTabEntry;
+                newTabEntry.name = tabItemElement->Value();
 
-                if(tabElement != NULL)
-                {
-                    TiXmlElement* tabItemElement = NULL;
+                int enabled;
+                tabItemElement->QueryIntAttribute("enable", &enabled);
+                newTabEntry.enabled = (enabled == 0 ? FALSE : TRUE);
 
-                    tabItemElement = tabElement->FirstChildElement();
+                m_currentWidgetVector.push_back(newTabEntry);
 
-                    while(tabItemElement != NULL)
-                    {
-                        NameAndEnabledStateItem newTabEntry;
-                        newTabEntry.name = tabItemElement->Value();
-
-                        int enabled;
-                        tabItemElement->QueryIntAttribute("enable", &enabled);
-                        newTabEntry.enabled = (enabled == 0 ? FALSE : TRUE);
-
-                        m_currentWidgetVector.push_back(newTabEntry);
-
-                        tabItemElement = tabItemElement->NextSiblingElement();
-                    }
-                }
+                tabItemElement = tabItemElement->NextSiblingElement();
             }
         }
     }
@@ -317,62 +304,49 @@ void CManilla2DConfigTabsDlg::WriteHTCHomeSettingsXmlFileFromNewWidgetVector()
 
     if(loadOkay)
     {
-        TiXmlNode* htcHomeNode = NULL;
+        TiXmlHandle docHandle(&doc);
 
-        htcHomeNode = doc.FirstChild("HTCHome");
+        TiXmlElement* tabElement = docHandle.FirstChild("HTCHome").FirstChild("Tabs").Element();
 
-        if(htcHomeNode != NULL)
+        if(tabElement != NULL)
         {
-            TiXmlNode* tabNode = NULL;
-            TiXmlElement* tabElement = NULL;
+            TiXmlElement* tabItemElement = NULL;
 
-            tabNode = htcHomeNode->FirstChild("Tabs");
+            tabItemElement = tabElement->FirstChildElement();
 
-            if(tabNode != NULL)
+            vector<TiXmlElement> elementList;
+
+            // go through, set the attribute for enabled, copy the element to the vector, remove the element
+            while(tabItemElement != NULL)
             {
-                tabElement = tabNode->ToElement();
+                CString elementName(tabItemElement->Value());
 
-                if(tabElement != NULL)
+                for(size_t i=0; i<m_newWidgetVector.size(); i++)
                 {
-                    TiXmlElement* tabItemElement = NULL;
-
-                    tabItemElement = tabElement->FirstChildElement();
-
-                    vector<TiXmlElement> elementList;
-
-                    // go through, set the attribute for enabled, copy the element to the vector, remove the element
-                    while(tabItemElement != NULL)
+                    if(elementName == m_newWidgetVector[i].name)
                     {
-                        CString elementName(tabItemElement->Value());
-
-                        for(size_t i=0; i<m_newWidgetVector.size(); i++)
-                        {
-                            if(elementName == m_newWidgetVector[i].name)
-                            {
-                                tabItemElement->SetAttribute("enable", m_newWidgetVector[i].enabled);
-                                elementList.push_back(*tabItemElement);
-                                tabElement->RemoveChild(tabItemElement);
-                                break;
-                            }
-                        }
-
-                        tabItemElement = tabItemElement->NextSiblingElement();
+                        tabItemElement->SetAttribute("enable", m_newWidgetVector[i].enabled);
+                        elementList.push_back(*tabItemElement);
+                        tabElement->RemoveChild(tabItemElement);
+                        break;
                     }
+                }
 
-                    // go through, set the attribute for enabled, copy the element to the vector, remove the element
+                tabItemElement = tabItemElement->NextSiblingElement();
+            }
 
-                    for(size_t i=0; i<m_newWidgetVector.size(); i++)
+            // go through, set the attribute for enabled, copy the element to the vector, remove the element
+
+            for(size_t i=0; i<m_newWidgetVector.size(); i++)
+            {
+                for(size_t j=0; j<elementList.size(); j++)
+                {
+                    CString elementName(elementList[j].Value());
+
+                    if(elementName == m_newWidgetVector[i].name)
                     {
-                        for(size_t j=0; j<elementList.size(); j++)
-                        {
-                            CString elementName(elementList[j].Value());
-
-                            if(elementName == m_newWidgetVector[i].name)
-                            {
-                                tabElement->InsertEndChild(elementList[j]);
-                                break;
-                            }
-                        }
+                        tabElement->InsertEndChild(elementList[j]);
+                        break;
                     }
                 }
             }
