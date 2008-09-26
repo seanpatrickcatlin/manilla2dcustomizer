@@ -26,7 +26,7 @@ public:
 	virtual ~CManilla2DConfigLauncherDlg();
 
 // Dialog Data
-	enum { IDD = IDD_MANILLA2DCONFIG_LAUNCHER_DIALOG };
+	enum { IDD = IDD_M2DC_LAUNCHER_DLG };
 
     virtual void OnOK();
     LRESULT OnQuerySiblings(WPARAM wParam, LPARAM lParam);

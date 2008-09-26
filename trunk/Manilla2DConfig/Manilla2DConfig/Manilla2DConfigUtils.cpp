@@ -679,7 +679,7 @@ void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector)
 {
     if(pPathVector != NULL)
     {
-        CString basePath = GetPathToHH_ImageFiles();
+        CString basePath = GetPathToHH_ImageFilesFromActualXml();
 
         if(basePath[basePath.GetLength()-1] != '\\')
         {
@@ -751,7 +751,7 @@ void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector)
     }
 }
 
-CString GetPathToHH_ImageFiles()
+CString GetPathToHH_ImageFilesFromActualXml()
 {
     CString retVal;
 
@@ -770,6 +770,32 @@ CString GetPathToHH_ImageFiles()
                 retVal = imageListElement->Attribute("path");
             }
         }
+    }
+
+    return retVal;
+}
+
+bool IsM2DCThemeSupportEnabled()
+{
+    return FileExists(GetPathToHH_FilesZipBackup());
+}
+
+bool EnableM2DCThemeSupport()
+{
+    bool retVal = false;
+
+    CString enableMessage = TEXT("Enabling M2DC theme support may take 3-5 minutes to complete.");
+    enableMessage += "\nWould you like to continue?";
+
+    if(MessageBox(NULL, enableMessage, TEXT("Enable M2DC Themes?"), MB_YESNO) == IDYES)
+    {
+        BackupHH_Files(true);
+
+        // Make a directory in the install folder to contain the new themeRe 
+
+        // unzip the HH backup zip file to the new CurrentTheme folder
+
+        // 
     }
 
     return retVal;

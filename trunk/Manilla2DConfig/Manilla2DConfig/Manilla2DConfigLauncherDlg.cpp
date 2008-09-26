@@ -26,7 +26,7 @@
 // CManilla2DConfigTabsDlg dialog
 
 CManilla2DConfigLauncherDlg::CManilla2DConfigLauncherDlg(CWnd* pParent /*=NULL*/)
-	: CPropertyPage(CManilla2DConfigLauncherDlg::IDD, IDS_M2DC_LAUNCHER)
+	: CPropertyPage(CManilla2DConfigLauncherDlg::IDD, IDS_M2DC_LAUNCHER_STR)
 {
     m_initialNumberOfColumns = GetNumberOfLauncherColumnsFromHTCHomeSettingsXml();
 }
@@ -39,8 +39,8 @@ void CManilla2DConfigLauncherDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
 
-    DDX_Control(pDX, IDC_LAUNCHER_THREE_COL_RADIO, m_launcherThreeColumnRadioButton);
-    DDX_Control(pDX, IDC_LAUNCHER_FOUR_COL_RADIO, m_launcherFourColumnRadioButton);
+    DDX_Control(pDX, IDC_M2DC_LAUNCHER_3_COL_RB, m_launcherThreeColumnRadioButton);
+    DDX_Control(pDX, IDC_M2DC_LAUNCHER_4_COL_RB, m_launcherFourColumnRadioButton);
 }
 
 
@@ -72,7 +72,7 @@ BOOL CManilla2DConfigLauncherDlg::OnInitDialog()
     }
 
     m_cmdBar.Create(this);
-    m_cmdBar.InsertMenuBar(IDR_APPLY_CANCEL_MENU);
+    m_cmdBar.InsertMenuBar(IDR_M2DC_APPLY_CANCEL_MENU);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

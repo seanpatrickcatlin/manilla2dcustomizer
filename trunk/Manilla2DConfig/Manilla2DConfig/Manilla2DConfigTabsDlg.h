@@ -28,7 +28,7 @@ public:
 	virtual ~CManilla2DConfigTabsDlg();
 
 // Dialog Data
-	enum { IDD = IDD_MANILLA2DCONFIG_TABS_DIALOG };
+	enum { IDD = IDD_M2DC_TABS_DLG };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

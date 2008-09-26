@@ -30,7 +30,7 @@ public:
 	virtual ~CManilla2DConfigRestoreDlg();
 
 // Dialog Data
-	enum { IDD = IDD_MANILLA2DCONFIG_RESTORE_DIALOG };
+	enum { IDD = IDD_M2DC_RESTORE_DLG };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
