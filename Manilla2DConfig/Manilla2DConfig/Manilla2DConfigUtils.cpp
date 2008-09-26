@@ -295,6 +295,12 @@ void BackupHH_Images(bool onlyIfNeeded)
 
         HZIP hz = CreateZip(GetPathToHH_FilesZipBackup(), 0);
 
+        CString htcHomeXml = GetPathToActualHTCHomeSettingsXmlFile();
+        CString archiveXml = htcHomeXml;
+        archiveXml.Replace("\\", "/");
+
+        ZipAdd(hz, archiveXml, htcHomeXml);
+
         WIN32_FIND_DATA findData;
         HANDLE hFindHandle = FindFirstFile(findString, &findData);
 
@@ -314,7 +320,10 @@ void BackupHH_Images(bool onlyIfNeeded)
                     TRACE(fullFilePath);
                     TRACE(TEXT("\n"));
 
-                    ZipAdd(hz, findData.cFileName, fullFilePath);
+                    CString archiveFilePath = fullFilePath;
+                    archiveFilePath.Replace(TEXT("\\"), TEXT("/"));
+
+                    ZipAdd(hz, archiveFilePath, fullFilePath);
                 }
 
                 retVal = FindNextFile(hFindHandle, &findData);
@@ -383,12 +392,7 @@ void RestoreM2DCFiles()
             ZIPENTRY ze;
             
             GetZipItem(hz, zi, &ze);            // fetch individual details
-
-            CString targetPath = GetPathToWindowsDirectory();
-            targetPath += "\\";
-            targetPath += ze.name;
-
-            UnzipItem(hz, zi, targetPath);
+            UnzipItem(hz, zi, ze.name);
         }
 
         CloseZip(hz);
