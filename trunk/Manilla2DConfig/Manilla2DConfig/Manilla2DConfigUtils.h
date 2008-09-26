@@ -40,7 +40,7 @@ bool CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1, NameA
 
 void BackupM2DCFiles();
 void BackupHTCHomeSettingsXml(bool onlyIfNeeded = true);
-void BackupHH_Images(bool onlyIfNeeded = true);
+void BackupHH_Files(bool onlyIfNeeded = true);
 void RestoreM2DCFiles();
 
 void RefreshTodayScreen();

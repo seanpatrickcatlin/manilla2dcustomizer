@@ -263,7 +263,7 @@ void RefreshTodayScreen()
 void BackupM2DCFiles()
 {
     BackupHTCHomeSettingsXml(false);
-    BackupHH_Images(false);
+    BackupHH_Files(false);
 }
 
 void BackupHTCHomeSettingsXml(bool onlyIfNeeded)
@@ -281,7 +281,7 @@ void BackupHTCHomeSettingsXml(bool onlyIfNeeded)
     }
 }
 
-void BackupHH_Images(bool onlyIfNeeded)
+void BackupHH_Files(bool onlyIfNeeded)
 {
     bool fileExists = FileExists(GetPathToHH_FilesZipBackup());
 
@@ -304,6 +304,43 @@ void BackupHH_Images(bool onlyIfNeeded)
 
         std::vector<CString> hh_strVector;
         GetVectorOfHH_FilesCurrentlyInUse(&hh_strVector);
+
+        WIN32_FIND_DATA findData;
+        CString findString = GetPathToWindowsDirectory();
+        findString += "\\HH_*";
+        HANDLE hFindHandle = FindFirstFile(findString, &findData);
+
+        if(hFindHandle != INVALID_HANDLE_VALUE)
+        {
+            BOOL keepSearching = TRUE;
+
+            while(keepSearching == TRUE)
+            {
+                CString currentHH_file = GetPathToWindowsDirectory();
+                currentHH_file += "\\";
+                currentHH_file += findData.cFileName;
+
+                bool addFileToVector = true;
+
+                for(size_t i=0; i<hh_strVector.size(); i++)
+                {
+                    if(hh_strVector[i].Compare(currentHH_file) == 0)
+                    {
+                        addFileToVector = false;
+                        break;
+                    }
+                }
+
+                if(addFileToVector)
+                {
+                    hh_strVector.push_back(currentHH_file);
+                }
+
+                keepSearching = FindNextFile(hFindHandle, &findData);
+            }
+        }
+
+        FindClose(hFindHandle);
 
         for(size_t i=0; i<hh_strVector.size(); i++)
         {
