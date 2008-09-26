@@ -259,15 +259,36 @@ void RefreshTodayScreen()
 
 void BackupM2DCFiles()
 {
-    CWaitCursor wait;
+    BackupHTCHomeSettingsXml(false);
+    BackupHH_Images(false);
+}
 
-    if(!FileExists(GetPathToHTCHomeSettingsXmlBackup()))
+void BackupHTCHomeSettingsXml(bool onlyIfNeeded)
+{
+    bool fileExists = FileExists(GetPathToHTCHomeSettingsXmlBackup());
+
+    if(!(fileExists && onlyIfNeeded))
     {
+        if(fileExists)
+        {
+            DeleteFile(GetPathToHTCHomeSettingsXmlBackup());
+        }
+
         CopyFile(GetPathToActualHTCHomeSettingsXmlFile(), GetPathToHTCHomeSettingsXmlBackup(), FALSE);
     }
-    
-    if(!FileExists(GetPathToHH_FilesZipBackup()))
+}
+
+void BackupHH_Images(bool onlyIfNeeded)
+{
+    bool fileExists = FileExists(GetPathToHH_FilesZipBackup());
+
+    if(!(fileExists && onlyIfNeeded))
     {
+        if(fileExists)
+        {
+            DeleteFile(GetPathToHH_FilesZipBackup());
+        }
+
         TRACE(TEXT("Begin Zip HH_ files\n"));
         CString findString = GetPathToWindowsDirectory();
         findString += "\\HH_*";
@@ -312,32 +333,6 @@ const char* GetConstCharStarFromCString(CString str)
 	std::string temp(pszConvertedAnsiString);
 
 	return temp.c_str();
-}
-
-void LogFileAttributes(FILE* openFile, DWORD dwAttributes)
-{
-    if(openFile != NULL)
-    {
-        if(dwAttributes == 0xFFFFFFFF)
-        {
-            fprintf(openFile, "\tinvalid dwAttributes\n");
-        }
-        else
-        {
-            fprintf(openFile, "\tFILE_ATTRIBUTE_ARCHIVE %d\n", dwAttributes&FILE_ATTRIBUTE_ARCHIVE);
-            fprintf(openFile, "\tFILE_ATTRIBUTE_COMPRESSED %d\n", dwAttributes&FILE_ATTRIBUTE_COMPRESSED);
-            fprintf(openFile, "\tFILE_ATTRIBUTE_DIRECTORY %d\n", dwAttributes&FILE_ATTRIBUTE_DIRECTORY);
-            fprintf(openFile, "\tFILE_ATTRIBUTE_ENCRYPTED %d\n", dwAttributes&FILE_ATTRIBUTE_ENCRYPTED);
-            fprintf(openFile, "\tFILE_ATTRIBUTE_HIDDEN %d\n", dwAttributes&FILE_ATTRIBUTE_HIDDEN);
-            fprintf(openFile, "\tFILE_ATTRIBUTE_INROM %d\n", dwAttributes&FILE_ATTRIBUTE_INROM);
-            fprintf(openFile, "\tFILE_ATTRIBUTE_NORMAL %d\n", dwAttributes&FILE_ATTRIBUTE_NORMAL);
-            fprintf(openFile, "\tFILE_ATTRIBUTE_READONLY %d\n", dwAttributes&FILE_ATTRIBUTE_READONLY);
-            fprintf(openFile, "\tFILE_ATTRIBUTE_ROMMODULE %d\n", dwAttributes&FILE_ATTRIBUTE_ROMMODULE);
-            fprintf(openFile, "\tFILE_ATTRIBUTE_ROMSTATICREF %d\n", dwAttributes&FILE_ATTRIBUTE_ROMSTATICREF);
-            fprintf(openFile, "\tFILE_ATTRIBUTE_SYSTEM %d\n", dwAttributes&FILE_ATTRIBUTE_SYSTEM);
-            fprintf(openFile, "\tFILE_ATTRIBUTE_TEMPORARY %d\n", dwAttributes&FILE_ATTRIBUTE_TEMPORARY);
-        }
-    }
 }
 
 CString GetWin32ErrorString(DWORD err)
