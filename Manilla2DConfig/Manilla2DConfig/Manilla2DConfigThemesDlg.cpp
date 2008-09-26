@@ -21,28 +21,28 @@
 #include "stdafx.h"
 #include "Manilla2DConfig.h"
 #include "Manilla2DConfigUtils.h"
-#include "Manilla2DConfigRestoreDlg.h"
+#include "Manilla2DConfigThemesDlg.h"
 
 
-// CManilla2DConfigRestoreDlg dialog
+// CManilla2DConfigThemesDlg dialog
 
-//IMPLEMENT_DYNAMIC(CManilla2DConfigRestoreDlg, CM2DCTabPage)
+//IMPLEMENT_DYNAMIC(CManilla2DConfigThemesDlg, CM2DCTabPage)
 
-CManilla2DConfigRestoreDlg::CManilla2DConfigRestoreDlg(CWnd* pParent /*=NULL*/)
-	: CPropertyPage(CManilla2DConfigRestoreDlg::IDD, IDS_M2DC_RESTORE_STR)
+CManilla2DConfigThemesDlg::CManilla2DConfigThemesDlg(CWnd* pParent /*=NULL*/)
+	: CPropertyPage(CManilla2DConfigThemesDlg::IDD, IDS_M2DC_THEMES_STR)
 {
 }
 
-CManilla2DConfigRestoreDlg::~CManilla2DConfigRestoreDlg()
+CManilla2DConfigThemesDlg::~CManilla2DConfigThemesDlg()
 {
 }
 
-void CManilla2DConfigRestoreDlg::DoDataExchange(CDataExchange* pDX)
+void CManilla2DConfigThemesDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
 }
 
-BOOL CManilla2DConfigRestoreDlg::OnInitDialog()
+BOOL CManilla2DConfigThemesDlg::OnInitDialog()
 {
     CPropertyPage::OnInitDialog();
 
@@ -52,16 +52,14 @@ BOOL CManilla2DConfigRestoreDlg::OnInitDialog()
     return FALSE;
 }
 
-BEGIN_MESSAGE_MAP(CManilla2DConfigRestoreDlg, CPropertyPage)
+BEGIN_MESSAGE_MAP(CManilla2DConfigThemesDlg, CPropertyPage)
     ON_WM_PAINT()
-    ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigRestoreDlg::OnQuerySiblings)
-    ON_BN_CLICKED(IDC_M2DC_RESTORE_BACKUP_BTN, &CManilla2DConfigRestoreDlg::OnBnClickedBackupButton)
-    ON_BN_CLICKED(IDC_M2DC_RESTORE_RESTORE_BTN, &CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton)
+    ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigThemesDlg::OnQuerySiblings)
 END_MESSAGE_MAP()
 
-// CManilla2DConfigRestoreDlg message handlers
+// CManilla2DConfigThemesDlg message handlers
 
-void CManilla2DConfigRestoreDlg::OnPaint()
+void CManilla2DConfigThemesDlg::OnPaint()
 {
     CPaintDC dc(this);
 
@@ -78,7 +76,7 @@ void CManilla2DConfigRestoreDlg::OnPaint()
     newFont.CreateFontIndirect(&lf);
     CFont *pSave = dc.SelectObject(&newFont);
     dc.SetTextColor(RGB(0, 0, 156));
-    dc.DrawText(TEXT("Restore Settings"), CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
+    dc.DrawText(TEXT("Theme Settings"), CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
 
     // paint line
     CPen blackPen(PS_SOLID, 1, RGB(0,0,0));
@@ -90,27 +88,7 @@ void CManilla2DConfigRestoreDlg::OnPaint()
     dc.SelectObject(pOldPen); 
 }
 
-LRESULT CManilla2DConfigRestoreDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
+LRESULT CManilla2DConfigThemesDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
 {
     return 0;
-}
-
-void CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton()
-{
-    CString caption("This will restore all Manilla 2D settings from your backup copy.\nWould you like to continue?");
-    if(MessageBox(caption, TEXT("Restore Settings?"), MB_YESNO) == IDYES)
-    {
-        RestoreM2DCFiles();
-        EndDialog(IDCANCEL);
-    }
-}
-
-void CManilla2DConfigRestoreDlg::OnBnClickedBackupButton()
-{
-    CString caption("This will backup you Manilla 2D settings and delete any previous backups.\nWould you like to continue?");
-    if(MessageBox(caption, TEXT("Backup Settings?"), MB_YESNO) == IDYES)
-    {
-        BackupM2DCFiles();
-        EndDialog(IDCANCEL);
-    }
 }

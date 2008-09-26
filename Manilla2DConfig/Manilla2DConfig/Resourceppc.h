@@ -5,13 +5,15 @@
 #define IDD_M2DC_TABS_DLG               101
 #define IDD_M2DC_LAUNCHER_DLG           102
 #define IDD_M2DC_RESTORE_DLG            103
-#define IDD_FILE_TREE_DLG               104
+#define IDD_M2DC_THEMES_DLG             104
+#define IDD_FILE_TREE_DLG               105
 #define IDR_M2DC_ICO                    128
 #define IDR_M2DC_APPLY_CANCEL_MENU      129
 #define IDR_FILE_TREE_DLG_OKCANCEL_MENU 130
 #define IDS_M2DC_RESTORE_STR            131
 #define IDS_M2DC_LAUNCHER_STR           132
 #define IDS_M2DC_TABS_STR               133
+#define IDS_M2DC_THEMES_STR             134
 #define IDC_M2DC_TABS_UP_BTN            1001
 #define IDC_M2DC_TABS_DOWN_BTN          1002
 #define IDC_M2DC_TABS_MAIN_LC           1003
@@ -26,9 +28,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        134
+#define _APS_NEXT_RESOURCE_VALUE        135
 #define _APS_NEXT_COMMAND_VALUE         32772
 #define _APS_NEXT_CONTROL_VALUE         1009
-#define _APS_NEXT_SYMED_VALUE           105
+#define _APS_NEXT_SYMED_VALUE           106
 #endif
 #endif
