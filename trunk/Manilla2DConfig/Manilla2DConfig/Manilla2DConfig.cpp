@@ -79,6 +79,7 @@ BOOL CManilla2DConfigApp::InitInstance()
 
 	CManilla2DConfigDlg dlg(TEXT("Manilla 2D Customizer"));
 	
+    BeginMakingChanges();
     dlg.SetupPages();
     dlg.DoModal();
 

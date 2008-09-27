@@ -114,6 +114,8 @@ BOOL CManilla2DConfigThemesDlg::OnSetActive()
         }
     }
 
+    SetForegroundWindow();
+
     return retVal;
 }
 

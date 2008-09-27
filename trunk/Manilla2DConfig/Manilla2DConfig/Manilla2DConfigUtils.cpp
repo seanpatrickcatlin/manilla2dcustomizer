@@ -27,7 +27,9 @@
 #include <stdio.h>
 #include <time.h>
 
+bool g_bThemeSupportEnabled = false;
 bool g_bAlreadyBeganMakingChanges = false;
+DWORD g_dwFileAttributes;
 TodayScreenRegBackup g_todayScreenRegBackup;
 
 void PrintNameAndEnabledStateContents(NameAndEnabledState_vector_t* nameAndStateVector)
@@ -170,13 +172,62 @@ CString GetPathToM2DCInstallDirectory()
 	return retVal;
 }
 
-CString GetPathToM2DCThemesDirectory()
+CString GetPathToThemesDirectory()
 {
     CString retVal = GetPathToM2DCInstallDirectory();
     retVal += "\\";
     retVal += "Themes";
 
-    TRACE(TEXT("GetPathToM2DCThemesDirectory "));
+    TRACE(TEXT("GetPathToThemesDirectory "));
+	TRACE(retVal);
+	TRACE(TEXT("\n"));
+
+    if(!FileExists(retVal))
+    {
+        CreateDirectory(retVal, NULL);
+    }
+
+	return retVal;
+}
+
+bool IsDirEmpty(CString dirPath)
+{
+    bool retVal = true;
+
+    CString searchString = dirPath;
+    searchString += "\\*";
+
+    WIN32_FIND_DATA findData;
+    HANDLE hFindHandle = FindFirstFile(searchString, &findData);
+
+    if(hFindHandle != INVALID_HANDLE_VALUE)
+    {
+        BOOL keepSearching = TRUE;
+
+        while(keepSearching == TRUE)
+        {
+            if((lstrcmp(findData.cFileName, TEXT(".")) != 0) && (lstrcmp(findData.cFileName, TEXT("..")) != 0))
+            {
+                retVal = false;
+                break;
+            }
+
+            keepSearching = FindNextFile(hFindHandle, &findData);
+        }
+    }
+
+    FindClose(hFindHandle);
+
+    return retVal;
+}
+
+CString GetPathToCurrentThemeDirectory()
+{
+    CString retVal = GetPathToM2DCInstallDirectory();
+    retVal += "\\";
+    retVal += "CurrentTheme";
+
+    TRACE(TEXT("GetPathToThemesDirectory "));
 	TRACE(retVal);
 	TRACE(TEXT("\n"));
 
@@ -277,12 +328,18 @@ void BackupHTCHomeSettingsXml(bool onlyIfNeeded)
             DeleteFile(GetPathToHTCHomeSettingsXmlBackup());
         }
 
+        g_dwFileAttributes = GetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile());
+        SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), FILE_ATTRIBUTE_NORMAL);
+        SetFileAttributes(GetPathToHTCHomeSettingsXmlBackup(), FILE_ATTRIBUTE_NORMAL);  
         CopyFile(GetPathToActualHTCHomeSettingsXmlFile(), GetPathToHTCHomeSettingsXmlBackup(), FALSE);
+        SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), g_dwFileAttributes);
     }
 }
 
 void BackupHH_Files(bool onlyIfNeeded)
 {
+    AfxGetApp()->BeginWaitCursor();
+
     bool fileExists = FileExists(GetPathToHH_FilesZipBackup());
 
     if(!(fileExists && onlyIfNeeded))
@@ -355,6 +412,8 @@ void BackupHH_Files(bool onlyIfNeeded)
         CloseZipZ(hz);
         TRACE(TEXT("End Zip HH_ files\n"));
     }
+
+    AfxGetApp()->EndWaitCursor();
 }
 
 const char* GetConstCharStarFromCString(CString str)
@@ -391,11 +450,13 @@ CString GetWin32ErrorString(DWORD err)
 
 void RestoreM2DCFiles()
 {
-    CWaitCursor wait;
+    AfxGetApp()->BeginWaitCursor();
 
     if(FileExists(GetPathToHTCHomeSettingsXmlBackup()))
     {
-        CopyFile(GetPathToHTCHomeSettingsXmlBackup(), GetPathToActualHTCHomeSettingsXmlFile(), FALSE);
+        //BeginMakingChanges();
+        CopyFile(GetPathToHTCHomeSettingsXmlBackup(), GetPathToWorkingHTCHomeSettingsXmlFile(), FALSE);
+        //EndMakingChanges();
     }
 
     if(FileExists(GetPathToHH_FilesZipBackup()))
@@ -418,6 +479,8 @@ void RestoreM2DCFiles()
 
         CloseZip(hz);
     }
+
+    AfxGetApp()->EndWaitCursor();
 }
 
 void DisableAllTodayScreenItems()
@@ -584,27 +647,36 @@ void BeginMakingChanges()
     if(!g_bAlreadyBeganMakingChanges)
     {
         g_bAlreadyBeganMakingChanges = true;
-        AfxGetApp()->DoWaitCursor(1);
+        AfxGetApp()->BeginWaitCursor();
         BackupTodayScreenItemsRegHive();
         DisableAllTodayScreenItems();
         RefreshTodayScreen();
 
+        g_dwFileAttributes = GetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile());
+        SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), FILE_ATTRIBUTE_NORMAL);  
         CopyFile(GetPathToActualHTCHomeSettingsXmlFile(), GetPathToWorkingHTCHomeSettingsXmlFile(), FALSE);
         SetFileAttributes(GetPathToWorkingHTCHomeSettingsXmlFile(), FILE_ATTRIBUTE_NORMAL);
+
+        SetForegroundWindow(AfxGetApp()->GetMainWnd()->GetSafeHwnd());
+        AfxGetApp()->EndWaitCursor();
     }
 }
 
 void EndMakingChanges()
 {
     if(g_bAlreadyBeganMakingChanges)
-    {
+    {   
         CopyFile(GetPathToWorkingHTCHomeSettingsXmlFile(), GetPathToActualHTCHomeSettingsXmlFile(), FALSE);
+        SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), g_dwFileAttributes);
         DeleteFile(GetPathToWorkingHTCHomeSettingsXmlFile());
 
-        AfxGetApp()->DoWaitCursor(1);
+        AfxGetApp()->BeginWaitCursor();
         RestoreTodayScreenItemsRegHive();
         RefreshTodayScreen();
-        AfxGetApp()->DoWaitCursor(-1);
+        AfxGetApp()->EndWaitCursor();
+        SetForegroundWindow(AfxGetApp()->GetMainWnd()->GetSafeHwnd());
+
+        g_bAlreadyBeganMakingChanges = false;
     }
 }
 
@@ -679,12 +751,7 @@ void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector)
 {
     if(pPathVector != NULL)
     {
-        CString basePath = GetPathToHH_ImageFilesFromActualXml();
-
-        if(basePath[basePath.GetLength()-1] != '\\')
-        {
-            basePath += '\\';
-        }
+        CString basePath = TEXT("\\Windows\\");
 
         TiXmlDocument doc(GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
         bool loadOkay = doc.LoadFile();
@@ -697,6 +764,13 @@ void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector)
 
             if(imageListElement != NULL)
             {
+                basePath = imageListElement->Attribute("path");
+
+                if(basePath[basePath.GetLength()-1] != '\\')
+                {
+                    basePath += '\\';
+                }
+
                 TiXmlElement* imageListItemElement = imageListElement->FirstChildElement();
 
                 while(imageListItemElement != NULL)
@@ -708,9 +782,9 @@ void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector)
                         if(currentFilePath.Find('\\') == -1)
                         {
                             currentFilePath = basePath + currentFilePath;
-
-                            pPathVector->push_back(currentFilePath);
                         }
+
+                        pPathVector->push_back(currentFilePath);
                     }
 
                     imageListItemElement = imageListItemElement->NextSiblingElement();
@@ -751,39 +825,41 @@ void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector)
     }
 }
 
-CString GetPathToHH_ImageFilesFromActualXml()
-{
-    CString retVal;
-
-    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
-    bool loadOkay = doc.LoadFile();
-
-    if(loadOkay)
-    {
-        TiXmlHandle docHandle(&doc);
-
-        TiXmlElement* imageListElement = docHandle.FirstChild("HTCHome").FirstChild("ImageList").Element();
-
-        if(imageListElement != NULL)
-        {
-            {
-                retVal = imageListElement->Attribute("path");
-            }
-        }
-    }
-
-    return retVal;
-}
-
 bool IsM2DCThemeSupportEnabled()
 {
-    // check to see if the Zip file exists
+    AfxGetApp()->BeginWaitCursor();
 
-    // check to see if the local themes folder exists and is not empty
+    if(!g_bThemeSupportEnabled)
+    {
+        // check to see if the Zip file exists
+        bool HH_FilesZipBackupExists = FileExists(GetPathToHH_FilesZipBackup());
 
-    // check to make sure that the xml file in \Windows references the local theme folder
+        // check to see if the local themes folder exists and is not empty
+        bool isCurrentThemeDirEmpty = IsDirEmpty(GetPathToCurrentThemeDirectory());
 
-    return false;
+        // check to make sure that the xml file in \Windows references the local theme folder
+        bool isXmlFileSetToUseCurrentThemeDir = false;
+
+        std::vector<CString> currentHH_FilePaths;
+
+        GetVectorOfHH_FilesCurrentlyInUse(&currentHH_FilePaths);
+
+        for(size_t i=0; i<currentHH_FilePaths.size(); i++)
+        {
+            isXmlFileSetToUseCurrentThemeDir = (currentHH_FilePaths[i].Find(GetPathToCurrentThemeDirectory()) == 0);
+
+            if(!isXmlFileSetToUseCurrentThemeDir)
+            {
+                break;
+            }
+        }
+
+        AfxGetApp()->EndWaitCursor();
+
+        g_bThemeSupportEnabled = (HH_FilesZipBackupExists && !isCurrentThemeDirEmpty && isXmlFileSetToUseCurrentThemeDir);
+    }
+
+    return g_bThemeSupportEnabled;
 }
 
 bool EnableM2DCThemeSupport()
@@ -795,14 +871,122 @@ bool EnableM2DCThemeSupport()
 
     if(MessageBox(NULL, enableMessage, TEXT("Enable M2DC Themes?"), MB_YESNO) == IDYES)
     {
-        //BackupHH_Files(true);
+        BackupHH_Files(false);
 
-        // Make a directory in the install folder to contain the new themeRe 
+        // unzip the files to the local theme directory
+        if(FileExists(GetPathToHH_FilesZipBackup()))
+        {
+            AfxGetApp()->BeginWaitCursor();
+            HZIP hz = OpenZip(GetPathToHH_FilesZipBackup(), 0);
+            ZIPENTRY ze;
 
-        // unzip the HH backup zip file to the new CurrentTheme folder
+            // -1 gives overall information about the zipfile
+            GetZipItem(hz,-1,&ze);
 
-        // 
+            int numitems = ze.index;
+
+            for(int zi=0; zi<numitems; zi++)
+            {
+                ZIPENTRY ze;
+
+                GetZipItem(hz, zi, &ze);            // fetch individual details
+
+                CString filePathFromZip = ze.name;
+
+                CString destString = GetPathToCurrentThemeDirectory();
+                destString += "\\";
+                destString += filePathFromZip.Mid(filePathFromZip.ReverseFind('/'));
+
+                UnzipItem(hz, zi, destString);
+            }
+
+            CloseZip(hz);
+
+            AfxGetApp()->EndWaitCursor();
+        }
+
+        SetHH_FileDirectoryInXmlSettingsFile(GetPathToCurrentThemeDirectory());
+
+        g_bThemeSupportEnabled = true;
+        retVal = true;
     }
 
     return retVal;
+}
+
+void SetHH_FileDirectoryInXmlSettingsFile(CString newDirectory)
+{
+    //BeginMakingChanges();
+
+    // change all file paths from the xml settings file to point to the current theme directory
+    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToWorkingHTCHomeSettingsXmlFile()));
+    bool loadOkay = doc.LoadFile();
+
+    if(loadOkay)
+    {
+        TiXmlHandle docHandle(&doc);
+
+        TiXmlElement* imageListElement = docHandle.FirstChild("HTCHome").FirstChild("ImageList").Element();
+
+        if(imageListElement != NULL)
+        {
+            imageListElement->SetAttribute("path", GetConstCharStarFromCString(newDirectory));
+
+            TiXmlElement* imageListItemElement = imageListElement->FirstChildElement();
+
+            while(imageListItemElement != NULL)
+            {
+                CString currentFilePath(imageListItemElement->Attribute("name"));
+
+                if(currentFilePath.Find(TEXT("HH_")) != -1)
+                {
+                    if(currentFilePath.Find('\\') != -1)
+                    {
+                        CString fileName = newDirectory;
+                        fileName += currentFilePath.Mid(currentFilePath.ReverseFind('\\'));
+
+                        imageListItemElement->SetAttribute("name", GetConstCharStarFromCString(fileName));
+                    }
+                }
+
+                imageListItemElement = imageListItemElement->NextSiblingElement();
+            }
+        }
+
+        TiXmlNode* widgetPropertyNode = docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").Node();
+
+        if(widgetPropertyNode != NULL)
+        {
+            TiXmlNode* widgetPropertyChildNode = widgetPropertyNode->FirstChild();
+
+            while(widgetPropertyChildNode != NULL)
+            {
+                TiXmlElement* widgetPropertyChildElement = widgetPropertyChildNode->FirstChildElement();
+
+                while(widgetPropertyChildElement != NULL)
+                {
+                    CString currentValue(widgetPropertyChildElement->Attribute("value"));
+
+                    if(currentValue.Find(TEXT("HH_")) != -1)
+                    {
+                        if(currentValue.Find('\\') != -1)
+                        {
+                            CString fileName = newDirectory;
+                            fileName += currentValue.Mid(currentValue.ReverseFind('\\'));
+
+                            widgetPropertyChildElement->SetAttribute("value", GetConstCharStarFromCString(fileName));
+                        }
+                    }
+
+                    widgetPropertyChildElement = widgetPropertyChildElement->NextSiblingElement();
+                }
+
+                widgetPropertyChildNode = widgetPropertyChildNode->NextSibling();
+            }
+        }
+
+        doc.SaveFile();
+    }
+
+    //EndMakingChanges();
 }
