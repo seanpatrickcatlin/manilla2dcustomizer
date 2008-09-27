@@ -126,7 +126,7 @@ void CManilla2DConfigLauncherDlg::OnOK()
 
     if(m_initialNumberOfColumns != currentColumnCount)
     {
-        //BeginMakingChanges();
+        BeginMakingChanges();
         SetNumberOfLauncherColumnsFromHTCHomeSettingsXml(currentColumnCount);
     }
 }
@@ -137,7 +137,7 @@ int CManilla2DConfigLauncherDlg::GetNumberOfLauncherColumnsFromHTCHomeSettingsXm
 
     std::string launcherColStr = "IDLAUNCHERWG_COLUMN";
 
-    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToWorkingHTCHomeSettingsXmlFile()));
+    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileActual()));
     bool loadOkay = doc.LoadFile();
 
     if(loadOkay)
@@ -189,7 +189,7 @@ void CManilla2DConfigLauncherDlg::SetNumberOfLauncherColumnsFromHTCHomeSettingsX
         startPoint = "5, 2";
     }
 
-    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToWorkingHTCHomeSettingsXmlFile()));
+    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileWorking()));
     bool loadOkay = doc.LoadFile();
 
     if(loadOkay)

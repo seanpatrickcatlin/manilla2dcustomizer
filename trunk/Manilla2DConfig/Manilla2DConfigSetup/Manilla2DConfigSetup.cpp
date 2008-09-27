@@ -106,8 +106,7 @@ codeUNINSTALL_INIT Uninstall_Init(HWND hwndParent, LPCTSTR pszInstallDir)
 
     int retVal = MessageBox(
         hwndParent,
-        //TEXT("Would you like to keep your M2DC themes and settings?"),
-        TEXT("Would you like to keep your M2DC settings?"),
+        TEXT("Would you like to keep your M2DC themes and settings?"),
         TEXT("Uninstall M2DC"),
         MB_YESNOCANCEL|MB_ICONQUESTION);
 
@@ -118,7 +117,10 @@ codeUNINSTALL_INIT Uninstall_Init(HWND hwndParent, LPCTSTR pszInstallDir)
 
     if(retVal == IDNO)
     {
-        BeginMakingChanges();
+        CString debugMsg = TEXT("Uninstall_Init InstallDirectory: ");
+        debugMsg += pszInstallDir;
+
+        SetInstallDirectory(pszInstallDir);
         RestoreM2DCFiles();
         RecursivelyDeleteDirectory(pszInstallDir);
     }
@@ -130,6 +132,6 @@ codeUNINSTALL_EXIT Uninstall_Exit(HWND hwndParent)
 {
     AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
-    EndMakingChanges();
+    RestoreAndReEnableTodayScreen();
     return codeUNINSTALL_EXIT_DONE;
 } 
