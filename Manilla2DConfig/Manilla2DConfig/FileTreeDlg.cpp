@@ -185,7 +185,7 @@ bool IsDir(CString pathToTest)
 void CFileTreeDlg::AddDirectoryToFileSystemTree(HTREEITEM parentItem, CString directoryPath)
 {
     int childCount = 0;
-    CWaitCursor wait;
+    AfxGetApp()->BeginWaitCursor();
 
     CString fileToFind = directoryPath;
 
@@ -267,6 +267,8 @@ void CFileTreeDlg::AddDirectoryToFileSystemTree(HTREEITEM parentItem, CString di
 
         m_fileTreeControl.SortChildrenCB(&tvs);
     }
+
+    AfxGetApp()->EndWaitCursor();
 }
 
 void CFileTreeDlg::OnTvnItemexpandingFileTreeControl(NMHDR *pNMHDR, LRESULT *pResult)

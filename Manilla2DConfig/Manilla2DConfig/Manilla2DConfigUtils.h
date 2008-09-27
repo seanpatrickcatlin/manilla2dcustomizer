@@ -59,8 +59,10 @@ CString GetPathToWindowsDirectory();
 CString GetPathToM2DCDataDirectory();
 CString GetPathToAppDataDirectory();
 CString GetPathToM2DCInstallDirectory();
-CString GetPathToM2DCThemesDirectory();
+CString GetPathToCurrentThemeDirectory();
 CString GetPathToRunningBinary();
+
+CString GetPathToCurrentThemeDirectory();
 
 CString GetPathToActualHTCHomeSettingsXmlFile();
 CString GetPathToWorkingHTCHomeSettingsXmlFile();
@@ -74,8 +76,10 @@ void RestoreTodayScreenItemsRegHive();
 void BeginMakingChanges();
 void EndMakingChanges();
 
-CString GetPathToHH_ImageFilesFromActualXml();
 void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector);
 
+bool IsDirEmpty(CString dirPath);
 bool IsM2DCThemeSupportEnabled();
 bool EnableM2DCThemeSupport();
+
+void SetHH_FileDirectoryInXmlSettingsFile(CString newDirectory);
