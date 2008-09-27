@@ -27,9 +27,10 @@
 #include <stdio.h>
 #include <time.h>
 
+CString g_installDirectory;
 bool g_bThemeSupportEnabled = false;
+bool g_bRestoreTodayScreenNeeded = false;
 bool g_bAlreadyBeganMakingChanges = false;
-DWORD g_dwFileAttributes;
 TodayScreenRegBackup g_todayScreenRegBackup;
 
 void PrintNameAndEnabledStateContents(NameAndEnabledState_vector_t* nameAndStateVector)
@@ -75,50 +76,58 @@ bool CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1, NameA
     return false;
 }
 
-CString GetPathToWorkingHTCHomeSettingsXmlFile()
+CString GetPathToHTCHomeSettingsXmlFileWorking()
 {
 	CString retVal = GetPathToM2DCInstallDirectory();
     retVal += "\\HTCHomeSettings-WorkingCopy.xml";
 
-	TRACE(TEXT("GetPathToWorkingHTCHomeSettingsXmlFile "));
-	TRACE(retVal);
-	TRACE(TEXT("\n"));
+    CString debugStr = TEXT("GetPathToHTCHomeSettingsXmlFileWorking ");
+    debugStr += retVal;
+    debugStr += "\n";
+
+    TRACE(debugStr);
 
     return retVal;
 }
 
-CString GetPathToActualHTCHomeSettingsXmlFile()
+CString GetPathToHTCHomeSettingsXmlFileActual()
 {
 	CString retVal = GetPathToWindowsDirectory();
     retVal += "\\HTCHomeSettings.xml";
 
-	TRACE(TEXT("GetPathToActualHTCHomeSettingsXmlFile "));
-	TRACE(retVal);
-	TRACE(TEXT("\n"));
+    CString debugStr = TEXT("GetPathToHTCHomeSettingsXmlFileActual ");
+    debugStr += retVal;
+    debugStr += "\n";
+
+    TRACE(debugStr);
 
     return retVal;
 }
 
-CString GetPathToHTCHomeSettingsXmlBackup()
+CString GetPathToHTCHomeSettingsXmlFileBackup()
 {
 	CString retVal = GetPathToM2DCInstallDirectory();
 	retVal += "\\HTCHomeSettings-BACKUP.xml";
 
-	TRACE(TEXT("GetPathToHTCHomeSettingsXmlBackup "));
-	TRACE(retVal);
-	TRACE(TEXT("\n"));
+    CString debugStr = TEXT("GetPathToHTCHomeSettingsXmlFileBackup ");
+    debugStr += retVal;
+    debugStr += "\n";
+
+    TRACE(debugStr);
 
     return retVal;
 }
 
-CString GetPathToHH_FilesZipBackup()
+CString GetPathToHH_ZipFileBackup()
 {
 	CString retVal = GetPathToM2DCInstallDirectory();
 	retVal += "\\HH_Files-BACKUP.zip";
 
-	TRACE(TEXT("GetPathToHH_FilesZipBackup "));
-	TRACE(retVal);
-	TRACE(TEXT("\n"));
+    CString debugStr = TEXT("GetPathToHH_ZipFileBackup ");
+    debugStr += retVal;
+    debugStr += "\n";
+
+    TRACE(debugStr);
 
     return retVal;
 }
@@ -163,7 +172,16 @@ CString GetPathToWindowsDirectory()
 
 CString GetPathToM2DCInstallDirectory()
 {
-	CString retVal = GetDirectoryOfFile(GetPathToRunningBinary());
+    CString retVal;
+
+    if(g_installDirectory.GetLength() > 0)
+    {
+        retVal = g_installDirectory;
+    }
+    else
+    {
+	    retVal = GetDirectoryOfFile(GetPathToRunningBinary());
+    }
 
 	TRACE(TEXT("GetPathToApplicationDirectory "));
 	TRACE(retVal);
@@ -256,39 +274,6 @@ CString GetPathToRunningBinary()
 	return retVal;
 }
 
-CString GetPathToErrorLogFile()
-{
-	CString retVal = GetPathToM2DCInstallDirectory();
-	retVal += "\\ErrorLog.txt";
-
-	TRACE(TEXT("GetPathToErrorLogFile "));
-	TRACE(retVal);
-	TRACE(TEXT("\n"));
-
-	return retVal;
-}
-
-CString GetPathToM2DCDataDirectory()
-{
-     CString retVal = GetPathToAppDataDirectory();
-     retVal += "\\M2DC";
-
-     return retVal;
-}
-
-CString GetPathToAppDataDirectory()
-{
-     CString retVal("\\AppData");
-
-    TCHAR appDataDirStr[MAX_PATH];
-	if(SHGetSpecialFolderPath(NULL, appDataDirStr, CSIDL_APPDATA, 0) == TRUE)
-	{
-		retVal = appDataDirStr;
-	}
-
-     return retVal;
-}
-
 bool FileExists(CString pathToFile)
 {
     bool retVal = false;
@@ -313,47 +298,47 @@ void RefreshTodayScreen()
 
 void BackupM2DCFiles()
 {
-    BackupHTCHomeSettingsXml(false);
-    BackupHH_Files(false);
+    BackupHTCHomeSettingsXml(true);
+    BackupHH_Files(true);
 }
 
-void BackupHTCHomeSettingsXml(bool onlyIfNeeded)
+void BackupHTCHomeSettingsXml(bool overwritePreviousBackup)
 {
-    bool fileExists = FileExists(GetPathToHTCHomeSettingsXmlBackup());
+    bool fileExists = FileExists(GetPathToHTCHomeSettingsXmlFileBackup());
 
-    if(!(fileExists && onlyIfNeeded))
+    if(overwritePreviousBackup || !fileExists)
     {
         if(fileExists)
         {
-            DeleteFile(GetPathToHTCHomeSettingsXmlBackup());
+            DeleteFile(GetPathToHTCHomeSettingsXmlFileBackup());
         }
 
-        g_dwFileAttributes = GetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile());
-        SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), FILE_ATTRIBUTE_NORMAL);
-        SetFileAttributes(GetPathToHTCHomeSettingsXmlBackup(), FILE_ATTRIBUTE_NORMAL);  
-        CopyFile(GetPathToActualHTCHomeSettingsXmlFile(), GetPathToHTCHomeSettingsXmlBackup(), FALSE);
-        SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), g_dwFileAttributes);
+        DWORD dwFileAttributes = GetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual());
+        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual(), FILE_ATTRIBUTE_NORMAL);
+        CopyFile(GetPathToHTCHomeSettingsXmlFileActual(), GetPathToHTCHomeSettingsXmlFileBackup(), FALSE);
+        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileBackup(), FILE_ATTRIBUTE_NORMAL);  
+        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual(), dwFileAttributes);
     }
 }
 
-void BackupHH_Files(bool onlyIfNeeded)
+void BackupHH_Files(bool overwritePreviousBackup)
 {
     AfxGetApp()->BeginWaitCursor();
 
-    bool fileExists = FileExists(GetPathToHH_FilesZipBackup());
+    bool fileExists = FileExists(GetPathToHH_ZipFileBackup());
 
-    if(!(fileExists && onlyIfNeeded))
+    if(overwritePreviousBackup || !fileExists)
     {
         if(fileExists)
         {
-            DeleteFile(GetPathToHH_FilesZipBackup());
+            DeleteFile(GetPathToHH_ZipFileBackup());
         }
 
         TRACE(TEXT("Begin Zip HH_ files\n"));
 
-        HZIP hz = CreateZip(GetPathToHH_FilesZipBackup(), 0);
+        HZIP hz = CreateZip(GetPathToHH_ZipFileBackup(), 0);
 
-        CString htcHomeXml = GetPathToActualHTCHomeSettingsXmlFile();
+        CString htcHomeXml = GetPathToHTCHomeSettingsXmlFileActual();
         CString archiveXml = htcHomeXml;
         archiveXml.Replace(TEXT("\\"), TEXT("/"));
 
@@ -450,18 +435,12 @@ CString GetWin32ErrorString(DWORD err)
 
 void RestoreM2DCFiles()
 {
+    BeginMakingChanges();
     AfxGetApp()->BeginWaitCursor();
 
-    if(FileExists(GetPathToHTCHomeSettingsXmlBackup()))
+    if(FileExists(GetPathToHH_ZipFileBackup()))
     {
-        //BeginMakingChanges();
-        CopyFile(GetPathToHTCHomeSettingsXmlBackup(), GetPathToWorkingHTCHomeSettingsXmlFile(), FALSE);
-        //EndMakingChanges();
-    }
-
-    if(FileExists(GetPathToHH_FilesZipBackup()))
-    {
-        HZIP hz = OpenZip(GetPathToHH_FilesZipBackup(), 0);
+        HZIP hz = OpenZip(GetPathToHH_ZipFileBackup(), 0);
         ZIPENTRY ze;
 
         // -1 gives overall information about the zipfile
@@ -480,7 +459,13 @@ void RestoreM2DCFiles()
         CloseZip(hz);
     }
 
+    if(FileExists(GetPathToHTCHomeSettingsXmlFileBackup()))
+    {
+        CopyFile(GetPathToHTCHomeSettingsXmlFileBackup(), GetPathToHTCHomeSettingsXmlFileWorking(), FALSE);
+    }
+    
     AfxGetApp()->EndWaitCursor();
+    EndMakingChanges();
 }
 
 void DisableAllTodayScreenItems()
@@ -647,17 +632,17 @@ void BeginMakingChanges()
     if(!g_bAlreadyBeganMakingChanges)
     {
         g_bAlreadyBeganMakingChanges = true;
+
+        BackupAndDisableTodayScreen();
+
         AfxGetApp()->BeginWaitCursor();
-        BackupTodayScreenItemsRegHive();
-        DisableAllTodayScreenItems();
-        RefreshTodayScreen();
 
-        g_dwFileAttributes = GetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile());
-        SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), FILE_ATTRIBUTE_NORMAL);  
-        CopyFile(GetPathToActualHTCHomeSettingsXmlFile(), GetPathToWorkingHTCHomeSettingsXmlFile(), FALSE);
-        SetFileAttributes(GetPathToWorkingHTCHomeSettingsXmlFile(), FILE_ATTRIBUTE_NORMAL);
+        DWORD dwFileAttributes = GetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual());
+        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual(), FILE_ATTRIBUTE_NORMAL);  
+        CopyFile(GetPathToHTCHomeSettingsXmlFileActual(), GetPathToHTCHomeSettingsXmlFileWorking(), FALSE);
+        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileWorking(), FILE_ATTRIBUTE_NORMAL);
+        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual(), dwFileAttributes);
 
-        SetForegroundWindow(AfxGetApp()->GetMainWnd()->GetSafeHwnd());
         AfxGetApp()->EndWaitCursor();
     }
 }
@@ -666,15 +651,11 @@ void EndMakingChanges()
 {
     if(g_bAlreadyBeganMakingChanges)
     {   
-        CopyFile(GetPathToWorkingHTCHomeSettingsXmlFile(), GetPathToActualHTCHomeSettingsXmlFile(), FALSE);
-        SetFileAttributes(GetPathToActualHTCHomeSettingsXmlFile(), g_dwFileAttributes);
-        DeleteFile(GetPathToWorkingHTCHomeSettingsXmlFile());
-
-        AfxGetApp()->BeginWaitCursor();
-        RestoreTodayScreenItemsRegHive();
-        RefreshTodayScreen();
-        AfxGetApp()->EndWaitCursor();
-        SetForegroundWindow(AfxGetApp()->GetMainWnd()->GetSafeHwnd());
+        DWORD dwFileAttributes = GetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual());
+        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual(), FILE_ATTRIBUTE_NORMAL);
+        CopyFile(GetPathToHTCHomeSettingsXmlFileWorking(), GetPathToHTCHomeSettingsXmlFileActual(), FALSE);
+        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual(), dwFileAttributes);
+        DeleteFile(GetPathToHTCHomeSettingsXmlFileWorking());
 
         g_bAlreadyBeganMakingChanges = false;
     }
@@ -753,7 +734,7 @@ void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector)
     {
         CString basePath = TEXT("\\Windows\\");
 
-        TiXmlDocument doc(GetConstCharStarFromCString(GetPathToActualHTCHomeSettingsXmlFile()));
+        TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileActual()));
         bool loadOkay = doc.LoadFile();
 
         if(loadOkay)
@@ -827,12 +808,12 @@ void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector)
 
 bool IsM2DCThemeSupportEnabled()
 {
-    AfxGetApp()->BeginWaitCursor();
-
     if(!g_bThemeSupportEnabled)
     {
+        AfxGetApp()->BeginWaitCursor();
+
         // check to see if the Zip file exists
-        bool HH_FilesZipBackupExists = FileExists(GetPathToHH_FilesZipBackup());
+        bool HH_FilesZipBackupExists = FileExists(GetPathToHH_ZipFileBackup());
 
         // check to see if the local themes folder exists and is not empty
         bool isCurrentThemeDirEmpty = IsDirEmpty(GetPathToCurrentThemeDirectory());
@@ -854,9 +835,9 @@ bool IsM2DCThemeSupportEnabled()
             }
         }
 
-        AfxGetApp()->EndWaitCursor();
-
         g_bThemeSupportEnabled = (HH_FilesZipBackupExists && !isCurrentThemeDirEmpty && isXmlFileSetToUseCurrentThemeDir);
+
+        AfxGetApp()->EndWaitCursor();
     }
 
     return g_bThemeSupportEnabled;
@@ -871,13 +852,14 @@ bool EnableM2DCThemeSupport()
 
     if(MessageBox(NULL, enableMessage, TEXT("Enable M2DC Themes?"), MB_YESNO) == IDYES)
     {
-        BackupHH_Files(false);
+        BackupHH_Files(true);
 
         // unzip the files to the local theme directory
-        if(FileExists(GetPathToHH_FilesZipBackup()))
+        if(FileExists(GetPathToHH_ZipFileBackup()))
         {
             AfxGetApp()->BeginWaitCursor();
-            HZIP hz = OpenZip(GetPathToHH_FilesZipBackup(), 0);
+
+            HZIP hz = OpenZip(GetPathToHH_ZipFileBackup(), 0);
             ZIPENTRY ze;
 
             // -1 gives overall information about the zipfile
@@ -916,10 +898,11 @@ bool EnableM2DCThemeSupport()
 
 void SetHH_FileDirectoryInXmlSettingsFile(CString newDirectory)
 {
-    //BeginMakingChanges();
+    BeginMakingChanges();
+    AfxGetApp()->BeginWaitCursor();
 
     // change all file paths from the xml settings file to point to the current theme directory
-    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToWorkingHTCHomeSettingsXmlFile()));
+    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileWorking()));
     bool loadOkay = doc.LoadFile();
 
     if(loadOkay)
@@ -988,5 +971,36 @@ void SetHH_FileDirectoryInXmlSettingsFile(CString newDirectory)
         doc.SaveFile();
     }
 
-    //EndMakingChanges();
+    AfxGetApp()->EndWaitCursor();
+    EndMakingChanges();
+}
+
+void BackupAndDisableTodayScreen()
+{
+    AfxGetApp()->BeginWaitCursor();
+    BackupTodayScreenItemsRegHive();
+    DisableAllTodayScreenItems();
+    RefreshTodayScreen();
+    AfxGetApp()->EndWaitCursor();
+
+    g_bRestoreTodayScreenNeeded = true;
+}
+
+void RestoreAndReEnableTodayScreen()
+{
+    if(g_bRestoreTodayScreenNeeded)
+    {
+        AfxGetApp()->BeginWaitCursor();
+
+        RestoreTodayScreenItemsRegHive();
+        RefreshTodayScreen();
+        SetForegroundWindow(AfxGetApp()->GetMainWnd()->GetSafeHwnd());
+
+        AfxGetApp()->EndWaitCursor();
+    }
+}
+
+void SetInstallDirectory(CString installDirectory)
+{
+    g_installDirectory = installDirectory;
 }

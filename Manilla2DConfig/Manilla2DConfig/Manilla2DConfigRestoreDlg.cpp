@@ -111,6 +111,5 @@ void CManilla2DConfigRestoreDlg::OnBnClickedBackupButton()
     if(MessageBox(caption, TEXT("Backup Settings?"), MB_YESNO) == IDYES)
     {
         BackupM2DCFiles();
-        EndDialog(IDCANCEL);
     }
 }

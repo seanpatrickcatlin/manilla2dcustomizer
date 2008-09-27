@@ -18,7 +18,6 @@
 #pragma once
 
 #include <vector>
-
 using std::vector;
 
 struct NameAndEnabledStateItem
@@ -39,8 +38,11 @@ void PrintNameAndEnabledStateVector(NameAndEnabledState_vector_t nameAndStateVec
 bool CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1, NameAndEnabledState_vector_t* vec2);
 
 void BackupM2DCFiles();
-void BackupHTCHomeSettingsXml(bool onlyIfNeeded = true);
-void BackupHH_Files(bool onlyIfNeeded = true);
+void BackupAndDisableTodayScreen();
+void BackupHH_Files(bool overwritePreviousBackup = false);
+void BackupHTCHomeSettingsXml(bool overwritePreviousBackup = false);
+
+void RestoreAndReEnableTodayScreen();
 void RestoreM2DCFiles();
 
 void RefreshTodayScreen();
@@ -49,26 +51,28 @@ void DisableAllTodayScreenItems();
 CString GetWin32ErrorString(DWORD err);
 
 bool FileExists(CString pathToFile);
+bool IsDirEmpty(CString dirPath);
 void RecursivelyDeleteDirectory(CString sDirPath);
 
 const char* GetConstCharStarFromCString(CString str);
 
 CString GetDirectoryOfFile(CString fullFilePath);
-CString GetPathToErrorLogFile();
+
+
+
+
 CString GetPathToWindowsDirectory();
-CString GetPathToM2DCDataDirectory();
-CString GetPathToAppDataDirectory();
+
+
 CString GetPathToM2DCInstallDirectory();
 CString GetPathToCurrentThemeDirectory();
 CString GetPathToRunningBinary();
 
-CString GetPathToCurrentThemeDirectory();
+CString GetPathToHTCHomeSettingsXmlFileActual();
+CString GetPathToHTCHomeSettingsXmlFileBackup();
+CString GetPathToHTCHomeSettingsXmlFileWorking();
 
-CString GetPathToActualHTCHomeSettingsXmlFile();
-CString GetPathToWorkingHTCHomeSettingsXmlFile();
-
-CString GetPathToHTCHomeSettingsXmlBackup();
-CString GetPathToHH_FilesZipBackup();
+CString GetPathToHH_ZipFileBackup();
 
 void BackupTodayScreenItemsRegHive();
 void RestoreTodayScreenItemsRegHive();
@@ -76,10 +80,10 @@ void RestoreTodayScreenItemsRegHive();
 void BeginMakingChanges();
 void EndMakingChanges();
 
-void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector);
-
-bool IsDirEmpty(CString dirPath);
 bool IsM2DCThemeSupportEnabled();
 bool EnableM2DCThemeSupport();
 
+void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector);
 void SetHH_FileDirectoryInXmlSettingsFile(CString newDirectory);
+
+void SetInstallDirectory(CString installDirectory);

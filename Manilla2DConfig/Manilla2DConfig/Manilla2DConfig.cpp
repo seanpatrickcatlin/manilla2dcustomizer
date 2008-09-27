@@ -58,13 +58,10 @@ BOOL CManilla2DConfigApp::InitInstance()
 	// of your final executable, you should remove from the following
 	// the specific initialization routines you do not need
 	// Change the registry key under which our settings are stored
-	// TODO: You should modify this string to be something appropriate
-	// such as the name of your company or organization
-	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
-
+	SetRegistryKey(_T("M2DC"));
 
 #ifndef _DEBUG
-    if(!FileExists(GetPathToActualHTCHomeSettingsXmlFile()))
+    if(!FileExists(GetPathToHTCHomeSettingsXmlFileActual()))
     {
         CString msg = TEXT("Unable to find Manilla 2D settings file.\n");
         msg += TEXT("Is Manilla 2D installed?\n");
@@ -75,25 +72,17 @@ BOOL CManilla2DConfigApp::InitInstance()
     }
 #endif
 
-    BackupHTCHomeSettingsXml(true);
+    BackupHTCHomeSettingsXml(false);
 
 	CManilla2DConfigDlg dlg(TEXT("Manilla 2D Customizer"));
-	
-    BeginMakingChanges();
     dlg.SetupPages();
-    dlg.DoModal();
-
-    // retore today screen state and reload it
-    EndMakingChanges();
-
-    if(FileExists(GetPathToErrorLogFile()))
+    
+    if(dlg.DoModal() == IDOK)
     {
-        CString msg("A log file of errors has been generated ");
-        msg += GetPathToErrorLogFile();
-        msg += "\nPlease attach this file when reporting errors.";
-
-        AfxMessageBox(msg);
+        EndMakingChanges();
     }
+
+    RestoreAndReEnableTodayScreen();
 
 	// Since the dialog has been closed, return FALSE so that we exit the
 	//  application, rather than start the application's message pump.

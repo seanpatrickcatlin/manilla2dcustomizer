@@ -76,7 +76,7 @@ void CManilla2DConfigTabsDlg::OnOK()
 {
     if(CompareNameAndEnabledStateVectors(&m_newWidgetVector, &m_currentWidgetVector))
     {
-        //BeginMakingChanges();
+        BeginMakingChanges();
         WriteHTCHomeSettingsXmlFileFromNewWidgetVector();
     }
 }
@@ -263,7 +263,7 @@ void CManilla2DConfigTabsDlg::UpdateListControlFromNewWidgetVector()
 
 void CManilla2DConfigTabsDlg::PopulateWidgetVectorsFromCurrentHTCHomeSettingsXmlFile()
 {
-    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToWorkingHTCHomeSettingsXmlFile()));
+    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileActual()));
     bool loadOkay = doc.LoadFile();
 
     if(loadOkay)
@@ -299,7 +299,7 @@ void CManilla2DConfigTabsDlg::PopulateWidgetVectorsFromCurrentHTCHomeSettingsXml
 
 void CManilla2DConfigTabsDlg::WriteHTCHomeSettingsXmlFileFromNewWidgetVector()
 {
-    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToWorkingHTCHomeSettingsXmlFile()));
+    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileWorking()));
     bool loadOkay = doc.LoadFile();
 
     if(loadOkay)
