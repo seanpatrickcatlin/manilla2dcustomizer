@@ -64,7 +64,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_M2DC_ICO           ICON                    "res\\Manilla2DConfig.ico"
+IDR_M2DC_ICO            ICON                    "res\\Manilla2DConfig.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -109,6 +109,16 @@ CAPTION "Dialog"
 FONT 8, "MS Shell Dlg"
 BEGIN
     CONTROL         "",IDC_FILE_TREE_CONTROL,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,4,20,148,128
+END
+
+IDD_M2DC_PROGRESS_DLG DIALOG  0, 0, 156, 100
+STYLE DS_SETFONT | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "",IDC_M2DC_PROGRESS_CTRL,"msctls_progress32",WS_BORDER,7,59,142,14
+    LTEXT           "",IDC_M2DC_PROGRESS_MESSAGE_ST,7,7,142,43
+    PUSHBUTTON      "Cancel",IDC_M2DC_PROGRESS_CANCEL_BTN,53,79,50,14
 END
 
 
@@ -159,6 +169,14 @@ BEGIN
         TOPMARGIN, 20
         BOTTOMMARGIN, 148
     END
+
+    IDD_M2DC_PROGRESS_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 149
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 93
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -170,10 +188,10 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_M2DC_RESTORE_STR        "Restore"
-    IDS_M2DC_LAUNCHER_STR       "Launcher"
-    IDS_M2DC_TABS_STR           "Tabs"
-    IDS_M2DC_THEMES_STR         "Themes"
+    IDS_M2DC_RESTORE_STR    "Restore"
+    IDS_M2DC_LAUNCHER_STR   "Launcher"
+    IDS_M2DC_TABS_STR       "Tabs"
+    IDS_M2DC_THEMES_STR     "Themes"
 END
 
 #endif    // English (U.S.) resources

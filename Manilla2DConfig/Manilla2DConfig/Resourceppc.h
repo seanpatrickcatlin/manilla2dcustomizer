@@ -7,6 +7,7 @@
 #define IDD_M2DC_RESTORE_DLG            103
 #define IDD_M2DC_THEMES_DLG             104
 #define IDD_FILE_TREE_DLG               105
+#define IDD_M2DC_PROGRESS_DLG           106
 #define IDR_M2DC_ICO                    128
 #define IDR_M2DC_APPLY_CANCEL_MENU      129
 #define IDR_FILE_TREE_DLG_OKCANCEL_MENU 130
@@ -22,15 +23,19 @@
 #define IDC_M2DC_RESTORE_BACKUP_BTN     1006
 #define IDC_M2DC_RESTORE_RESTORE_BTN    1007
 #define IDC_FILE_TREE_CONTROL           1008
+#define IDC_M2DC_PROGRESS_CTRL          1009
+#define IDC_M2DC_PROGRESS_MESSAGE_ST    1010
+#define IDC_M2DC_PROGRESS_CANCEL_BTN    1011
 #define ID_RESTORE_DEFAULTS             32771
+#define IDT_M2DC_PROGRESS_TIMER         32772
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        135
-#define _APS_NEXT_COMMAND_VALUE         32772
-#define _APS_NEXT_CONTROL_VALUE         1009
-#define _APS_NEXT_SYMED_VALUE           106
+#define _APS_NEXT_COMMAND_VALUE         32773
+#define _APS_NEXT_CONTROL_VALUE         1012
+#define _APS_NEXT_SYMED_VALUE           107
 #endif
 #endif
