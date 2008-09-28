@@ -17,6 +17,7 @@
 
 #include "StdAfx.h"
 #include "Manilla2DConfigUtils.h"
+#include "Manilla2DConfigProgressDlg.h"
 
 #include "zip.h"
 #include "unzip.h"
@@ -118,12 +119,12 @@ CString GetPathToHTCHomeSettingsXmlFileBackup()
     return retVal;
 }
 
-CString GetPathToHH_ZipFileBackup()
+CString GetPathToThemeBackupFile()
 {
-	CString retVal = GetPathToM2DCInstallDirectory();
-	retVal += "\\HH_Files-BACKUP.zip";
+	CString retVal = GetPathToM2DCThemesDirectory();
+	retVal += "\\DefaultThemeBACKUP.m2dct";
 
-    CString debugStr = TEXT("GetPathToHH_ZipFileBackup ");
+    CString debugStr = TEXT("GetPathToThemeBackupFile ");
     debugStr += retVal;
     debugStr += "\n";
 
@@ -190,7 +191,7 @@ CString GetPathToM2DCInstallDirectory()
 	return retVal;
 }
 
-CString GetPathToThemesDirectory()
+CString GetPathToM2DCThemesDirectory()
 {
     CString retVal = GetPathToM2DCInstallDirectory();
     retVal += "\\";
@@ -239,11 +240,11 @@ bool IsDirEmpty(CString dirPath)
     return retVal;
 }
 
-CString GetPathToCurrentThemeDirectory()
+CString GetPathToM2DCActiveThemeDirectory()
 {
     CString retVal = GetPathToM2DCInstallDirectory();
     retVal += "\\";
-    retVal += "CurrentTheme";
+    retVal += "ActiveTheme";
 
     TRACE(TEXT("GetPathToThemesDirectory "));
 	TRACE(retVal);
@@ -299,7 +300,7 @@ void RefreshTodayScreen()
 void BackupM2DCFiles()
 {
     BackupHTCHomeSettingsXml(true);
-    BackupHH_Files(true);
+    BackupActualTheme(true);
 }
 
 void BackupHTCHomeSettingsXml(bool overwritePreviousBackup)
@@ -321,84 +322,52 @@ void BackupHTCHomeSettingsXml(bool overwritePreviousBackup)
     }
 }
 
-void BackupHH_Files(bool overwritePreviousBackup)
+int BackupActualTheme(bool overwritePreviousBackup)
 {
+    int retVal = 0;
     AfxGetApp()->BeginWaitCursor();
 
-    bool fileExists = FileExists(GetPathToHH_ZipFileBackup());
+    bool fileExists = FileExists(GetPathToThemeBackupFile());
 
     if(overwritePreviousBackup || !fileExists)
     {
         if(fileExists)
         {
-            DeleteFile(GetPathToHH_ZipFileBackup());
+            DeleteFile(GetPathToThemeBackupFile());
         }
 
         TRACE(TEXT("Begin Zip HH_ files\n"));
 
-        HZIP hz = CreateZip(GetPathToHH_ZipFileBackup(), 0);
-
-        CString htcHomeXml = GetPathToHTCHomeSettingsXmlFileActual();
-        CString archiveXml = htcHomeXml;
-        archiveXml.Replace(TEXT("\\"), TEXT("/"));
-
-        ZipAdd(hz, archiveXml, htcHomeXml);
-
         std::vector<CString> hh_strVector;
-        GetVectorOfHH_FilesCurrentlyInUse(&hh_strVector);
+        GetVectorOfThemeFilesCurrentlyInUse(&hh_strVector);
 
-        WIN32_FIND_DATA findData;
-        CString findString = GetPathToWindowsDirectory();
-        findString += "\\HH_*";
-        HANDLE hFindHandle = FindFirstFile(findString, &findData);
+        HZIP hz = CreateZip(GetPathToThemeBackupFile(), 0);
 
-        if(hFindHandle != INVALID_HANDLE_VALUE)
-        {
-            BOOL keepSearching = TRUE;
+        CManilla2DConfigProgressDlg progDlg(NULL);
 
-            while(keepSearching == TRUE)
-            {
-                CString currentHH_file = GetPathToWindowsDirectory();
-                currentHH_file += "\\";
-                currentHH_file += findData.cFileName;
+        progDlg.BeginTrackingProgress(TEXT("Backing up theme files."), 0, hh_strVector.size());
 
-                bool addFileToVector = true;
-
-                for(size_t i=0; i<hh_strVector.size(); i++)
-                {
-                    if(hh_strVector[i].Compare(currentHH_file) == 0)
-                    {
-                        addFileToVector = false;
-                        break;
-                    }
-                }
-
-                if(addFileToVector)
-                {
-                    hh_strVector.push_back(currentHH_file);
-                }
-
-                keepSearching = FindNextFile(hFindHandle, &findData);
-            }
-        }
-
-        FindClose(hFindHandle);
-
-        for(size_t i=0; i<hh_strVector.size(); i++)
+        for(size_t i=0; ((i<hh_strVector.size()) && (retVal == 0)); i++)
         {
             CString fullFilePath = hh_strVector[i];
 
             CString archiveFilePath = fullFilePath;
             archiveFilePath.Replace(TEXT("\\"), TEXT("/"));
 
+            CString msg;
+            msg.Format(TEXT("Backing Up Current HH_ Files.\nFile %d of %d\n%s"), i, hh_strVector.size(), fullFilePath.GetBuffer());
+            retVal = progDlg.UpdateStatus(msg, i);
+
             ZipAdd(hz, archiveFilePath, fullFilePath);
         }
 
-        CloseZipZ(hz);
+        CloseZip(hz);
         TRACE(TEXT("End Zip HH_ files\n"));
     }
 
     AfxGetApp()->EndWaitCursor();
+
+    return retVal;
 }
 
 const char* GetConstCharStarFromCString(CString str)
@@ -438,7 +407,7 @@ void RestoreM2DCFiles()
     BeginMakingChanges();
     AfxGetApp()->BeginWaitCursor();
 
-    CString zipBackupPath = GetPathToHH_ZipFileBackup();
+    CString zipBackupPath = GetPathToThemeBackupFile();
     CString workingXmlPath = GetPathToHTCHomeSettingsXmlFileWorking();
     CString backupXmlPath = GetPathToHTCHomeSettingsXmlFileBackup();
 
@@ -451,12 +420,24 @@ void RestoreM2DCFiles()
         GetZipItem(hz,-1,&ze);
 
         int numitems = ze.index;
+
+        CManilla2DConfigProgressDlg progDlg(NULL);
+
+        CString msg;
+        msg.Format(TEXT("Restoring theme from backup"));
+        progDlg.BeginTrackingProgress(msg, 0, numitems);
+
+        int retVal = 0;
         
-        for(int zi=0; zi<numitems; zi++)
+        for(int zi=0; ((zi<numitems) && (retVal == 0)); zi++)
         {
             ZIPENTRY ze;
             
             GetZipItem(hz, zi, &ze);            // fetch individual details
+
+            msg.Format(TEXT("Restoring theme from backup\nFile %d of %d\n%s"), zi, numitems, ze.name);
+            retVal = progDlg.UpdateStatus(msg, zi);
+
             UnzipItem(hz, zi, ze.name);
         }
 
@@ -733,7 +714,7 @@ void RecursivelyDeleteDirectory(CString sDirPath)
     RemoveDirectory(sDirPath);
 }
 
-void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector)
+void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector)
 {
     if(pPathVector != NULL)
     {
@@ -808,6 +789,45 @@ void GetVectorOfHH_FilesCurrentlyInUse(std::vector<CString>* pPathVector)
                 }
             }
         }
+
+        pPathVector->push_back(GetPathToHTCHomeSettingsXmlFileActual());
+
+        WIN32_FIND_DATA findData;
+        CString findString = GetPathToWindowsDirectory();
+        findString += "\\HH_*";
+        HANDLE hFindHandle = FindFirstFile(findString, &findData);
+
+        if(hFindHandle != INVALID_HANDLE_VALUE)
+        {
+            BOOL keepSearching = TRUE;
+
+            while(keepSearching == TRUE)
+            {
+                CString currentHH_file = GetPathToWindowsDirectory();
+                currentHH_file += "\\";
+                currentHH_file += findData.cFileName;
+
+                bool addFileToVector = true;
+
+                for(size_t i=0; i<pPathVector->size(); i++)
+                {
+                    if((*pPathVector)[i].Compare(currentHH_file) == 0)
+                    {
+                        addFileToVector = false;
+                        break;
+                    }
+                }
+
+                if(addFileToVector)
+                {
+                    pPathVector->push_back(currentHH_file);
+                }
+
+                keepSearching = FindNextFile(hFindHandle, &findData);
+            }
+        }
+
+        FindClose(hFindHandle);
     }
 }
 
@@ -818,21 +838,21 @@ bool IsM2DCThemeSupportEnabled()
         AfxGetApp()->BeginWaitCursor();
 
         // check to see if the Zip file exists
-        bool HH_FilesZipBackupExists = FileExists(GetPathToHH_ZipFileBackup());
+        bool HH_FilesZipBackupExists = FileExists(GetPathToThemeBackupFile());
 
         // check to see if the local themes folder exists and is not empty
-        bool isCurrentThemeDirEmpty = IsDirEmpty(GetPathToCurrentThemeDirectory());
+        bool isCurrentThemeDirEmpty = IsDirEmpty(GetPathToM2DCActiveThemeDirectory());
 
         // check to make sure that the xml file in \Windows references the local theme folder
         bool isXmlFileSetToUseCurrentThemeDir = false;
 
         std::vector<CString> currentHH_FilePaths;
 
-        GetVectorOfHH_FilesCurrentlyInUse(&currentHH_FilePaths);
+        GetVectorOfThemeFilesCurrentlyInUse(&currentHH_FilePaths);
 
         for(size_t i=0; i<currentHH_FilePaths.size(); i++)
         {
-            isXmlFileSetToUseCurrentThemeDir = (currentHH_FilePaths[i].Find(GetPathToCurrentThemeDirectory()) == 0);
+            isXmlFileSetToUseCurrentThemeDir = (currentHH_FilePaths[i].Find(GetPathToM2DCActiveThemeDirectory()) == 0);
 
             if(!isXmlFileSetToUseCurrentThemeDir)
             {
@@ -857,51 +877,26 @@ bool EnableM2DCThemeSupport()
 
     if(MessageBox(NULL, enableMessage, TEXT("Enable M2DC Themes?"), MB_YESNO) == IDYES)
     {
-        BackupHH_Files(true);
+        int retVal = BackupActualTheme(true);
 
-        // unzip the files to the local theme directory
-        if(FileExists(GetPathToHH_ZipFileBackup()))
+        if(retVal == 0)
         {
-            AfxGetApp()->BeginWaitCursor();
-
-            HZIP hz = OpenZip(GetPathToHH_ZipFileBackup(), 0);
-            ZIPENTRY ze;
-
-            // -1 gives overall information about the zipfile
-            GetZipItem(hz,-1,&ze);
-
-            int numitems = ze.index;
-
-            for(int zi=0; zi<numitems; zi++)
-            {
-                ZIPENTRY ze;
-
-                GetZipItem(hz, zi, &ze);            // fetch individual details
-
-                CString filePathFromZip = ze.name;
-
-                CString destString = GetPathToCurrentThemeDirectory();
-                destString += "\\";
-                destString += filePathFromZip.Mid(filePathFromZip.ReverseFind('/'));
-
-                UnzipItem(hz, zi, destString);
-            }
-
-            CloseZip(hz);
-
-            AfxGetApp()->EndWaitCursor();
+            retVal = SetActiveTheme(GetPathToThemeBackupFile());
         }
 
-        SetHH_FileDirectoryInXmlSettingsFile(GetPathToCurrentThemeDirectory());
+        if(retVal == 0)
+        {
+            SetThemeDirectoryInActualXmlSettingsFile(GetPathToM2DCActiveThemeDirectory());
+        }
 
-        g_bThemeSupportEnabled = true;
-        retVal = true;
+        g_bThemeSupportEnabled = (retVal == 0);
+        retVal = g_bThemeSupportEnabled;
     }
 
     return retVal;
 }
 
-void SetHH_FileDirectoryInXmlSettingsFile(CString newDirectory)
+void SetThemeDirectoryInActualXmlSettingsFile(CString newDirectory)
 {
     BeginMakingChanges();
     AfxGetApp()->BeginWaitCursor();
@@ -1007,4 +1002,60 @@ void RestoreAndReEnableTodayScreen()
 void SetInstallDirectory(CString installDirectory)
 {
     g_installDirectory = installDirectory;
+}
+
+int SetActiveTheme(CString pathToTheme)
+{
+    int retVal = 0;
+
+    CString themeName = pathToTheme.Mid('\\');;
+    themeName = themeName.Mid(0, themeName.Find('.')-1);
+
+    CString msg;
+
+    CString activeThemeDirectory = GetPathToM2DCActiveThemeDirectory();
+    // unzip the files to the local theme directory
+    if(FileExists(pathToTheme))
+    {
+        AfxGetApp()->BeginWaitCursor();
+
+        HZIP hz = OpenZip(pathToTheme, 0);
+        ZIPENTRY ze;
+
+        // -1 gives overall information about the zipfile
+        GetZipItem(hz,-1,&ze);
+
+        CManilla2DConfigProgressDlg progDlg(NULL);
+
+        int numitems = ze.index;
+
+        msg.Format(TEXT("Applying theme: %s"), themeName);
+
+        progDlg.BeginTrackingProgress(msg, 0, numitems);
+
+        for(int zi=0; ((zi<numitems) && (retVal == 0)); zi++)
+        {
+            ZIPENTRY ze;
+
+            GetZipItem(hz, zi, &ze);            // fetch individual details
+
+            CString filePathFromZip = ze.name;
+
+            CString destString = activeThemeDirectory;
+            destString += "\\";
+            destString += filePathFromZip.Mid(filePathFromZip.ReverseFind('/'));
+
+            msg.Format(TEXT("Applying theme: %s\nFile %d of %d\n%s"), themeName, zi, numitems, destString);
+
+            retVal = progDlg.UpdateStatus(msg, zi);
+
+            UnzipItem(hz, zi, destString);
+        }
+
+        CloseZip(hz);
+
+        AfxGetApp()->EndWaitCursor();
+    }
+
+    return retVal;
 }
