@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Manilla2DConfigUtils.h"
+#include "afxwin.h"
 
 // CManilla2DConfigRestoreDlg dialog
 
@@ -49,4 +50,11 @@ protected:
 
 private:
     CCommandBar m_cmdBar;
+
+    void RefreshThemeList();
+
+public:
+    CListBox m_themeChooserListBox;
+    afx_msg void OnBnClickedM2dcThemeApplyBtn();
+    afx_msg void OnBnClickedM2dcThemeImportBtn();
 };

@@ -339,7 +339,7 @@ int BackupActualTheme(bool overwritePreviousBackup)
         TRACE(TEXT("Begin Zip HH_ files\n"));
 
         std::vector<CString> hh_strVector;
-        GetVectorOfThemeFilesCurrentlyInUse(&hh_strVector);
+        GetVectorOfThemeFilesCurrentlyInUse(&hh_strVector, true);
 
         HZIP hz = CreateZip(GetPathToThemeBackupFile(), 0);
 
@@ -714,7 +714,7 @@ void RecursivelyDeleteDirectory(CString sDirPath)
     RemoveDirectory(sDirPath);
 }
 
-void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector)
+void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool includeNonXmlFiles)
 {
     if(pPathVector != NULL)
     {
@@ -790,44 +790,47 @@ void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector)
             }
         }
 
-        pPathVector->push_back(GetPathToHTCHomeSettingsXmlFileActual());
-
-        WIN32_FIND_DATA findData;
-        CString findString = GetPathToWindowsDirectory();
-        findString += "\\HH_*";
-        HANDLE hFindHandle = FindFirstFile(findString, &findData);
-
-        if(hFindHandle != INVALID_HANDLE_VALUE)
+        if(includeNonXmlFiles)
         {
-            BOOL keepSearching = TRUE;
+            pPathVector->push_back(GetPathToHTCHomeSettingsXmlFileActual());
 
-            while(keepSearching == TRUE)
+            WIN32_FIND_DATA findData;
+            CString findString = GetPathToWindowsDirectory();
+            findString += "\\HH_*";
+            HANDLE hFindHandle = FindFirstFile(findString, &findData);
+
+            if(hFindHandle != INVALID_HANDLE_VALUE)
             {
-                CString currentHH_file = GetPathToWindowsDirectory();
-                currentHH_file += "\\";
-                currentHH_file += findData.cFileName;
+                BOOL keepSearching = TRUE;
 
-                bool addFileToVector = true;
-
-                for(size_t i=0; i<pPathVector->size(); i++)
+                while(keepSearching == TRUE)
                 {
-                    if((*pPathVector)[i].Compare(currentHH_file) == 0)
+                    CString currentHH_file = GetPathToWindowsDirectory();
+                    currentHH_file += "\\";
+                    currentHH_file += findData.cFileName;
+
+                    bool addFileToVector = true;
+
+                    for(size_t i=0; i<pPathVector->size(); i++)
                     {
-                        addFileToVector = false;
-                        break;
+                        if((*pPathVector)[i].Compare(currentHH_file) == 0)
+                        {
+                            addFileToVector = false;
+                            break;
+                        }
                     }
-                }
 
-                if(addFileToVector)
-                {
-                    pPathVector->push_back(currentHH_file);
-                }
+                    if(addFileToVector)
+                    {
+                        pPathVector->push_back(currentHH_file);
+                    }
 
-                keepSearching = FindNextFile(hFindHandle, &findData);
+                    keepSearching = FindNextFile(hFindHandle, &findData);
+                }
             }
-        }
 
-        FindClose(hFindHandle);
+            FindClose(hFindHandle);
+        }
     }
 }
 
@@ -848,7 +851,7 @@ bool IsM2DCThemeSupportEnabled()
 
         std::vector<CString> currentHH_FilePaths;
 
-        GetVectorOfThemeFilesCurrentlyInUse(&currentHH_FilePaths);
+        GetVectorOfThemeFilesCurrentlyInUse(&currentHH_FilePaths, false);
 
         for(size_t i=0; i<currentHH_FilePaths.size(); i++)
         {
@@ -1058,4 +1061,43 @@ int SetActiveTheme(CString pathToTheme)
     }
 
     return retVal;
+}
+
+CString GetFileBaseName(CString filePath)
+{
+    CString retVal = filePath;
+
+    retVal = retVal.Mid(retVal.Find('\\'));
+    retVal = retVal.Mid(0, retVal.Find('.'));
+
+    return retVal;
+}
+
+void GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector)
+{
+    if(pThemeNameVector != NULL)
+    {
+        CString searchString = GetPathToM2DCThemesDirectory();
+        searchString += "\\*.m2dct";
+
+        WIN32_FIND_DATA findData;
+        HANDLE hFindHandle = FindFirstFile(searchString, &findData);
+
+        if(hFindHandle != INVALID_HANDLE_VALUE)
+        {
+            BOOL keepSearching = TRUE;
+
+            while(keepSearching == TRUE)
+            {
+                if((lstrcmp(findData.cFileName, TEXT(".")) != 0) && (lstrcmp(findData.cFileName, TEXT("..")) != 0))
+                {
+                    pThemeNameVector->push_back(GetFileBaseName(findData.cFileName));
+                }
+
+                keepSearching = FindNextFile(hFindHandle, &findData);
+            }
+        }
+
+        FindClose(hFindHandle);
+    }
 }
