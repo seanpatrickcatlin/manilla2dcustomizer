@@ -22,6 +22,8 @@
 #include "afxcmn.h"
 #include <vector>
 
+#include "Manilla2DConfig.h"
+
 // CFileTreeDlg dialog
 class CFileTreeDlg : public CDialog
 {

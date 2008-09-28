@@ -50,6 +50,7 @@ void DisableAllTodayScreenItems();
 
 CString GetWin32ErrorString(DWORD err);
 
+CString GetFileBaseName(CString filePath);
 bool FileExists(CString pathToFile);
 bool IsDirEmpty(CString dirPath);
 void RecursivelyDeleteDirectory(CString sDirPath);
@@ -79,9 +80,11 @@ void EndMakingChanges();
 bool IsM2DCThemeSupportEnabled();
 bool EnableM2DCThemeSupport();
 
-void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector);
+void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool includeNonXmlFiles);
 void SetThemeDirectoryInActualXmlSettingsFile(CString newDirectory);
 
 void SetInstallDirectory(CString installDirectory);
 
 int SetActiveTheme(CString pathToTheme);
+
+void GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector);

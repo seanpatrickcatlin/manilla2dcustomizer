@@ -19,6 +19,7 @@
 //
 
 #include "stdafx.h"
+#include "FileTreeDlg.h"
 #include "Manilla2DConfig.h"
 #include "Manilla2DConfigDlg.h"
 #include "Manilla2DConfigUtils.h"
@@ -40,7 +41,8 @@ CManilla2DConfigThemesDlg::~CManilla2DConfigThemesDlg()
 
 void CManilla2DConfigThemesDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CPropertyPage::DoDataExchange(pDX);
+    CPropertyPage::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_M2DC_THEME_LISTBOX, m_themeChooserListBox);
 }
 
 BOOL CManilla2DConfigThemesDlg::OnInitDialog()
@@ -56,6 +58,8 @@ BOOL CManilla2DConfigThemesDlg::OnInitDialog()
 BEGIN_MESSAGE_MAP(CManilla2DConfigThemesDlg, CPropertyPage)
     ON_WM_PAINT()
     ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigThemesDlg::OnQuerySiblings)
+    ON_BN_CLICKED(IDC_M2DC_THEME_APPLY_BTN, &CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeApplyBtn)
+    ON_BN_CLICKED(IDC_M2DC_THEME_IMPORT_BTN, &CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigThemesDlg message handlers
@@ -114,7 +118,10 @@ BOOL CManilla2DConfigThemesDlg::OnSetActive()
         }
     }
 
-    SetForegroundWindow();
+    if(retVal == TRUE)
+    {
+        RefreshThemeList();
+    }
 
     return retVal;
 }
@@ -122,4 +129,50 @@ BOOL CManilla2DConfigThemesDlg::OnSetActive()
 LRESULT CManilla2DConfigThemesDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
 {
     return 0;
+}
+
+void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeApplyBtn()
+{
+    CString selectedTheme;
+    m_themeChooserListBox.GetText(m_themeChooserListBox.GetCurSel(), selectedTheme);
+
+    CString themePath = GetPathToM2DCThemesDirectory();
+    themePath += "\\";
+    themePath += selectedTheme;
+    themePath += ".m2dct";
+
+    SetActiveTheme(themePath);
+}
+
+void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
+{
+    CFileTreeDlg fileDlg(this, TEXT("\\"), TEXT("m2dct"));
+    if(fileDlg.DoModal() == IDOK)
+    {
+        CString pathToNewTheme = fileDlg.GetFilePath();
+
+        if(FileExists(pathToNewTheme))
+        {
+            CString destPath = GetPathToM2DCThemesDirectory();
+            destPath += "\\";
+            destPath += GetFileBaseName(pathToNewTheme);
+            destPath += ".m2dct";
+
+            CopyFile(pathToNewTheme, destPath, FALSE);
+
+            RefreshThemeList();
+        }
+    }
+}
+
+void CManilla2DConfigThemesDlg::RefreshThemeList()
+{
+    std::vector<CString> themeNames;
+    GetNamesOfInstalledThemes(&themeNames);
+
+    m_themeChooserListBox.ResetContent();
+    for(size_t i=0; i<themeNames.size(); i++)
+    {
+        m_themeChooserListBox.AddString(themeNames[i]);
+    }
 }
