@@ -435,9 +435,6 @@ CString GetWin32ErrorString(DWORD err)
 
 void RestoreM2DCFiles()
 {
-    CString debugMsg = TEXT("RestoreM2DCFiles");
-    AfxMessageBox(debugMsg);
-
     BeginMakingChanges();
     AfxGetApp()->BeginWaitCursor();
 
@@ -1002,7 +999,6 @@ void RestoreAndReEnableTodayScreen()
 
         RestoreTodayScreenItemsRegHive();
         RefreshTodayScreen();
-        SetForegroundWindow(AfxGetApp()->GetMainWnd()->GetSafeHwnd());
 
         AfxGetApp()->EndWaitCursor();
     }
