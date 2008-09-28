@@ -435,12 +435,19 @@ CString GetWin32ErrorString(DWORD err)
 
 void RestoreM2DCFiles()
 {
+    CString debugMsg = TEXT("RestoreM2DCFiles");
+    AfxMessageBox(debugMsg);
+
     BeginMakingChanges();
     AfxGetApp()->BeginWaitCursor();
 
-    if(FileExists(GetPathToHH_ZipFileBackup()))
+    CString zipBackupPath = GetPathToHH_ZipFileBackup();
+    CString workingXmlPath = GetPathToHTCHomeSettingsXmlFileWorking();
+    CString backupXmlPath = GetPathToHTCHomeSettingsXmlFileBackup();
+
+    if(FileExists(zipBackupPath))
     {
-        HZIP hz = OpenZip(GetPathToHH_ZipFileBackup(), 0);
+        HZIP hz = OpenZip(zipBackupPath, 0);
         ZIPENTRY ze;
 
         // -1 gives overall information about the zipfile
@@ -459,9 +466,9 @@ void RestoreM2DCFiles()
         CloseZip(hz);
     }
 
-    if(FileExists(GetPathToHTCHomeSettingsXmlFileBackup()))
+    if(FileExists(backupXmlPath))
     {
-        CopyFile(GetPathToHTCHomeSettingsXmlFileBackup(), GetPathToHTCHomeSettingsXmlFileWorking(), FALSE);
+        CopyFile(backupXmlPath, workingXmlPath, FALSE);
     }
     
     AfxGetApp()->EndWaitCursor();
@@ -650,9 +657,10 @@ void BeginMakingChanges()
 void EndMakingChanges()
 {
     if(g_bAlreadyBeganMakingChanges)
-    {   
+    {
         DWORD dwFileAttributes = GetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual());
         SetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual(), FILE_ATTRIBUTE_NORMAL);
+        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileWorking(), FILE_ATTRIBUTE_NORMAL);
         CopyFile(GetPathToHTCHomeSettingsXmlFileWorking(), GetPathToHTCHomeSettingsXmlFileActual(), FALSE);
         SetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual(), dwFileAttributes);
         DeleteFile(GetPathToHTCHomeSettingsXmlFileWorking());
