@@ -2,6 +2,7 @@
 #include "afxwin.h"
 #include "afxcmn.h"
 
+#include "Manilla2DConfig.h"
 
 // CManilla2DConfigProgressDlg dialog
 
@@ -20,6 +21,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
     afx_msg void OnBnClickedM2dcProgressCancelBtn();
     afx_msg void OnTimer(UINT nIDEvent);
+    void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
+    void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
 
     BOOL OnInitDialog();
     void OnDestroy();

@@ -60,6 +60,8 @@ void CManilla2DConfigProgressDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CManilla2DConfigProgressDlg, CDialog)
     ON_BN_CLICKED(IDC_M2DC_PROGRESS_CANCEL_BTN, &CManilla2DConfigProgressDlg::OnBnClickedM2dcProgressCancelBtn)
     ON_COMMAND(IDCANCEL, &CManilla2DConfigProgressDlg::OnBnClickedM2dcProgressCancelBtn)
+    ON_WM_ACTIVATE()
+	ON_WM_SETTINGCHANGE()
     ON_WM_DESTROY()
     ON_WM_TIMER()
 END_MESSAGE_MAP()
@@ -92,10 +94,18 @@ void CManilla2DConfigProgressDlg::OnTimer(UINT nIDEvent)
     CDialog::OnTimer(nIDEvent);
 }
 
+void CManilla2DConfigProgressDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
+{
+	CWnd::OnActivate(nState, pWndOther, bMinimized);
+}
+
+void CManilla2DConfigProgressDlg::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
+{
+	CWnd::OnSettingChange(uFlags, lpszSection);
+}
+
 void CManilla2DConfigProgressDlg::BeginTrackingProgress(CString message, int min, int max)
 {
-    TRACE(TEXT("BeginTrackingProgress"));
-
     m_minVal = min;
     m_maxVal = max;
     m_curVal = min;
@@ -117,15 +127,11 @@ void CManilla2DConfigProgressDlg::BeginTrackingProgress(CString message, int min
 
 void CManilla2DConfigProgressDlg::EndTrackingProgress()
 {
-    TRACE(TEXT("EndTrackingProgress"));
-
     ShowWindow(SW_HIDE);
 }
 
 int CManilla2DConfigProgressDlg::UpdateStatus(CString message, int newVal)
 {
-    TRACE(TEXT("UpdateStatus"));
-
     if(m_userPressedCancel)
     {
         return -1;
