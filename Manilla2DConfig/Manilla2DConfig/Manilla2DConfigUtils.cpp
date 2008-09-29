@@ -1095,8 +1095,8 @@ int SetActiveTheme(CString pathToTheme)
 
         HTCHomeSettingsStruct xmlSettings;
 
-        ReadClockValuesFromXml(pathToThemeXml, &xmlSettings);
-        WriteClockValuesToXml(GetPathToHTCHomeSettingsXmlFileWorking(), &xmlSettings);
+        ReadValuesFromXml(pathToThemeXml, &xmlSettings);
+        WriteValuesToXml(GetPathToHTCHomeSettingsXmlFileWorking(), &xmlSettings);
 
         AfxGetApp()->EndWaitCursor();
         EndMakingChanges();
@@ -1144,7 +1144,7 @@ void GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector)
     }
 }
 
-void ReadClockValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
+void ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
 {
     if((xmlSettings != NULL) && (FileExists(xmlFilePath)))
     {
@@ -1229,7 +1229,7 @@ void ReadClockValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSetti
     }
 }
 
-void WriteClockValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
+void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
 {
     if((xmlSettings != NULL) && (FileExists(xmlFilePath)))
     {

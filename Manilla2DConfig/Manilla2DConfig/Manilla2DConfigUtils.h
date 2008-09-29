@@ -108,7 +108,7 @@ int SetActiveTheme(CString pathToTheme);
 
 void GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector);
 
-void ReadClockValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
-void WriteClockValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
+void ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
+void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
 
 bool ArchiveContainsHTCHomeSettingsXml(CString filePath);
