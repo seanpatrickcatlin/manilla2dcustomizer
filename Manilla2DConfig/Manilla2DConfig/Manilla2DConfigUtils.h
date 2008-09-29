@@ -43,7 +43,7 @@ int BackupActualTheme(bool overwritePreviousBackup = false);
 void BackupHTCHomeSettingsXml(bool overwritePreviousBackup = false);
 
 void RestoreAndReEnableTodayScreen();
-void RestoreM2DCFiles();
+void RestoreM2DCFiles(bool showProgress = true);
 
 void RefreshTodayScreen();
 void DisableAllTodayScreenItems();

@@ -121,7 +121,7 @@ codeUNINSTALL_INIT Uninstall_Init(HWND hwndParent, LPCTSTR pszInstallDir)
         debugMsg += pszInstallDir;
 
         SetInstallDirectory(pszInstallDir);
-        RestoreM2DCFiles();
+        RestoreM2DCFiles(false);
         RecursivelyDeleteDirectory(pszInstallDir);
     }
 
