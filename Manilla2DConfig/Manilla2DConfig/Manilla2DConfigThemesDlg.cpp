@@ -111,7 +111,7 @@ BOOL CManilla2DConfigThemesDlg::OnSetActive()
 
         if(retVal == TRUE)
         {
-            if(!EnableM2DCThemeSupport())
+            if(EnableM2DCThemeSupport() != 0)
             {
                 retVal = FALSE;
             }
@@ -134,7 +134,14 @@ LRESULT CManilla2DConfigThemesDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
 void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeApplyBtn()
 {
     CString selectedTheme;
-    m_themeChooserListBox.GetText(m_themeChooserListBox.GetCurSel(), selectedTheme);
+    int index = m_themeChooserListBox.GetCurSel();
+
+    if((index < 0) || (index >= m_themeChooserListBox.GetCount()))
+    {
+        return;
+    }
+
+    m_themeChooserListBox.GetText(index, selectedTheme);
 
     CString themePath = GetPathToM2DCThemesDirectory();
     themePath += "\\";
@@ -142,6 +149,8 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeApplyBtn()
     themePath += ".m2dct";
 
     SetActiveTheme(themePath);
+
+    EndDialog(IDOK);
 }
 
 void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()

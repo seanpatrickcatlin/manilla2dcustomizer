@@ -88,6 +88,11 @@ CString GetPathToHTCHomeSettingsXmlFileWorking()
 
     TRACE(debugStr);
 
+    if(!g_bAlreadyBeganMakingChanges)
+    {
+        BeginMakingChanges();
+    }
+
     return retVal;
 }
 
@@ -343,7 +348,7 @@ int BackupActualTheme(bool overwritePreviousBackup)
 
         HZIP hz = CreateZip(GetPathToThemeBackupFile(), 0);
 
-        CManilla2DConfigProgressDlg progDlg(NULL);
+        CManilla2DConfigProgressDlg progDlg(AfxGetApp()->GetMainWnd());
 
         progDlg.BeginTrackingProgress(TEXT("Backing up theme files."), 0, hh_strVector.size());
 
@@ -361,6 +366,8 @@ int BackupActualTheme(bool overwritePreviousBackup)
             ZipAdd(hz, archiveFilePath, fullFilePath);
         }
 
+        progDlg.EndTrackingProgress();
+
         CloseZip(hz);
         TRACE(TEXT("End Zip HH_ files\n"));
     }
@@ -372,7 +379,7 @@ int BackupActualTheme(bool overwritePreviousBackup)
 
 const char* GetConstCharStarFromCString(CString str)
 {
-	CT2CA pszConvertedAnsiString(str);
+    CT2CA pszConvertedAnsiString(str);
 	std::string temp(pszConvertedAnsiString);
 
 	return temp.c_str();
@@ -421,10 +428,9 @@ void RestoreM2DCFiles()
 
         int numitems = ze.index;
 
-        CManilla2DConfigProgressDlg progDlg(NULL);
+        CManilla2DConfigProgressDlg progDlg(AfxGetApp()->GetMainWnd());
 
-        CString msg;
-        msg.Format(TEXT("Restoring theme from backup"));
+        CString msg = TEXT("Restoring theme from backup");
         progDlg.BeginTrackingProgress(msg, 0, numitems);
 
         int retVal = 0;
@@ -871,29 +877,29 @@ bool IsM2DCThemeSupportEnabled()
     return g_bThemeSupportEnabled;
 }
 
-bool EnableM2DCThemeSupport()
+int EnableM2DCThemeSupport()
 {
-    bool retVal = false;
+    int retVal = -1;
 
     CString enableMessage = TEXT("Enabling M2DC theme support may take 3-5 minutes to complete.");
     enableMessage += "\nWould you like to continue?";
 
     if(MessageBox(NULL, enableMessage, TEXT("Enable M2DC Themes?"), MB_YESNO) == IDYES)
     {
-        int retVal = BackupActualTheme(true);
+        int retVal2 = BackupActualTheme(true);
 
-        if(retVal == 0)
+        if(retVal2 == 0)
         {
-            retVal = SetActiveTheme(GetPathToThemeBackupFile());
+            retVal2 = SetActiveTheme(GetPathToThemeBackupFile());
         }
 
-        if(retVal == 0)
+        if(retVal2 == 0)
         {
             SetThemeDirectoryInActualXmlSettingsFile(GetPathToM2DCActiveThemeDirectory());
         }
 
-        g_bThemeSupportEnabled = (retVal == 0);
-        retVal = g_bThemeSupportEnabled;
+        g_bThemeSupportEnabled = (retVal2 == 0);
+        retVal = retVal2;
     }
 
     return retVal;
@@ -916,7 +922,10 @@ void SetThemeDirectoryInActualXmlSettingsFile(CString newDirectory)
 
         if(imageListElement != NULL)
         {
-            imageListElement->SetAttribute("path", GetConstCharStarFromCString(newDirectory));
+            CT2CA pszConvertedAnsiString(newDirectory);
+            std::string tempStr(pszConvertedAnsiString);
+
+            imageListElement->SetAttribute("path", tempStr.c_str());
 
             TiXmlElement* imageListItemElement = imageListElement->FirstChildElement();
 
@@ -980,13 +989,16 @@ void SetThemeDirectoryInActualXmlSettingsFile(CString newDirectory)
 
 void BackupAndDisableTodayScreen()
 {
-    AfxGetApp()->BeginWaitCursor();
-    BackupTodayScreenItemsRegHive();
-    DisableAllTodayScreenItems();
-    RefreshTodayScreen();
-    AfxGetApp()->EndWaitCursor();
+    if(!g_bRestoreTodayScreenNeeded)
+    {
+        AfxGetApp()->BeginWaitCursor();
+        BackupTodayScreenItemsRegHive();
+        DisableAllTodayScreenItems();
+        RefreshTodayScreen();
+        AfxGetApp()->EndWaitCursor();
 
-    g_bRestoreTodayScreenNeeded = true;
+        g_bRestoreTodayScreenNeeded = true;
+    }
 }
 
 void RestoreAndReEnableTodayScreen()
@@ -1009,7 +1021,7 @@ void SetInstallDirectory(CString installDirectory)
 
 int SetActiveTheme(CString pathToTheme)
 {
-    int retVal = 0;
+    int retVal = 0;    
 
     CString themeName = pathToTheme.Mid('\\');;
     themeName = themeName.Mid(0, themeName.Find('.')-1);
@@ -1020,6 +1032,7 @@ int SetActiveTheme(CString pathToTheme)
     // unzip the files to the local theme directory
     if(FileExists(pathToTheme))
     {
+        BeginMakingChanges();
         AfxGetApp()->BeginWaitCursor();
 
         HZIP hz = OpenZip(pathToTheme, 0);
@@ -1028,7 +1041,7 @@ int SetActiveTheme(CString pathToTheme)
         // -1 gives overall information about the zipfile
         GetZipItem(hz,-1,&ze);
 
-        CManilla2DConfigProgressDlg progDlg(NULL);
+        CManilla2DConfigProgressDlg progDlg(AfxGetApp()->GetMainWnd());
 
         int numitems = ze.index;
 
@@ -1046,18 +1059,21 @@ int SetActiveTheme(CString pathToTheme)
 
             CString destString = activeThemeDirectory;
             destString += "\\";
-            destString += filePathFromZip.Mid(filePathFromZip.ReverseFind('/'));
+            destString += filePathFromZip.Mid(filePathFromZip.ReverseFind('/')+1);
 
             msg.Format(TEXT("Applying theme: %s\nFile %d of %d\n%s"), themeName, zi, numitems, destString);
 
             retVal = progDlg.UpdateStatus(msg, zi);
 
             UnzipItem(hz, zi, destString);
+
+            SetFileAttributes(destString, FILE_ATTRIBUTE_NORMAL);
         }
 
         CloseZip(hz);
 
         AfxGetApp()->EndWaitCursor();
+        EndMakingChanges();
     }
 
     return retVal;
@@ -1067,7 +1083,7 @@ CString GetFileBaseName(CString filePath)
 {
     CString retVal = filePath;
 
-    retVal = retVal.Mid(retVal.Find('\\'));
+    retVal = retVal.Mid(retVal.ReverseFind('\\'));
     retVal = retVal.Mid(0, retVal.Find('.'));
 
     return retVal;
