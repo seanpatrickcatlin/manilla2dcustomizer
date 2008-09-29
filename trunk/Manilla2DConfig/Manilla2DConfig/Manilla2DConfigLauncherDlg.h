@@ -42,11 +42,17 @@ protected:
 private:
     CCommandBar m_cmdBar;
 
-    int m_initialNumberOfColumns;
+    int m_numberOfRows;
+    int m_numberOfColumns;
 
-    CButton m_launcherThreeColumnRadioButton;
-    CButton m_launcherFourColumnRadioButton;
+    CButton m_launcher3ColumnRadioButton;
+    CButton m_launcher4ColumnRadioButton;
+    CButton m_launcher5ColumnRadioButton;
 
-    int GetNumberOfLauncherColumnsFromHTCHomeSettingsXml();
-    void SetNumberOfLauncherColumnsFromHTCHomeSettingsXml(int numberOfColumns);
+    CButton m_launcher3RowRadioButton;
+    CButton m_launcher6RowRadioButton;
+    CButton m_launcher9RowRadioButton;
+
+    void ReadValuesFromXml();
+    void WriteValuesToXml();
 };

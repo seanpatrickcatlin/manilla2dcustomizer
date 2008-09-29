@@ -40,17 +40,17 @@ struct ImageListImage
     CString name;
 };
 
-struct HomeWidgetProperty
+struct WidgetProperty
 {
     int id;
     CString value;
 };
 
-struct HTCHomeSettingsClockSettings
+struct HTCHomeSettingsStruct
 {
-    std::vector<HomeWidgetProperty> homeWidgetProperties;
     std::vector<ImageListImage> imageListImages;
-
+    std::vector<WidgetProperty> tabWidgetProperties;
+    std::vector<WidgetProperty> homeWidgetProperties;
 };
 
 void PrintNameAndEnabledStateVector(NameAndEnabledState_vector_t nameAndStateVector);
@@ -108,5 +108,7 @@ int SetActiveTheme(CString pathToTheme);
 
 void GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector);
 
-void ReadClockValuesFromXml(CString xmlFilePath, HTCHomeSettingsClockSettings* clockSettings);
-void WriteClockValuesToXml(CString xmlFilePath, HTCHomeSettingsClockSettings* clockSettings);
+void ReadClockValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
+void WriteClockValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
+
+bool ArchiveContainsHTCHomeSettingsXml(CString filePath);

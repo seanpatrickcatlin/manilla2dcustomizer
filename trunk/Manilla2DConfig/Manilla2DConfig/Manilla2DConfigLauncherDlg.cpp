@@ -28,7 +28,7 @@
 CManilla2DConfigLauncherDlg::CManilla2DConfigLauncherDlg(CWnd* pParent /*=NULL*/)
 	: CPropertyPage(CManilla2DConfigLauncherDlg::IDD, IDS_M2DC_LAUNCHER_STR)
 {
-    m_initialNumberOfColumns = GetNumberOfLauncherColumnsFromHTCHomeSettingsXml();
+    ReadValuesFromXml();
 }
 
 CManilla2DConfigLauncherDlg::~CManilla2DConfigLauncherDlg()
@@ -39,8 +39,13 @@ void CManilla2DConfigLauncherDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
 
-    DDX_Control(pDX, IDC_M2DC_LAUNCHER_3_COL_RB, m_launcherThreeColumnRadioButton);
-    DDX_Control(pDX, IDC_M2DC_LAUNCHER_4_COL_RB, m_launcherFourColumnRadioButton);
+    DDX_Control(pDX, IDC_M2DC_LAUNCHER_3_COL_RB, m_launcher3ColumnRadioButton);
+    DDX_Control(pDX, IDC_M2DC_LAUNCHER_4_COL_RB, m_launcher4ColumnRadioButton);
+    DDX_Control(pDX, IDC_M2DC_LAUNCHER_5_COL_RB, m_launcher5ColumnRadioButton);
+
+    DDX_Control(pDX, IDC_M2DC_LAUNCHER_3_ROW_RB, m_launcher3RowRadioButton);
+    DDX_Control(pDX, IDC_M2DC_LAUNCHER_6_ROW_RB, m_launcher6RowRadioButton);
+    DDX_Control(pDX, IDC_M2DC_LAUNCHER_9_ROW_RB, m_launcher9RowRadioButton);
 }
 
 
@@ -53,22 +58,50 @@ BOOL CManilla2DConfigLauncherDlg::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
 
-    if(m_initialNumberOfColumns == 3)
+    m_launcher3ColumnRadioButton.SetCheck(BST_UNCHECKED);
+    m_launcher4ColumnRadioButton.SetCheck(BST_UNCHECKED);
+    m_launcher5ColumnRadioButton.SetCheck(BST_UNCHECKED);
+
+    if(m_numberOfColumns == 3)
     {
-        m_launcherThreeColumnRadioButton.SetCheck(BST_CHECKED);
-        m_launcherFourColumnRadioButton.SetCheck(BST_UNCHECKED);
+        m_launcher3ColumnRadioButton.SetCheck(BST_CHECKED);
     }
-    else if(m_initialNumberOfColumns == 4)
+    else if(m_numberOfColumns == 4)
     {
-        m_launcherThreeColumnRadioButton.SetCheck(BST_UNCHECKED);
-        m_launcherFourColumnRadioButton.SetCheck(BST_CHECKED);
+        m_launcher4ColumnRadioButton.SetCheck(BST_CHECKED);
+    }
+    else if(m_numberOfColumns == 5)
+    {
+        m_launcher5ColumnRadioButton.SetCheck(BST_CHECKED);
     }
     else
     {
-        m_launcherThreeColumnRadioButton.SetCheck(BST_UNCHECKED);
-        m_launcherFourColumnRadioButton.SetCheck(BST_UNCHECKED);
-        m_launcherThreeColumnRadioButton.EnableWindow(FALSE);
-        m_launcherFourColumnRadioButton.EnableWindow(FALSE);
+        m_launcher3ColumnRadioButton.EnableWindow(FALSE);
+        m_launcher4ColumnRadioButton.EnableWindow(FALSE);
+        m_launcher5ColumnRadioButton.EnableWindow(FALSE);
+    }
+
+    m_launcher3RowRadioButton.SetCheck(BST_UNCHECKED);
+    m_launcher6RowRadioButton.SetCheck(BST_UNCHECKED);
+    m_launcher9RowRadioButton.SetCheck(BST_UNCHECKED);
+
+    if(m_numberOfRows == 3)
+    {
+        m_launcher3RowRadioButton.SetCheck(BST_CHECKED);
+    }
+    else if(m_numberOfRows == 6)
+    {
+        m_launcher6RowRadioButton.SetCheck(BST_CHECKED);
+    }
+    else if(m_numberOfRows == 9)
+    {
+        m_launcher9RowRadioButton.SetCheck(BST_CHECKED);
+    }
+    else
+    {
+        m_launcher3RowRadioButton.EnableWindow(FALSE);
+        m_launcher6RowRadioButton.EnableWindow(FALSE);
+        m_launcher9RowRadioButton.EnableWindow(FALSE);
     }
 
     m_cmdBar.Create(this);
@@ -114,27 +147,49 @@ LRESULT CManilla2DConfigLauncherDlg::OnQuerySiblings(WPARAM wParam, LPARAM lPara
 void CManilla2DConfigLauncherDlg::OnOK()
 {
     int currentColumnCount = -1;
-
-    if(m_launcherThreeColumnRadioButton.GetCheck() == BST_CHECKED)
+    if(m_launcher3ColumnRadioButton.GetCheck() == BST_CHECKED)
     {
         currentColumnCount = 3;
     }
-    else if(m_launcherFourColumnRadioButton.GetCheck() == BST_CHECKED)
+    else if(m_launcher4ColumnRadioButton.GetCheck() == BST_CHECKED)
     {
         currentColumnCount = 4;
     }
-
-    if(m_initialNumberOfColumns != currentColumnCount)
+    else if(m_launcher5ColumnRadioButton.GetCheck() == BST_CHECKED)
     {
+        currentColumnCount = 5;
+    }
+
+    int currentRowCount = -1;
+    if(m_launcher3RowRadioButton.GetCheck() == BST_CHECKED)
+    {
+        currentRowCount = 3;
+    }
+    else if(m_launcher6RowRadioButton.GetCheck() == BST_CHECKED)
+    {
+        currentRowCount = 6;
+    }
+    else if(m_launcher9RowRadioButton.GetCheck() == BST_CHECKED)
+    {
+        currentRowCount = 9;
+    }
+
+    if((m_numberOfColumns != currentColumnCount) || (m_numberOfRows != currentRowCount))
+    {
+        m_numberOfRows = currentRowCount;
+        m_numberOfColumns = currentColumnCount;
+
         BeginMakingChanges();
-        SetNumberOfLauncherColumnsFromHTCHomeSettingsXml(currentColumnCount);
+        WriteValuesToXml();
     }
 }
 
-int CManilla2DConfigLauncherDlg::GetNumberOfLauncherColumnsFromHTCHomeSettingsXml()
+void CManilla2DConfigLauncherDlg::ReadValuesFromXml()
 {
-    int retVal = -1;
-
+    m_numberOfRows = -1;
+    m_numberOfColumns = -1;
+    
+    std::string launcherRowStr = "IDLAUNCHERWG_ROW";
     std::string launcherColStr = "IDLAUNCHERWG_COLUMN";
 
     TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileActual()));
@@ -157,36 +212,61 @@ int CManilla2DConfigLauncherDlg::GetNumberOfLauncherColumnsFromHTCHomeSettingsXm
 
                 if(currentPropertyName.compare(launcherColStr) == 0)
                 {
-                    lwItemElement->QueryIntAttribute("value", &retVal);
-                    break;
+                    lwItemElement->QueryIntAttribute("value", &m_numberOfColumns);
+                }
+                else if(currentPropertyName.compare(launcherRowStr) == 0)
+                {
+                    lwItemElement->QueryIntAttribute("value", &m_numberOfRows);
                 }
 
                 lwItemElement = lwItemElement->NextSiblingElement();
             }
         }
     }
-
-    return retVal;
 }
 
-void CManilla2DConfigLauncherDlg::SetNumberOfLauncherColumnsFromHTCHomeSettingsXml(int numberOfColumns)
+void CManilla2DConfigLauncherDlg::WriteValuesToXml()
 {
-    if((numberOfColumns != 3) && (numberOfColumns != 4))
+    if((m_numberOfColumns < 3) || (m_numberOfColumns > 5))
     {
-        AfxMessageBox(TEXT("ERROR numcol != 3 or 4"));
+        AfxMessageBox(TEXT("ERROR numcol != 3, 4, or 5"));
         return;
     }
 
+    if((m_numberOfRows%3 != 0) || (m_numberOfColumns < 3) || (m_numberOfColumns > 9))
+    {
+        AfxMessageBox(TEXT("ERROR numrow != 3, 6, or 9"));
+        return;
+    }
+
+    std::string launcherRowStr = "IDLAUNCHERWG_ROW";
     std::string launcherColStr = "IDLAUNCHERWG_COLUMN";
     std::string launcherStartPointStr = "IDLAUNCHERWG_START_POINT";
+    std::string launcherYIntervalStr = "IDLAUNCHERWG_Y_INTERVAL";
 
-    std::string colStr = "3";
+    char intVal[2];
+    intVal[0] = '0' + m_numberOfRows;
+    intVal[1] = '\0';
+    std::string rowStr = intVal;
+
+    intVal[0] = '0' + m_numberOfColumns;
+    intVal[1] = '\0';
+    std::string colStr = intVal;
+
     std::string startPoint = "20, 2";
-
-    if(numberOfColumns == 4)
+    if(m_numberOfColumns == 4)
     {
-        colStr = "4";
         startPoint = "5, 2";
+    }
+    else if(m_numberOfColumns == 5)
+    {
+        startPoint = "0, 0";
+    }
+
+    std::string yIntStr = "2";
+    if(m_numberOfColumns == 5)
+    {
+        yIntStr = "0";
     }
 
     TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileWorking()));
@@ -211,11 +291,18 @@ void CManilla2DConfigLauncherDlg::SetNumberOfLauncherColumnsFromHTCHomeSettingsX
                 {
                     lwItemElement->SetAttribute("value", colStr.c_str());
                 }
-
-                if(currentPropertyName.compare(launcherStartPointStr) == 0)
+                else if(currentPropertyName.compare(launcherStartPointStr) == 0)
                 {
                     lwItemElement->SetAttribute("value", startPoint.c_str());
                 }
+                else if(currentPropertyName.compare(launcherRowStr) == 0)
+                {
+                    lwItemElement->SetAttribute("value", rowStr.c_str());
+                }
+                else if(currentPropertyName.compare(launcherYIntervalStr) == 0)
+                {
+                    lwItemElement->SetAttribute("value", yIntStr.c_str());
+                }  
 
                 lwItemElement = lwItemElement->NextSiblingElement();
             }

@@ -155,7 +155,7 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeApplyBtn()
 
 void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
 {
-    CFileTreeDlg fileDlg(this, TEXT("\\"), TEXT("m2dct"));
+    CFileTreeDlg fileDlg(this, TEXT("\\"), TEXT("m2dct|zip"));
     if(fileDlg.DoModal() == IDOK)
     {
         CString pathToNewTheme = fileDlg.GetFilePath();
