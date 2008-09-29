@@ -409,11 +409,11 @@ CString GetWin32ErrorString(DWORD err)
     return Error;
 } // ErrorString
 
-void RestoreM2DCFiles()
+void RestoreM2DCFiles(bool showProgress)
 {
     BeginMakingChanges();
     AfxGetApp()->BeginWaitCursor();
-
+    
     CString zipBackupPath = GetPathToThemeBackupFile();
     CString workingXmlPath = GetPathToHTCHomeSettingsXmlFileWorking();
     CString backupXmlPath = GetPathToHTCHomeSettingsXmlFileBackup();
@@ -428,10 +428,16 @@ void RestoreM2DCFiles()
 
         int numitems = ze.index;
 
-        CManilla2DConfigProgressDlg progDlg(AfxGetApp()->GetMainWnd());
+        CString msg;
+        CManilla2DConfigProgressDlg* pProgDlg = NULL;
 
-        CString msg = TEXT("Restoring theme from backup");
-        progDlg.BeginTrackingProgress(msg, 0, numitems);
+        if(showProgress)
+        {
+            pProgDlg = new CManilla2DConfigProgressDlg(NULL);
+
+            msg = TEXT("Restoring theme from backup");
+            pProgDlg->BeginTrackingProgress(msg, 0, numitems);
+        }
 
         int retVal = 0;
         
@@ -441,10 +447,18 @@ void RestoreM2DCFiles()
             
             GetZipItem(hz, zi, &ze);            // fetch individual details
 
-            msg.Format(TEXT("Restoring theme from backup\nFile %d of %d\n%s"), zi, numitems, ze.name);
-            retVal = progDlg.UpdateStatus(msg, zi);
+            if(showProgress && pProgDlg)
+            {
+                msg.Format(TEXT("Restoring theme from backup\nFile %d of %d\n%s"), zi, numitems, ze.name);            
+                retVal = pProgDlg->UpdateStatus(msg, zi);
+            }
 
             UnzipItem(hz, zi, ze.name);
+        }
+
+        if(showProgress && pProgDlg)
+        {
+            delete pProgDlg;
         }
 
         CloseZip(hz);
