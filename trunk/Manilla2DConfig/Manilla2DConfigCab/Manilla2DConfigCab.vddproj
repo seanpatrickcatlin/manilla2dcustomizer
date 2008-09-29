@@ -26,6 +26,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_3C27982BF03641CCBDDFEE0EF8871044"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_549138ADD0C24C3A9338275E2CEB6150"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -45,6 +51,12 @@
         "Entry"
         {
         "MsmKey" = "8:_C8D2AF36C28548CB9F948EB436A93C2E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F2F7D680DFCA4E909BC3E8230328C3AA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -116,6 +128,24 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{BA458234-9B71-4F46-8107-E91156377184}:_3C27982BF03641CCBDDFEE0EF8871044"
+            {
+            "SourcePath" = "8:..\\Manilla2DConfig\\README-THEMES.txt"
+            "TargetName" = "8:README-THEMES.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_1161747F795C4374BE5C432A21F2C1DD"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{BA458234-9B71-4F46-8107-E91156377184}:_918F8CE7EFD1466FB5E891E10AF04EFA"
             {
             "SourcePath" = "8:..\\Manilla2DConfig\\M2DC.xml"
@@ -138,6 +168,24 @@
             {
             "SourcePath" = "8:..\\..\\Build\\changelog.txt"
             "TargetName" = "8:changelog.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_1161747F795C4374BE5C432A21F2C1DD"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{BA458234-9B71-4F46-8107-E91156377184}:_F2F7D680DFCA4E909BC3E8230328C3AA"
+            {
+            "SourcePath" = "8:..\\Manilla2DConfig\\ReadMe.txt"
+            "TargetName" = "8:ReadMe.txt"
             "Tag" = "8:"
             "Folder" = "8:_1161747F795C4374BE5C432A21F2C1DD"
             "Condition" = "8:"
@@ -190,7 +238,7 @@
         {
             "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_549138ADD0C24C3A9338275E2CEB6150"
             {
-            "SourcePath" = "8:..\\Manilla2DConfig\\Windows Mobile 6 Professional SDK (ARMV4I)\\Release\\Manilla2DConfig.exe"
+            "SourcePath" = "8:..\\Manilla2DConfig\\Windows Mobile 6 Professional SDK (ARMV4I)\\Debug\\Manilla2DConfig.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_1161747F795C4374BE5C432A21F2C1DD"
@@ -216,7 +264,7 @@
             }
             "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_C8D2AF36C28548CB9F948EB436A93C2E"
             {
-            "SourcePath" = "8:..\\Manilla2DConfigSetup\\Windows Mobile 6 Professional SDK (ARMV4I)\\Release\\Manilla2DConfigSetup.dll"
+            "SourcePath" = "8:..\\Manilla2DConfigSetup\\Windows Mobile 6 Professional SDK (ARMV4I)\\Debug\\Manilla2DConfigSetup.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_1161747F795C4374BE5C432A21F2C1DD"

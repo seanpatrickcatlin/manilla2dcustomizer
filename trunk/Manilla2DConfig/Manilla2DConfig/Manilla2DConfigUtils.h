@@ -34,6 +34,25 @@ struct TodayScreenRegBackup
     NameAndEnabledState_vector_t itemVector;
 };
 
+struct ImageListImage
+{
+    int index;
+    CString name;
+};
+
+struct HomeWidgetProperty
+{
+    int id;
+    CString value;
+};
+
+struct HTCHomeSettingsClockSettings
+{
+    std::vector<HomeWidgetProperty> homeWidgetProperties;
+    std::vector<ImageListImage> imageListImages;
+
+};
+
 void PrintNameAndEnabledStateVector(NameAndEnabledState_vector_t nameAndStateVector);
 bool CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1, NameAndEnabledState_vector_t* vec2);
 
@@ -88,3 +107,6 @@ void SetInstallDirectory(CString installDirectory);
 int SetActiveTheme(CString pathToTheme);
 
 void GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector);
+
+void ReadClockValuesFromXml(CString xmlFilePath, HTCHomeSettingsClockSettings* clockSettings);
+void WriteClockValuesToXml(CString xmlFilePath, HTCHomeSettingsClockSettings* clockSettings);

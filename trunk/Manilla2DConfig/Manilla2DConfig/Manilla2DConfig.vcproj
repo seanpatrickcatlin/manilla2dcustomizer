@@ -487,6 +487,10 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath=".\README-THEMES.txt"
+			>
+		</File>
+		<File
 			RelativePath=".\ReadMe.txt"
 			>
 		</File>
