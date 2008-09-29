@@ -835,7 +835,7 @@ void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool
 
                     for(size_t i=0; i<pPathVector->size(); i++)
                     {
-                        if((*pPathVector)[i].Compare(currentHH_file) == 0)
+                        if((*pPathVector)[i].Find(findData.cFileName) != -1)
                         {
                             addFileToVector = false;
                             break;
@@ -1093,10 +1093,10 @@ int SetActiveTheme(CString pathToTheme)
         CString pathToThemeXml = GetPathToM2DCActiveThemeDirectory();
         pathToThemeXml += "\\HTCHomeSettings.xml";
 
-        HTCHomeSettingsClockSettings clockSettings;
+        HTCHomeSettingsStruct xmlSettings;
 
-        ReadClockValuesFromXml(pathToThemeXml, &clockSettings);
-        WriteClockValuesToXml(GetPathToHTCHomeSettingsXmlFileWorking(), &clockSettings);
+        ReadClockValuesFromXml(pathToThemeXml, &xmlSettings);
+        WriteClockValuesToXml(GetPathToHTCHomeSettingsXmlFileWorking(), &xmlSettings);
 
         AfxGetApp()->EndWaitCursor();
         EndMakingChanges();
@@ -1144,9 +1144,9 @@ void GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector)
     }
 }
 
-void ReadClockValuesFromXml(CString xmlFilePath, HTCHomeSettingsClockSettings* clockSettings)
+void ReadClockValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
 {
-    if((clockSettings != NULL) && (FileExists(xmlFilePath)))
+    if((xmlSettings != NULL) && (FileExists(xmlFilePath)))
     {
         TiXmlDocument doc(GetConstCharStarFromCString(xmlFilePath));
         bool loadOkay = doc.LoadFile();
@@ -1156,7 +1156,6 @@ void ReadClockValuesFromXml(CString xmlFilePath, HTCHomeSettingsClockSettings* c
             TiXmlHandle docHandle(&doc);
 
             TiXmlElement* imageListElement = docHandle.FirstChild("HTCHome").FirstChild("ImageList").Element();
-
             if(imageListElement != NULL)
             {
                 TiXmlElement* imageListItemElement = imageListElement->FirstChildElement();
@@ -1166,7 +1165,8 @@ void ReadClockValuesFromXml(CString xmlFilePath, HTCHomeSettingsClockSettings* c
                     int currentIndex = -1;
                     imageListItemElement->QueryIntAttribute("index", &currentIndex);
 
-                    if(((currentIndex >= 121) && (currentIndex <= 128)) ||
+                    if(((currentIndex >= 40) && (currentIndex <= 57)) ||
+                        ((currentIndex >= 121) && (currentIndex <= 128)) ||
                         ((currentIndex >= 209) && (currentIndex <= 216)))
                     {
                         CString nameStr(imageListItemElement->Attribute("name"));
@@ -1175,7 +1175,7 @@ void ReadClockValuesFromXml(CString xmlFilePath, HTCHomeSettingsClockSettings* c
                         ili.index = currentIndex;
                         ili.name = nameStr;
 
-                        clockSettings->imageListImages.push_back(ili);
+                        xmlSettings->imageListImages.push_back(ili);
                     }
 
                     imageListItemElement = imageListItemElement->NextSiblingElement();
@@ -1183,7 +1183,6 @@ void ReadClockValuesFromXml(CString xmlFilePath, HTCHomeSettingsClockSettings* c
             }
 
             TiXmlElement* homeWidgetElement = docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").FirstChild("HomeWidget").Element();
-
             if(homeWidgetElement != NULL)
             {
                 TiXmlElement* homeWidgetPropertyElement = homeWidgetElement->FirstChildElement();
@@ -1193,27 +1192,46 @@ void ReadClockValuesFromXml(CString xmlFilePath, HTCHomeSettingsClockSettings* c
                     int currentId = -1;
                     homeWidgetPropertyElement->QueryIntAttribute("id", &currentId);
 
-                    if((currentId >= 0) && (currentId <= 10))
-                    {
-                        CString valueStr(homeWidgetPropertyElement->Attribute("value"));
+                    CString valueStr(homeWidgetPropertyElement->Attribute("value"));
 
-                        HomeWidgetProperty hwp;
-                        hwp.id = currentId;
-                        hwp.value = valueStr;
+                    WidgetProperty homeWidgetProp;
+                    homeWidgetProp.id = currentId;
+                    homeWidgetProp.value = valueStr;
 
-                        clockSettings->homeWidgetProperties.push_back(hwp);
-                    }
+                    xmlSettings->homeWidgetProperties.push_back(homeWidgetProp);
 
                     homeWidgetPropertyElement = homeWidgetPropertyElement->NextSiblingElement();
+                }
+            }
+
+            TiXmlElement* tabWidgetElement = docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").FirstChild("TabWidget").Element();
+            if(tabWidgetElement != NULL)
+            {
+                TiXmlElement* tabWidgetPropertyElement = tabWidgetElement->FirstChildElement();
+
+                while(tabWidgetPropertyElement != NULL)
+                {
+                    int currentId = -1;
+                    tabWidgetPropertyElement->QueryIntAttribute("id", &currentId);
+
+                    CString valueStr(tabWidgetPropertyElement->Attribute("value"));
+
+                    WidgetProperty tabWidgetProp;
+                    tabWidgetProp.id = currentId;
+                    tabWidgetProp.value = valueStr;
+
+                    xmlSettings->tabWidgetProperties.push_back(tabWidgetProp);
+
+                    tabWidgetPropertyElement = tabWidgetPropertyElement->NextSiblingElement();
                 }
             }
         }
     }
 }
 
-void WriteClockValuesToXml(CString xmlFilePath, HTCHomeSettingsClockSettings* clockSettings)
+void WriteClockValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
 {
-    if((clockSettings != NULL) && (FileExists(xmlFilePath)))
+    if((xmlSettings != NULL) && (FileExists(xmlFilePath)))
     {
         TiXmlDocument doc(GetConstCharStarFromCString(xmlFilePath));
         bool loadOkay = doc.LoadFile();
@@ -1223,7 +1241,6 @@ void WriteClockValuesToXml(CString xmlFilePath, HTCHomeSettingsClockSettings* cl
             TiXmlHandle docHandle(&doc);
 
             TiXmlElement* imageListElement = docHandle.FirstChild("HTCHome").FirstChild("ImageList").Element();
-
             if(imageListElement != NULL)
             {
                 TiXmlElement* imageListItemElement = imageListElement->FirstChildElement();
@@ -1233,12 +1250,12 @@ void WriteClockValuesToXml(CString xmlFilePath, HTCHomeSettingsClockSettings* cl
                     int currentIndex = -1;
                     imageListItemElement->QueryIntAttribute("index", &currentIndex);
 
-                    for(size_t i=0; i<clockSettings->imageListImages.size(); i++)
+                    for(size_t i=0; i<xmlSettings->imageListImages.size(); i++)
                     {
-                        if(clockSettings->imageListImages[i].index == currentIndex)
+                        if(xmlSettings->imageListImages[i].index == currentIndex)
                         {
                             imageListItemElement->SetAttribute("name",
-                                GetConstCharStarFromCString(clockSettings->imageListImages[i].name));
+                                GetConstCharStarFromCString(xmlSettings->imageListImages[i].name));
                             break;
                         }
                     }
@@ -1248,7 +1265,6 @@ void WriteClockValuesToXml(CString xmlFilePath, HTCHomeSettingsClockSettings* cl
             }
 
             TiXmlElement* homeWidgetElement = docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").FirstChild("HomeWidget").Element();
-
             if(homeWidgetElement != NULL)
             {
                 TiXmlElement* homeWidgetPropertyElement = homeWidgetElement->FirstChildElement();
@@ -1258,12 +1274,12 @@ void WriteClockValuesToXml(CString xmlFilePath, HTCHomeSettingsClockSettings* cl
                     int currentId = -1;
                     homeWidgetPropertyElement->QueryIntAttribute("id", &currentId);
 
-                    for(size_t i=0; i<clockSettings->homeWidgetProperties.size(); i++)
+                    for(size_t i=0; i<xmlSettings->homeWidgetProperties.size(); i++)
                     {
-                        if(clockSettings->homeWidgetProperties[i].id == currentId)
+                        if(xmlSettings->homeWidgetProperties[i].id == currentId)
                         {
                             homeWidgetPropertyElement->SetAttribute("value",
-                                GetConstCharStarFromCString(clockSettings->homeWidgetProperties[i].value));
+                                GetConstCharStarFromCString(xmlSettings->homeWidgetProperties[i].value));
                             break;
                         }
                     }
@@ -1272,7 +1288,59 @@ void WriteClockValuesToXml(CString xmlFilePath, HTCHomeSettingsClockSettings* cl
                 }
             }
 
+            TiXmlElement* tabWidgetElement = docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").FirstChild("TabWidget").Element();
+            if(tabWidgetElement != NULL)
+            {
+                TiXmlElement* tabWidgetPropertyElement = tabWidgetElement->FirstChildElement();
+
+                while(tabWidgetPropertyElement != NULL)
+                {
+                    int currentId = -1;
+                    tabWidgetPropertyElement->QueryIntAttribute("id", &currentId);
+
+                    for(size_t i=0; i<xmlSettings->tabWidgetProperties.size(); i++)
+                    {
+                        if(xmlSettings->tabWidgetProperties[i].id == currentId)
+                        {
+                            tabWidgetPropertyElement->SetAttribute("value",
+                                GetConstCharStarFromCString(xmlSettings->tabWidgetProperties[i].value));
+                            break;
+                        }
+                    }
+
+                    tabWidgetPropertyElement = tabWidgetPropertyElement->NextSiblingElement();
+                }
+            }
+
             doc.SaveFile();
         }
     }
+}
+
+bool ArchiveContainsHTCHomeSettingsXml(CString filePath)
+{
+    bool retVal = false;
+
+    HZIP hz = OpenZip(filePath, 0);
+    ZIPENTRY ze;
+
+    // -1 gives overall information about the zipfile
+    GetZipItem(hz,-1,&ze);
+
+    CManilla2DConfigProgressDlg progDlg(AfxGetApp()->GetMainWnd());
+
+    int numitems = ze.index;
+
+    for(int zi=0; ((zi<numitems) && (!retVal)); zi++)
+    {
+        ZIPENTRY ze;
+        GetZipItem(hz, zi, &ze);            // fetch individual details
+
+        CString filePathFromZip(ze.name);
+        retVal = (filePathFromZip.Find(TEXT("HTCHomeSettings.xml")) != -1);
+    }
+
+    CloseZip(hz);
+
+    return retVal;
 }

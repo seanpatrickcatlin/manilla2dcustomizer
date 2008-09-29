@@ -20,6 +20,7 @@
 
 #include "stdafx.h"
 #include "Manilla2DConfig.h"
+#include "Manilla2DConfigUtils.h"
 #include "FileTreeDlg.h"
 
 #ifdef _DEBUG
@@ -187,6 +188,30 @@ void CFileTreeDlg::AddDirectoryToFileSystemTree(HTREEITEM parentItem, CString di
     int childCount = 0;
     AfxGetApp()->BeginWaitCursor();
 
+    std::vector<CString> validExtensions;
+
+    CString extensionList = m_targetFileExtension;
+
+    while(extensionList.GetLength() > 0)
+    {
+        int newPos = extensionList.Find('|');
+
+        CString fileExt;
+
+        if((newPos >= 0) && (newPos < extensionList.GetLength()))
+        {
+            fileExt = extensionList.Mid(0, newPos);
+            extensionList = extensionList.Mid(newPos+1);
+        }
+        else
+        {
+            fileExt = extensionList;
+            extensionList.Empty();
+        }
+
+        validExtensions.push_back(fileExt);
+    }
+
     CString fileToFind = directoryPath;
 
     if(fileToFind[fileToFind.GetLength()-1] != '\\')
@@ -228,7 +253,17 @@ void CFileTreeDlg::AddDirectoryToFileSystemTree(HTREEITEM parentItem, CString di
 
                 TRACE(debugMsg);
 
-                if((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) || (fileExtension == m_targetFileExtension))
+                bool addItem = ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+
+                for(size_t i=0; (i<validExtensions.size()) && (!addItem); i++)
+                {
+                    if(fileExtension == validExtensions[i])
+                    {
+                        addItem = ArchiveContainsHTCHomeSettingsXml(fullFilePath);
+                    }
+                }
+
+                if(addItem)
                 {
                     int imageIndex = GetSysIlIndex(fullFilePath);
 
