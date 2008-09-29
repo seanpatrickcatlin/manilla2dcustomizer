@@ -1,7 +1,9 @@
 Manilla 2D Customizer changelog
 
-Sep-??-2008
-v0.6.??
+Sep-29-2008
+v0.6.97
+* Theme management support, see the forums and the include readme.txt
+   file for more information
 * modified the apptodate xml file location
    (now looks for it directly from the subverison repository web access)
 * fixed icon support for apptodate
