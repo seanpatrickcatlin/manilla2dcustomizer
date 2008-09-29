@@ -191,9 +191,10 @@ void CFileTreeDlg::AddDirectoryToFileSystemTree(HTREEITEM parentItem, CString di
 
     if(fileToFind[fileToFind.GetLength()-1] != '\\')
     {
-        fileToFind += "\\*.";
+        fileToFind += "\\";
     }
-    fileToFind += m_targetFileExtension;
+
+    fileToFind += "*";
 
     WIN32_FIND_DATA findData;
     HANDLE hFindHandle = FindFirstFile(fileToFind, &findData);
@@ -215,28 +216,43 @@ void CFileTreeDlg::AddDirectoryToFileSystemTree(HTREEITEM parentItem, CString di
 
                 fullFilePath += findData.cFileName;
 
-                int imageIndex = GetSysIlIndex(fullFilePath);
+                CString fileExtension = findData.cFileName;
+                fileExtension = fileExtension.Mid(fileExtension.ReverseFind('.')+1);
 
-                HTREEITEM newItem = m_fileTreeControl.InsertItem(
-                    findData.cFileName, imageIndex, imageIndex, parentItem, TVI_LAST);
+                CString debugMsg = findData.cFileName;
+                debugMsg += " ";
+                debugMsg += fullFilePath;
+                debugMsg += " ";
+                debugMsg += fileExtension;
+                debugMsg += "\n";
 
-                TVITEM tvi;
-                tvi.mask = TVIF_PARAM;
-                tvi.lParam = (LPARAM)newItem;
-                tvi.hItem = newItem;
-                m_fileTreeControl.SetItem(&tvi);
+                TRACE(debugMsg);
 
-                if(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+                if((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) || (fileExtension == m_targetFileExtension))
                 {
-                    TVITEM tviDir;
-                    tviDir.mask = TVIF_CHILDREN;
-                    tviDir.cChildren = 1;
-                    tviDir.hItem = newItem;
+                    int imageIndex = GetSysIlIndex(fullFilePath);
 
-                    m_fileTreeControl.SetItem(&tviDir);
+                    HTREEITEM newItem = m_fileTreeControl.InsertItem(
+                        findData.cFileName, imageIndex, imageIndex, parentItem, TVI_LAST);
+
+                    TVITEM tvi;
+                    tvi.mask = TVIF_PARAM;
+                    tvi.lParam = (LPARAM)newItem;
+                    tvi.hItem = newItem;
+                    m_fileTreeControl.SetItem(&tvi);
+
+                    if(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+                    {
+                        TVITEM tviDir;
+                        tviDir.mask = TVIF_CHILDREN;
+                        tviDir.cChildren = 1;
+                        tviDir.hItem = newItem;
+
+                        m_fileTreeControl.SetItem(&tviDir);
+                    }
+
+                    childCount++;
                 }
-
-                childCount++;
             }
 
             retVal = FindNextFile(hFindHandle, &findData);
