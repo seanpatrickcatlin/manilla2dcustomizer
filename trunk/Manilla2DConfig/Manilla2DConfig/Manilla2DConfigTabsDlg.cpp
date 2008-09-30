@@ -268,28 +268,27 @@ void CManilla2DConfigTabsDlg::PopulateWidgetVectorsFromCurrentHTCHomeSettingsXml
 
     if(loadOkay)
     {
-        TiXmlHandle docHandle(&doc);
-
-        TiXmlElement* tabElement = docHandle.FirstChild("HTCHome").FirstChild("Tabs").Element();
-
-        if(tabElement != NULL)
+        for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome");
+            htcHomeNode != NULL;
+            htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
         {
-            TiXmlElement* tabItemElement = NULL;
-
-            tabItemElement = tabElement->FirstChildElement();
-
-            while(tabItemElement != NULL)
+            for(TiXmlNode* tabsNode = htcHomeNode->FirstChild("Tabs");
+                tabsNode != NULL;
+                tabsNode = tabsNode->NextSibling("Tabs"))
             {
-                NameAndEnabledStateItem newTabEntry;
-                newTabEntry.name = tabItemElement->Value();
+                for(TiXmlElement* tabsNodeChildElement = tabsNode->FirstChildElement();
+                    tabsNodeChildElement != NULL;
+                    tabsNodeChildElement = tabsNodeChildElement->NextSiblingElement())
+                {
+                    NameAndEnabledStateItem newTabEntry;
+                    newTabEntry.name = tabsNodeChildElement->Value();
 
-                int enabled;
-                tabItemElement->QueryIntAttribute("enable", &enabled);
-                newTabEntry.enabled = (enabled == 0 ? FALSE : TRUE);
+                    int enabled;
+                    tabsNodeChildElement->QueryIntAttribute("enable", &enabled);
+                    newTabEntry.enabled = (enabled == 0 ? FALSE : TRUE);
 
-                m_currentWidgetVector.push_back(newTabEntry);
-
-                tabItemElement = tabItemElement->NextSiblingElement();
+                    m_currentWidgetVector.push_back(newTabEntry);
+                }
             }
         }
     }
@@ -304,49 +303,77 @@ void CManilla2DConfigTabsDlg::WriteHTCHomeSettingsXmlFileFromNewWidgetVector()
 
     if(loadOkay)
     {
-        TiXmlHandle docHandle(&doc);
+        TiXmlNode* firstHtcHomeNode = doc.FirstChild("HTCHome");
 
-        TiXmlElement* tabElement = docHandle.FirstChild("HTCHome").FirstChild("Tabs").Element();
-
-        if(tabElement != NULL)
+        if(firstHtcHomeNode != NULL)
         {
-            TiXmlElement* tabItemElement = NULL;
-
-            tabItemElement = tabElement->FirstChildElement();
-
-            vector<TiXmlElement> elementList;
-
-            // go through, set the attribute for enabled, copy the element to the vector, remove the element
-            while(tabItemElement != NULL)
+            for(TiXmlNode* nextHtcHomeNode = firstHtcHomeNode->NextSibling("HTCHome");
+                nextHtcHomeNode != NULL;
+                nextHtcHomeNode = nextHtcHomeNode->NextSibling("HTCHome"))
             {
-                CString elementName(tabItemElement->Value());
-
-                for(size_t i=0; i<m_newWidgetVector.size(); i++)
+                // copy any child nodes to the first htchome node
+                for(TiXmlNode* nextHtcHomeNodeChild = nextHtcHomeNode->FirstChild();
+                    nextHtcHomeNodeChild != NULL;
+                    nextHtcHomeNodeChild = nextHtcHomeNodeChild->NextSibling())
                 {
-                    if(elementName == m_newWidgetVector[i].name)
+                    firstHtcHomeNode->InsertEndChild(*nextHtcHomeNodeChild);
+                }
+
+                // remove this secondary htchomenode
+                doc.RemoveChild(nextHtcHomeNode);
+            }
+
+            TiXmlNode* firstTabsNode = firstHtcHomeNode->FirstChild("Tabs");
+            
+            if(firstTabsNode != NULL)
+            {
+                for(TiXmlNode* nextTabsNode = firstTabsNode->NextSibling("Tabs");
+                    nextTabsNode != NULL;
+                    nextTabsNode = nextTabsNode->NextSibling("Tabs"))
+                {
+                    for(TiXmlNode* nextTabsNodeChild = nextTabsNode->FirstChild();
+                        nextTabsNodeChild != NULL;
+                        nextTabsNodeChild = nextTabsNodeChild->NextSibling())
                     {
-                        tabItemElement->SetAttribute("enable", m_newWidgetVector[i].enabled);
-                        elementList.push_back(*tabItemElement);
-                        tabElement->RemoveChild(tabItemElement);
-                        break;
+                        firstTabsNode->InsertEndChild(*nextTabsNodeChild);
+                    }
+
+                    firstHtcHomeNode->RemoveChild(nextTabsNode);
+                }
+
+                // now we are guaranteed to be in the only tabs node that exists
+                vector<TiXmlElement> elementList;
+
+                // go through, set the attribute for enabled, copy the element to the vector, remove the element
+                for(TiXmlElement* tabsNodeChildElement = firstTabsNode->FirstChildElement();
+                    tabsNodeChildElement != NULL;
+                    tabsNodeChildElement = tabsNodeChildElement->NextSiblingElement())
+                {
+                    CString elementName(tabsNodeChildElement->Value());
+
+                    for(size_t i=0; i<m_newWidgetVector.size(); i++)
+                    {
+                        if(elementName == m_newWidgetVector[i].name)
+                        {
+                            tabsNodeChildElement->SetAttribute("enable", m_newWidgetVector[i].enabled);
+                            elementList.push_back(*tabsNodeChildElement);
+                            firstTabsNode->RemoveChild(tabsNodeChildElement);
+                            break;
+                        }
                     }
                 }
 
-                tabItemElement = tabItemElement->NextSiblingElement();
-            }
-
-            // go through, set the attribute for enabled, copy the element to the vector, remove the element
-
-            for(size_t i=0; i<m_newWidgetVector.size(); i++)
-            {
-                for(size_t j=0; j<elementList.size(); j++)
+                for(size_t i=0; i<m_newWidgetVector.size(); i++)
                 {
-                    CString elementName(elementList[j].Value());
-
-                    if(elementName == m_newWidgetVector[i].name)
+                    for(size_t j=0; j<elementList.size(); j++)
                     {
-                        tabElement->InsertEndChild(elementList[j]);
-                        break;
+                        CString elementName(elementList[j].Value());
+
+                        if(elementName == m_newWidgetVector[i].name)
+                        {
+                            firstTabsNode->InsertEndChild(elementList[j]);
+                            break;
+                        }
                     }
                 }
             }
