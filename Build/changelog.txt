@@ -1,6 +1,23 @@
 Manilla 2D Customizer changelog
 
-Sep-29-2008
+Sep-30-2008
+v0.7.104
+* oops, the theme management support for 0.6.97 was not future proof, so when updating to
+   this version your default theme will be applied.  Your themes wil lstill exist, you
+   will just have to re apply them
+* added support for *.zip theme files... the cath is that the zip file must contain a 
+   HTCHomeSettings.xml file in it
+* added support for multiple instances of the same named node, thanks to ababrekar from
+   xda-developers forexample
+* added support for 3, 4, or 5 columsn, and 3, 6, or 9 rows in the launcher, thanks to 
+   kidnamedAlbert from xda-developers for example
+* attempt at more robust theme support, now reads and uses all values from
+   Imageslist, TabWidget, and HomeWidget in hte theme HTCHomeSettings.xml file,
+   I still see some bugs though (digital clock showing up in weird places, maybe due to
+   the skin developer removing the actual file rather than commenting out the xml
+   element or just giving the xml element an invalid name)
+
+Sep-28-2008
 v0.6.97
 * Theme management support, see the forums and the include readme.txt
    file for more information
