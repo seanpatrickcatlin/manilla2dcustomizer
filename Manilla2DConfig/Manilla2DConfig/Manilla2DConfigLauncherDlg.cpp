@@ -197,29 +197,34 @@ void CManilla2DConfigLauncherDlg::ReadValuesFromXml()
 
     if(loadOkay)
     {
-        TiXmlHandle docHandle(&doc);
-
-        TiXmlElement* lwElement =
-            docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").FirstChild("LauncherWidget").Element();
-
-        if(lwElement != NULL)
+        for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome");
+            htcHomeNode != NULL;
+            htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
         {
-            TiXmlElement* lwItemElement = lwElement->FirstChildElement();
-
-            while(lwItemElement != NULL)
+            for(TiXmlNode* widgetPropertyNode = htcHomeNode->FirstChild("WidgetProperty");
+                widgetPropertyNode != NULL;
+                widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
             {
-                std::string currentPropertyName = lwItemElement->Attribute("name");
-
-                if(currentPropertyName.compare(launcherColStr) == 0)
+                for(TiXmlNode* launcherWidgetNode = widgetPropertyNode->FirstChild("LauncherWidget");
+                    launcherWidgetNode != NULL;
+                    launcherWidgetNode = launcherWidgetNode->NextSibling("LauncherWidget"))
                 {
-                    lwItemElement->QueryIntAttribute("value", &m_numberOfColumns);
-                }
-                else if(currentPropertyName.compare(launcherRowStr) == 0)
-                {
-                    lwItemElement->QueryIntAttribute("value", &m_numberOfRows);
-                }
+                    for(TiXmlElement* launcherWidgetChildElement = launcherWidgetNode->FirstChildElement();
+                        launcherWidgetChildElement != NULL;
+                        launcherWidgetChildElement = launcherWidgetChildElement->NextSiblingElement())
+                    {
+                        std::string currentPropertyName = launcherWidgetChildElement->Attribute("name");
 
-                lwItemElement = lwItemElement->NextSiblingElement();
+                        if(currentPropertyName.compare(launcherColStr) == 0)
+                        {
+                            launcherWidgetChildElement->QueryIntAttribute("value", &m_numberOfColumns);
+                        }
+                        else if(currentPropertyName.compare(launcherRowStr) == 0)
+                        {
+                            launcherWidgetChildElement->QueryIntAttribute("value", &m_numberOfRows);
+                        }
+                    }
+                }
             }
         }
     }
@@ -274,40 +279,45 @@ void CManilla2DConfigLauncherDlg::WriteValuesToXml()
 
     if(loadOkay)
     {
-        TiXmlHandle docHandle(&doc);
-
-        TiXmlElement* lwElement =
-            docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").FirstChild("LauncherWidget").Element();
-
-        if(lwElement != NULL)
+        for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome");
+            htcHomeNode != NULL;
+            htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
         {
-            TiXmlElement* lwItemElement = lwElement->FirstChildElement();
-
-            while(lwItemElement != NULL)
+            for(TiXmlNode* widgetPropertyNode = htcHomeNode->FirstChild("WidgetProperty");
+                widgetPropertyNode != NULL;
+                widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
             {
-                std::string currentPropertyName = lwItemElement->Attribute("name");
+                for(TiXmlNode* launcherWidgetNode = widgetPropertyNode->FirstChild("LauncherWidget");
+                    launcherWidgetNode != NULL;
+                    launcherWidgetNode = launcherWidgetNode->NextSibling("LauncherWidget"))
+                {
+                    for(TiXmlElement* launcherWidgetChildElement = launcherWidgetNode->FirstChildElement();
+                        launcherWidgetChildElement != NULL;
+                        launcherWidgetChildElement = launcherWidgetChildElement->NextSiblingElement())
+                    {
+                        std::string currentPropertyName = launcherWidgetChildElement->Attribute("name");
 
-                if(currentPropertyName.compare(launcherColStr) == 0)
-                {
-                    lwItemElement->SetAttribute("value", colStr.c_str());
+                        if(currentPropertyName.compare(launcherColStr) == 0)
+                        {
+                            launcherWidgetChildElement->SetAttribute("value", colStr.c_str());
+                        }
+                        else if(currentPropertyName.compare(launcherStartPointStr) == 0)
+                        {
+                            launcherWidgetChildElement->SetAttribute("value", startPoint.c_str());
+                        }
+                        else if(currentPropertyName.compare(launcherRowStr) == 0)
+                        {
+                            launcherWidgetChildElement->SetAttribute("value", rowStr.c_str());
+                        }
+                        else if(currentPropertyName.compare(launcherYIntervalStr) == 0)
+                        {
+                            launcherWidgetChildElement->SetAttribute("value", yIntStr.c_str());
+                        }
+                    }
                 }
-                else if(currentPropertyName.compare(launcherStartPointStr) == 0)
-                {
-                    lwItemElement->SetAttribute("value", startPoint.c_str());
-                }
-                else if(currentPropertyName.compare(launcherRowStr) == 0)
-                {
-                    lwItemElement->SetAttribute("value", rowStr.c_str());
-                }
-                else if(currentPropertyName.compare(launcherYIntervalStr) == 0)
-                {
-                    lwItemElement->SetAttribute("value", yIntStr.c_str());
-                }  
-
-                lwItemElement = lwItemElement->NextSiblingElement();
             }
-
-            doc.SaveFile();
         }
+
+        doc.SaveFile();
     }
 }

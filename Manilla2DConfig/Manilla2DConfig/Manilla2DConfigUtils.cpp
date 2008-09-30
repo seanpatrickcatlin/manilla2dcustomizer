@@ -1237,8 +1237,9 @@ void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
             if(firstHtcHomeNode != NULL)
             {
                 // Remove all other htcHomeNodes, and add their children to the first htchome node
-                TiXmlNode* nextHtcHomeNode = firstHtcHomeNode->NextSibling("HTCHome");
-                while(nextHtcHomeNode != NULL)
+                for(TiXmlNode* nextHtcHomeNode = firstHtcHomeNode->NextSibling("HTCHome");
+                    nextHtcHomeNode != NULL;
+                    nextHtcHomeNode = nextHtcHomeNode->NextSibling("HTCHome"))
                 {
                     for(TiXmlNode* nextHtcHomeChildNode = nextHtcHomeNode->FirstChild();
                         nextHtcHomeChildNode != NULL;
@@ -1247,23 +1248,19 @@ void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
                         firstHtcHomeNode->InsertEndChild(*nextHtcHomeChildNode);
                     }
 
-                    TiXmlNode* curHtcHomeNode = nextHtcHomeNode;
-                    nextHtcHomeNode = nextHtcHomeNode->NextSibling("HTCHome");
-
-                    doc.RemoveChild(curHtcHomeNode);
+                    doc.RemoveChild(nextHtcHomeNode);
                 }
 
                 TiXmlNode* firstImageListNode = firstHtcHomeNode->FirstChild("ImageList");
+
                 if(firstImageListNode != NULL)
                 {
                     // just remove all non first image list nodes
-                    TiXmlNode* nextImageListNode = firstImageListNode->NextSibling("ImageList");
-                    while(nextImageListNode != NULL)
+                    for(TiXmlNode* nextImageListNode = firstImageListNode->NextSibling("ImageList");
+                        nextImageListNode != NULL;
+                        nextImageListNode = nextImageListNode->NextSibling("ImageList"))
                     {
-                        TiXmlNode* curImageListNode = nextImageListNode;
-                        nextImageListNode = nextImageListNode->NextSibling("ImageList");
-
-                        firstHtcHomeNode->RemoveChild(curImageListNode);
+                        firstHtcHomeNode->RemoveChild(nextImageListNode);
                     }
 
                     // now we are guaranteed to be the only "ImageList" Node in the document
@@ -1276,11 +1273,14 @@ void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
                 }
 
                 TiXmlNode* firstWidgetPropertyNode = firstHtcHomeNode->FirstChild("WidgetProperty");
+
                 if(firstWidgetPropertyNode != NULL)
                 {
                     // copy all children on non firl widget property nodes to the first widget property noded
-                    TiXmlNode* nextWidgetPropertyNode = firstWidgetPropertyNode->NextSibling("WidgetProperty");
-                    while(nextWidgetPropertyNode != NULL)
+                    for(TiXmlNode* nextWidgetPropertyNode = firstWidgetPropertyNode->NextSibling("WidgetProperty");
+                        nextWidgetPropertyNode != NULL;
+                        nextWidgetPropertyNode = nextWidgetPropertyNode->NextSibling("WidgetProperty"))
+
                     {
                         for(TiXmlNode* nextWidgetPropertyChildNode = nextWidgetPropertyNode->FirstChild();
                             nextWidgetPropertyChildNode != NULL;
@@ -1289,23 +1289,19 @@ void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
                             firstWidgetPropertyNode->InsertEndChild(*nextWidgetPropertyChildNode);
                         }
 
-                        TiXmlNode* curWidgetPropertyNode = nextWidgetPropertyNode;
-                        nextWidgetPropertyNode = nextWidgetPropertyNode->NextSibling("WidgetProperty");
-
-                        firstHtcHomeNode->RemoveChild(curWidgetPropertyNode);
+                        firstHtcHomeNode->RemoveChild(nextWidgetPropertyNode);
                     }
 
                     TiXmlNode* firstHomeWidgetNode = firstWidgetPropertyNode->FirstChild("HomeWidget");
+
                     if(firstHomeWidgetNode != NULL)
                     {
                         // just remove all non first HomeWidget nodes
-                        TiXmlNode* nextHomeWidgetNode = firstHomeWidgetNode->NextSibling("HomeWidget");
-                        while(nextHomeWidgetNode != NULL)
+                        for(TiXmlNode* nextHomeWidgetNode = firstHomeWidgetNode->NextSibling("HomeWidget");
+                            nextHomeWidgetNode != NULL;
+                            nextHomeWidgetNode = nextHomeWidgetNode->NextSibling("HomeWidget"))
                         {
-                            TiXmlNode* curHomeWidgetNode = nextHomeWidgetNode;
-                            nextHomeWidgetNode = nextHomeWidgetNode->NextSibling("HomeWidget");
-
-                            firstWidgetPropertyNode->RemoveChild(curHomeWidgetNode);
+                            firstWidgetPropertyNode->RemoveChild(nextHomeWidgetNode);
                         }
 
                         // now we are guaranteed to be the only home widget node
@@ -1320,13 +1316,11 @@ void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
                     if(firstTabWidgetNode != NULL)
                     {
                         // just remove all non first TabWidget nodes
-                        TiXmlNode* nextTabWidgetNode = firstTabWidgetNode->NextSibling("TabWidget");
-                        while(nextTabWidgetNode != NULL)
+                        for(TiXmlNode* nextTabWidgetNode = firstTabWidgetNode->NextSibling("TabWidget");
+                            nextTabWidgetNode != NULL;
+                            nextTabWidgetNode = nextTabWidgetNode->NextSibling("TabWidget"))
                         {
-                            TiXmlNode* curTabWidgetNode = nextTabWidgetNode;
-                            nextTabWidgetNode = nextTabWidgetNode->NextSibling("TabWidget");
-
-                            firstWidgetPropertyNode->RemoveChild(curTabWidgetNode);
+                            firstWidgetPropertyNode->RemoveChild(nextTabWidgetNode);
                         }
 
                         // now we are guaranteed to be the only tab widget node
