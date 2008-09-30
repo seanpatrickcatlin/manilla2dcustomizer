@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "TinyXml.h"
 #include <vector>
 using std::vector;
 
@@ -34,23 +35,11 @@ struct TodayScreenRegBackup
     NameAndEnabledState_vector_t itemVector;
 };
 
-struct ImageListImage
-{
-    int index;
-    CString name;
-};
-
-struct WidgetProperty
-{
-    int id;
-    CString value;
-};
-
 struct HTCHomeSettingsStruct
 {
-    std::vector<ImageListImage> imageListImages;
-    std::vector<WidgetProperty> tabWidgetProperties;
-    std::vector<WidgetProperty> homeWidgetProperties;
+    std::vector<TiXmlElement> imageListImageElements;
+    std::vector<TiXmlElement> tabWidgetPropertyElements;
+    std::vector<TiXmlElement> homeWidgetPropertyElements;
 };
 
 void PrintNameAndEnabledStateVector(NameAndEnabledState_vector_t nameAndStateVector);
