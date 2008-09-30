@@ -891,9 +891,6 @@ bool IsM2DCThemeSupportEnabled()
         // check to see if the Zip file exists
         bool HH_FilesZipBackupExists = FileExists(GetPathToThemeBackupFile());
 
-        // check to see if the local themes folder exists and is not empty
-        bool isCurrentThemeDirEmpty = IsDirEmpty(GetPathToM2DCActiveThemeDirectory());
-
         // check to make sure that the xml file in \Windows references the local theme folder
         bool isXmlFileSetToUseCurrentThemeDir = false;
 
@@ -913,7 +910,16 @@ bool IsM2DCThemeSupportEnabled()
             }
         }
 
-        g_bThemeSupportEnabled = (HH_FilesZipBackupExists && !isCurrentThemeDirEmpty && isXmlFileSetToUseCurrentThemeDir);
+        g_bThemeSupportEnabled = (HH_FilesZipBackupExists && isXmlFileSetToUseCurrentThemeDir);
+
+        if(HH_FilesZipBackupExists && !g_bThemeSupportEnabled)
+        {
+            CString msg("Oops! M2DC_v0.6.97 had a bug that corrupted future theme support.\n");
+            msg += "Disabling theme support and restoring default theme now";
+            AfxMessageBox(msg);
+
+            RestoreM2DCFiles(true);
+        }
 
         AfxGetApp()->EndWaitCursor();
     }
