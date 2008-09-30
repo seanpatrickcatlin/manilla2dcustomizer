@@ -740,74 +740,100 @@ void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool
 {
     if(pPathVector != NULL)
     {
-        CString basePath = TEXT("\\Windows\\");
-
         TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileActual()));
         bool loadOkay = doc.LoadFile();
 
+        CString basePath;
+        
         if(loadOkay)
         {
-            TiXmlHandle docHandle(&doc);
-
-            TiXmlElement* imageListElement = docHandle.FirstChild("HTCHome").FirstChild("ImageList").Element();
-
-            if(imageListElement != NULL)
+            for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome"); 
+                htcHomeNode != NULL;
+                htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
             {
-                basePath = imageListElement->Attribute("path");
-
-                if(basePath[basePath.GetLength()-1] != '\\')
+                for(TiXmlNode* imageListNode = htcHomeNode->FirstChild("ImageList");
+                    imageListNode != NULL;
+                    imageListNode = imageListNode->NextSibling("ImageList"))
                 {
-                    basePath += '\\';
-                }
+                    TiXmlElement* imageListElement = imageListNode->ToElement();
 
-                TiXmlElement* imageListItemElement = imageListElement->FirstChildElement();
-
-                while(imageListItemElement != NULL)
-                {
-                    CString currentFilePath(imageListItemElement->Attribute("name"));
-
-                    if(currentFilePath.Find(TEXT("HH_")) != -1)
+                    if(imageListElement != NULL)
                     {
-                        if(currentFilePath.Find('\\') == -1)
+                        basePath = imageListElement->Attribute("path");
+
+                        if(basePath.GetLength() <= 0)
                         {
-                            currentFilePath = basePath + currentFilePath;
+                            basePath = TEXT("\\Windows");
                         }
 
-                        pPathVector->push_back(currentFilePath);
-                    }
-
-                    imageListItemElement = imageListItemElement->NextSiblingElement();
-                }
-            }
-
-            TiXmlNode* widgetPropertyNode = docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").Node();
-
-            if(widgetPropertyNode != NULL)
-            {
-                TiXmlNode* widgetPropertyChildNode = widgetPropertyNode->FirstChild();
-
-                while(widgetPropertyChildNode != NULL)
-                {
-                    TiXmlElement* widgetPropertyChildElement = widgetPropertyChildNode->FirstChildElement();
-
-                    while(widgetPropertyChildElement != NULL)
-                    {
-                        CString currentValue(widgetPropertyChildElement->Attribute("value"));
-
-                        if(currentValue.Find(TEXT("HH_")) != -1)
+                        if(basePath[basePath.GetLength()-1] != '\\')
                         {
-                            if(currentValue.Find('\\') == -1)
+                            basePath += TEXT("\\");
+                        }
+
+                        for(TiXmlElement* imageListItemElement = imageListElement->FirstChildElement("item");
+                            imageListItemElement != NULL;
+                            imageListItemElement = imageListItemElement->NextSiblingElement("item"))
+                        {
+                            CString currentFilePath(imageListItemElement->Attribute("name"));
+
+                            if((currentFilePath.Find(TEXT("hh_")) != -1) ||
+                                (currentFilePath.Find(TEXT("HH_")) != -1))
                             {
-                                currentValue = basePath + currentValue;
+                                if(currentFilePath.Find('\\') == -1)
+                                {
+                                    currentFilePath = basePath + currentFilePath;
+                                }
+
+                                pPathVector->push_back(currentFilePath);
+                            }
+                        }
+                    }
+                }
+
+                for(TiXmlNode* widgetPropertyNode = htcHomeNode->FirstChild("WidgetProperty");
+                    widgetPropertyNode != NULL;
+                    widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
+                {
+                    for(TiXmlNode* widgetPropertyChildNode = widgetPropertyNode->FirstChild();
+                        widgetPropertyChildNode != NULL;
+                        widgetPropertyChildNode = widgetPropertyChildNode->NextSibling())
+                    {
+                        TiXmlElement* widgetPropertyChildElement = widgetPropertyChildNode->ToElement();
+
+                        if(widgetPropertyChildElement != NULL)
+                        {
+                            basePath = widgetPropertyChildElement->Attribute("path");
+
+                            if(basePath.GetLength() <= 0)
+                            {
+                                basePath = TEXT("\\Windows");
                             }
 
-                            pPathVector->push_back(currentValue);
+                            if(basePath[basePath.GetLength()-1] != '\\')
+                            {
+                                basePath += TEXT("\\");
+                            }
+
+                            for(TiXmlElement* widgetPropertyChildPropertyElement = widgetPropertyChildNode->FirstChildElement();
+                                widgetPropertyChildPropertyElement != NULL;
+                                widgetPropertyChildPropertyElement = widgetPropertyChildPropertyElement->NextSiblingElement())
+                            {
+                                CString currentFilePath(widgetPropertyChildPropertyElement->Attribute("value"));
+
+                                if((currentFilePath.Find(TEXT("hh_")) != -1) ||
+                                    (currentFilePath.Find(TEXT("HH_")) != -1))
+                                {
+                                    if(currentFilePath.Find('\\') == -1)
+                                    {
+                                        currentFilePath = basePath + currentFilePath;
+                                    }
+
+                                    pPathVector->push_back(currentFilePath);
+                                }
+                            }
                         }
-
-                        widgetPropertyChildElement = widgetPropertyChildElement->NextSiblingElement();
                     }
-
-                    widgetPropertyChildNode = widgetPropertyChildNode->NextSibling();
                 }
             }
         }
@@ -818,7 +844,7 @@ void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool
 
             WIN32_FIND_DATA findData;
             CString findString = GetPathToWindowsDirectory();
-            findString += "\\HH_*";
+            findString += "\\*";
             HANDLE hFindHandle = FindFirstFile(findString, &findData);
 
             if(hFindHandle != INVALID_HANDLE_VALUE)
@@ -827,24 +853,30 @@ void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool
 
                 while(keepSearching == TRUE)
                 {
-                    CString currentHH_file = GetPathToWindowsDirectory();
-                    currentHH_file += "\\";
-                    currentHH_file += findData.cFileName;
+                    CString currentFile = findData.cFileName;
 
-                    bool addFileToVector = true;
-
-                    for(size_t i=0; i<pPathVector->size(); i++)
+                    if((currentFile.Find(TEXT("hh_")) != -1) ||
+                        (currentFile.Find(TEXT("HH_")) != -1))
                     {
-                        if((*pPathVector)[i].Find(findData.cFileName) != -1)
+                        CString currentFilePath = GetPathToWindowsDirectory();
+                        currentFilePath += "\\";
+                        currentFilePath += currentFile;
+
+                        bool addFileToVector = true;
+
+                        for(size_t i=0; i<pPathVector->size(); i++)
                         {
-                            addFileToVector = false;
-                            break;
+                            if((*pPathVector)[i].Find(currentFile) != -1)
+                            {
+                                addFileToVector = false;
+                                break;
+                            }
                         }
-                    }
 
-                    if(addFileToVector)
-                    {
-                        pPathVector->push_back(currentHH_file);
+                        if(addFileToVector)
+                        {
+                            pPathVector->push_back(currentFilePath);
+                        }
                     }
 
                     keepSearching = FindNextFile(hFindHandle, &findData);
@@ -932,54 +964,51 @@ void SetThemeDirectoryInActualXmlSettingsFile(CString newDirectory)
 
     if(loadOkay)
     {
-        TiXmlHandle docHandle(&doc);
-
-        TiXmlElement* imageListElement = docHandle.FirstChild("HTCHome").FirstChild("ImageList").Element();
-
-        if(imageListElement != NULL)
+        for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome"); 
+            htcHomeNode != NULL;
+            htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
         {
-            CT2CA pszConvertedAnsiString(newDirectory);
-            std::string tempStr(pszConvertedAnsiString);
-
-            imageListElement->SetAttribute("path", tempStr.c_str());
-
-            TiXmlElement* imageListItemElement = imageListElement->FirstChildElement();
-
-            while(imageListItemElement != NULL)
+            for(TiXmlNode* imageListNode = htcHomeNode->FirstChild("ImageList");
+                imageListNode != NULL;
+                imageListNode = imageListNode->NextSibling("ImageList"))
             {
-                CString currentFilePath(imageListItemElement->Attribute("name"));
+                TiXmlElement* imageListElement = imageListNode->ToElement();
 
-                if(currentFilePath.Find(TEXT("HH_")) != -1)
+                if(imageListElement != NULL)
                 {
-                    if(currentFilePath.Find('\\') != -1)
-                    {
-                        CString fileName = newDirectory;
-                        fileName += currentFilePath.Mid(currentFilePath.ReverseFind('\\'));
+                    imageListElement->SetAttribute("path", GetConstCharStarFromCString(newDirectory));
 
-                        imageListItemElement->SetAttribute("name", GetConstCharStarFromCString(fileName));
+                    for(TiXmlElement* imageListItemElement = imageListElement->FirstChildElement("item");
+                        imageListItemElement != NULL;
+                        imageListItemElement = imageListItemElement->NextSiblingElement("item"))
+                    {
+                        CString currentFilePath(imageListItemElement->Attribute("name"));
+
+                        if(currentFilePath.Find('\\') != -1)
+                        {
+                            CString fileName = newDirectory;
+                            fileName += currentFilePath.Mid(currentFilePath.ReverseFind('\\'));
+
+                            imageListItemElement->SetAttribute("name", GetConstCharStarFromCString(fileName));
+                        }
                     }
                 }
-
-                imageListItemElement = imageListItemElement->NextSiblingElement();
             }
-        }
 
-        TiXmlNode* widgetPropertyNode = docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").Node();
-
-        if(widgetPropertyNode != NULL)
-        {
-            TiXmlNode* widgetPropertyChildNode = widgetPropertyNode->FirstChild();
-
-            while(widgetPropertyChildNode != NULL)
+            for(TiXmlNode* widgetPropertyNode = htcHomeNode->FirstChild("WidgetProperty");
+                widgetPropertyNode != NULL;
+                widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
             {
-                TiXmlElement* widgetPropertyChildElement = widgetPropertyChildNode->FirstChildElement();
-
-                while(widgetPropertyChildElement != NULL)
+                for(TiXmlNode* widgetPropertyChildNode = widgetPropertyNode->FirstChild();
+                    widgetPropertyChildNode != NULL;
+                    widgetPropertyChildNode = widgetPropertyChildNode->NextSibling())
                 {
-                    CString currentValue(widgetPropertyChildElement->Attribute("value"));
-
-                    if(currentValue.Find(TEXT("HH_")) != -1)
+                    for(TiXmlElement* widgetPropertyChildElement = widgetPropertyChildNode->FirstChildElement();
+                        widgetPropertyChildElement != NULL;
+                        widgetPropertyChildElement = widgetPropertyChildElement->NextSiblingElement())
                     {
+                        CString currentValue(widgetPropertyChildElement->Attribute("value"));
+
                         if(currentValue.Find('\\') != -1)
                         {
                             CString fileName = newDirectory;
@@ -988,11 +1017,7 @@ void SetThemeDirectoryInActualXmlSettingsFile(CString newDirectory)
                             widgetPropertyChildElement->SetAttribute("value", GetConstCharStarFromCString(fileName));
                         }
                     }
-
-                    widgetPropertyChildElement = widgetPropertyChildElement->NextSiblingElement();
                 }
-
-                widgetPropertyChildNode = widgetPropertyChildNode->NextSibling();
             }
         }
 
@@ -1153,76 +1178,49 @@ void ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
 
         if(loadOkay)
         {
-            TiXmlHandle docHandle(&doc);
-
-            TiXmlElement* imageListElement = docHandle.FirstChild("HTCHome").FirstChild("ImageList").Element();
-            if(imageListElement != NULL)
+            for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome");
+                htcHomeNode != NULL;
+                htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
             {
-                TiXmlElement* imageListItemElement = imageListElement->FirstChildElement();
-
-                while(imageListItemElement != NULL)
+                for(TiXmlNode* imageListNode = htcHomeNode->FirstChild("ImageList");
+                    imageListNode != NULL;
+                    imageListNode = imageListNode->NextSibling("ImageList"))
                 {
-                    int currentIndex = -1;
-                    imageListItemElement->QueryIntAttribute("index", &currentIndex);
-
-                    if(((currentIndex >= 40) && (currentIndex <= 57)) ||
-                        ((currentIndex >= 121) && (currentIndex <= 128)) ||
-                        ((currentIndex >= 209) && (currentIndex <= 216)))
+                    for(TiXmlElement* imageListImageElement = imageListNode->FirstChildElement();
+                        imageListImageElement != NULL;
+                        imageListImageElement = imageListImageElement->NextSiblingElement())
                     {
-                        CString nameStr(imageListItemElement->Attribute("name"));
+                        xmlSettings->imageListImageElements.push_back(*imageListImageElement);
+                    }
+                }
 
-                        ImageListImage ili;
-                        ili.index = currentIndex;
-                        ili.name = nameStr;
-
-                        xmlSettings->imageListImages.push_back(ili);
+                for(TiXmlNode* widgetPropertyNode = htcHomeNode->FirstChild("WidgetProperty");
+                    widgetPropertyNode != NULL;
+                    widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
+                {
+                    for(TiXmlNode* homeWidgetNode = widgetPropertyNode->FirstChild("HomeWidget");
+                        homeWidgetNode != NULL;
+                        homeWidgetNode = homeWidgetNode->NextSibling("HomeWidget"))
+                    {
+                        for(TiXmlElement* homeWidgetChildElement = homeWidgetNode->FirstChildElement();
+                            homeWidgetChildElement != NULL;
+                            homeWidgetChildElement = homeWidgetChildElement->NextSiblingElement())
+                        {
+                            xmlSettings->homeWidgetPropertyElements.push_back(*homeWidgetChildElement);
+                        }
                     }
 
-                    imageListItemElement = imageListItemElement->NextSiblingElement();
-                }
-            }
-
-            TiXmlElement* homeWidgetElement = docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").FirstChild("HomeWidget").Element();
-            if(homeWidgetElement != NULL)
-            {
-                TiXmlElement* homeWidgetPropertyElement = homeWidgetElement->FirstChildElement();
-
-                while(homeWidgetPropertyElement != NULL)
-                {
-                    int currentId = -1;
-                    homeWidgetPropertyElement->QueryIntAttribute("id", &currentId);
-
-                    CString valueStr(homeWidgetPropertyElement->Attribute("value"));
-
-                    WidgetProperty homeWidgetProp;
-                    homeWidgetProp.id = currentId;
-                    homeWidgetProp.value = valueStr;
-
-                    xmlSettings->homeWidgetProperties.push_back(homeWidgetProp);
-
-                    homeWidgetPropertyElement = homeWidgetPropertyElement->NextSiblingElement();
-                }
-            }
-
-            TiXmlElement* tabWidgetElement = docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").FirstChild("TabWidget").Element();
-            if(tabWidgetElement != NULL)
-            {
-                TiXmlElement* tabWidgetPropertyElement = tabWidgetElement->FirstChildElement();
-
-                while(tabWidgetPropertyElement != NULL)
-                {
-                    int currentId = -1;
-                    tabWidgetPropertyElement->QueryIntAttribute("id", &currentId);
-
-                    CString valueStr(tabWidgetPropertyElement->Attribute("value"));
-
-                    WidgetProperty tabWidgetProp;
-                    tabWidgetProp.id = currentId;
-                    tabWidgetProp.value = valueStr;
-
-                    xmlSettings->tabWidgetProperties.push_back(tabWidgetProp);
-
-                    tabWidgetPropertyElement = tabWidgetPropertyElement->NextSiblingElement();
+                    for(TiXmlNode* tabWidgetNode = widgetPropertyNode->FirstChild("TabWidget");
+                        tabWidgetNode != NULL;
+                        tabWidgetNode = tabWidgetNode->NextSibling("TabWidget"))
+                    {
+                        for(TiXmlElement* tabWidgetChildElement = tabWidgetNode->FirstChildElement();
+                            tabWidgetChildElement != NULL;
+                            tabWidgetChildElement = tabWidgetChildElement->NextSiblingElement())
+                        {
+                            xmlSettings->tabWidgetPropertyElements.push_back(*tabWidgetChildElement);
+                        }
+                    }
                 }
             }
         }
@@ -1238,77 +1236,110 @@ void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
 
         if(loadOkay)
         {
-            TiXmlHandle docHandle(&doc);
+            TiXmlNode* firstHtcHomeNode = doc.FirstChild("HTCHome");
 
-            TiXmlElement* imageListElement = docHandle.FirstChild("HTCHome").FirstChild("ImageList").Element();
-            if(imageListElement != NULL)
+            if(firstHtcHomeNode != NULL)
             {
-                TiXmlElement* imageListItemElement = imageListElement->FirstChildElement();
-
-                while(imageListItemElement != NULL)
+                // Remove all other htcHomeNodes, and add their children to the first htchome node
+                TiXmlNode* nextHtcHomeNode = firstHtcHomeNode->NextSibling("HTCHome");
+                while(nextHtcHomeNode != NULL)
                 {
-                    int currentIndex = -1;
-                    imageListItemElement->QueryIntAttribute("index", &currentIndex);
-
-                    for(size_t i=0; i<xmlSettings->imageListImages.size(); i++)
+                    for(TiXmlNode* nextHtcHomeChildNode = nextHtcHomeNode->FirstChild();
+                        nextHtcHomeChildNode != NULL;
+                        nextHtcHomeChildNode = nextHtcHomeChildNode->NextSibling())
                     {
-                        if(xmlSettings->imageListImages[i].index == currentIndex)
-                        {
-                            imageListItemElement->SetAttribute("name",
-                                GetConstCharStarFromCString(xmlSettings->imageListImages[i].name));
-                            break;
-                        }
+                        firstHtcHomeNode->InsertEndChild(*nextHtcHomeChildNode);
                     }
 
-                    imageListItemElement = imageListItemElement->NextSiblingElement();
+                    TiXmlNode* curHtcHomeNode = nextHtcHomeNode;
+                    nextHtcHomeNode = nextHtcHomeNode->NextSibling("HTCHome");
+
+                    doc.RemoveChild(curHtcHomeNode);
                 }
-            }
 
-            TiXmlElement* homeWidgetElement = docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").FirstChild("HomeWidget").Element();
-            if(homeWidgetElement != NULL)
-            {
-                TiXmlElement* homeWidgetPropertyElement = homeWidgetElement->FirstChildElement();
-
-                while(homeWidgetPropertyElement != NULL)
+                TiXmlNode* firstImageListNode = firstHtcHomeNode->FirstChild("ImageList");
+                if(firstImageListNode != NULL)
                 {
-                    int currentId = -1;
-                    homeWidgetPropertyElement->QueryIntAttribute("id", &currentId);
-
-                    for(size_t i=0; i<xmlSettings->homeWidgetProperties.size(); i++)
+                    // just remove all non first image list nodes
+                    TiXmlNode* nextImageListNode = firstImageListNode->NextSibling("ImageList");
+                    while(nextImageListNode != NULL)
                     {
-                        if(xmlSettings->homeWidgetProperties[i].id == currentId)
-                        {
-                            homeWidgetPropertyElement->SetAttribute("value",
-                                GetConstCharStarFromCString(xmlSettings->homeWidgetProperties[i].value));
-                            break;
-                        }
+                        TiXmlNode* curImageListNode = nextImageListNode;
+                        nextImageListNode = nextImageListNode->NextSibling("ImageList");
+
+                        firstHtcHomeNode->RemoveChild(curImageListNode);
                     }
 
-                    homeWidgetPropertyElement = homeWidgetPropertyElement->NextSiblingElement();
+                    // now we are guaranteed to be the only "ImageList" Node in the document
+                    // add all of the stored values
+                    firstImageListNode->Clear();
+                    for(size_t i=0; i<xmlSettings->imageListImageElements.size(); i++)
+                    {
+                        firstImageListNode->InsertEndChild(xmlSettings->imageListImageElements[i]);
+                    }
                 }
-            }
 
-            TiXmlElement* tabWidgetElement = docHandle.FirstChild("HTCHome").FirstChild("WidgetProperty").FirstChild("TabWidget").Element();
-            if(tabWidgetElement != NULL)
-            {
-                TiXmlElement* tabWidgetPropertyElement = tabWidgetElement->FirstChildElement();
-
-                while(tabWidgetPropertyElement != NULL)
+                TiXmlNode* firstWidgetPropertyNode = firstHtcHomeNode->FirstChild("WidgetProperty");
+                if(firstWidgetPropertyNode != NULL)
                 {
-                    int currentId = -1;
-                    tabWidgetPropertyElement->QueryIntAttribute("id", &currentId);
-
-                    for(size_t i=0; i<xmlSettings->tabWidgetProperties.size(); i++)
+                    // copy all children on non firl widget property nodes to the first widget property noded
+                    TiXmlNode* nextWidgetPropertyNode = firstWidgetPropertyNode->NextSibling("WidgetProperty");
+                    while(nextWidgetPropertyNode != NULL)
                     {
-                        if(xmlSettings->tabWidgetProperties[i].id == currentId)
+                        for(TiXmlNode* nextWidgetPropertyChildNode = nextWidgetPropertyNode->FirstChild();
+                            nextWidgetPropertyChildNode != NULL;
+                            nextWidgetPropertyChildNode = nextWidgetPropertyChildNode->NextSibling())
                         {
-                            tabWidgetPropertyElement->SetAttribute("value",
-                                GetConstCharStarFromCString(xmlSettings->tabWidgetProperties[i].value));
-                            break;
+                            firstWidgetPropertyNode->InsertEndChild(*nextWidgetPropertyChildNode);
+                        }
+
+                        TiXmlNode* curWidgetPropertyNode = nextWidgetPropertyNode;
+                        nextWidgetPropertyNode = nextWidgetPropertyNode->NextSibling("WidgetProperty");
+
+                        firstHtcHomeNode->RemoveChild(curWidgetPropertyNode);
+                    }
+
+                    TiXmlNode* firstHomeWidgetNode = firstWidgetPropertyNode->FirstChild("HomeWidget");
+                    if(firstHomeWidgetNode != NULL)
+                    {
+                        // just remove all non first HomeWidget nodes
+                        TiXmlNode* nextHomeWidgetNode = firstHomeWidgetNode->NextSibling("HomeWidget");
+                        while(nextHomeWidgetNode != NULL)
+                        {
+                            TiXmlNode* curHomeWidgetNode = nextHomeWidgetNode;
+                            nextHomeWidgetNode = nextHomeWidgetNode->NextSibling("HomeWidget");
+
+                            firstWidgetPropertyNode->RemoveChild(curHomeWidgetNode);
+                        }
+
+                        // now we are guaranteed to be the only home widget node
+                        firstHomeWidgetNode->Clear();
+                        for(size_t i=0; i<xmlSettings->homeWidgetPropertyElements.size(); i++)
+                        {
+                            firstHomeWidgetNode->InsertEndChild(xmlSettings->homeWidgetPropertyElements[i]);
                         }
                     }
 
-                    tabWidgetPropertyElement = tabWidgetPropertyElement->NextSiblingElement();
+                    TiXmlNode* firstTabWidgetNode = firstWidgetPropertyNode->FirstChild("TabWidget");
+                    if(firstTabWidgetNode != NULL)
+                    {
+                        // just remove all non first TabWidget nodes
+                        TiXmlNode* nextTabWidgetNode = firstTabWidgetNode->NextSibling("TabWidget");
+                        while(nextTabWidgetNode != NULL)
+                        {
+                            TiXmlNode* curTabWidgetNode = nextTabWidgetNode;
+                            nextTabWidgetNode = nextTabWidgetNode->NextSibling("TabWidget");
+
+                            firstWidgetPropertyNode->RemoveChild(curTabWidgetNode);
+                        }
+
+                        // now we are guaranteed to be the only tab widget node
+                        firstTabWidgetNode->Clear();
+                        for(size_t i=0; i<xmlSettings->tabWidgetPropertyElements.size(); i++)
+                        {
+                            firstTabWidgetNode->InsertEndChild(xmlSettings->tabWidgetPropertyElements[i]);
+                        }
+                    }
                 }
             }
 
