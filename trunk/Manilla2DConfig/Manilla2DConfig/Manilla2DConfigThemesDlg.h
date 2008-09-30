@@ -47,6 +47,7 @@ public:
 
 protected:
     virtual BOOL OnSetActive();
+    void OnOK();
 
 private:
     CCommandBar m_cmdBar;
