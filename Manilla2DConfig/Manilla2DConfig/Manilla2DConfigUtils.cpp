@@ -743,6 +743,7 @@ void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool
         TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileActual()));
         bool loadOkay = doc.LoadFile();
 
+        CString firstBasePath;
         CString basePath;
         
         if(loadOkay)
@@ -760,6 +761,11 @@ void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool
                     if(imageListElement != NULL)
                     {
                         basePath = imageListElement->Attribute("path");
+
+                        if(firstBasePath.GetLength() == 0)
+                        {
+                            firstBasePath = basePath;
+                        }
 
                         if(basePath.GetLength() <= 0)
                         {
@@ -803,18 +809,6 @@ void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool
 
                         if(widgetPropertyChildElement != NULL)
                         {
-                            basePath = widgetPropertyChildElement->Attribute("path");
-
-                            if(basePath.GetLength() <= 0)
-                            {
-                                basePath = TEXT("\\Windows");
-                            }
-
-                            if(basePath[basePath.GetLength()-1] != '\\')
-                            {
-                                basePath += TEXT("\\");
-                            }
-
                             for(TiXmlElement* widgetPropertyChildPropertyElement = widgetPropertyChildNode->FirstChildElement();
                                 widgetPropertyChildPropertyElement != NULL;
                                 widgetPropertyChildPropertyElement = widgetPropertyChildPropertyElement->NextSiblingElement())
@@ -826,7 +820,7 @@ void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool
                                 {
                                     if(currentFilePath.Find('\\') == -1)
                                     {
-                                        currentFilePath = basePath + currentFilePath;
+                                        currentFilePath = firstBasePath + currentFilePath;
                                     }
 
                                     pPathVector->push_back(currentFilePath);
@@ -907,9 +901,11 @@ bool IsM2DCThemeSupportEnabled()
 
         GetVectorOfThemeFilesCurrentlyInUse(&currentHH_FilePaths, false);
 
+        CString activeThemeDirectoryPath = GetPathToM2DCActiveThemeDirectory();
         for(size_t i=0; i<currentHH_FilePaths.size(); i++)
         {
-            isXmlFileSetToUseCurrentThemeDir = (currentHH_FilePaths[i].Find(GetPathToM2DCActiveThemeDirectory()) == 0);
+            CString currentFilePath = currentHH_FilePaths[i];
+            isXmlFileSetToUseCurrentThemeDir = (currentFilePath.Find(activeThemeDirectoryPath) != -1);
 
             if(!isXmlFileSetToUseCurrentThemeDir)
             {

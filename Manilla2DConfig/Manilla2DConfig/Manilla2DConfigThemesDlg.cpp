@@ -93,6 +93,14 @@ void CManilla2DConfigThemesDlg::OnPaint()
     dc.SelectObject(pOldPen); 
 }
 
+void CManilla2DConfigThemesDlg::OnOK()
+{
+    if(IsWindowVisible())
+    {
+        OnBnClickedM2dcThemeApplyBtn();
+    }
+}
+
 BOOL CManilla2DConfigThemesDlg::OnSetActive()
 {
     BOOL retVal = TRUE;
