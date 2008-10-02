@@ -1197,6 +1197,8 @@ void ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
 {
     if((xmlSettings != NULL) && (FileExists(xmlFilePath)))
     {
+        GetClockEnabledState(xmlFilePath, &xmlSettings->bIsAnalogClockEnabled, &xmlSettings->bIsDigitalClockEnabled);
+
         TiXmlDocument doc(GetConstCharStarFromCString(xmlFilePath));
         bool loadOkay = doc.LoadFile();
 
@@ -1206,18 +1208,6 @@ void ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
                 htcHomeNode != NULL;
                 htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
             {
-                for(TiXmlNode* imageListNode = htcHomeNode->FirstChild("ImageList");
-                    imageListNode != NULL;
-                    imageListNode = imageListNode->NextSibling("ImageList"))
-                {
-                    for(TiXmlElement* imageListImageElement = imageListNode->FirstChildElement();
-                        imageListImageElement != NULL;
-                        imageListImageElement = imageListImageElement->NextSiblingElement())
-                    {
-                        xmlSettings->imageListImageElements.push_back(*imageListImageElement);
-                    }
-                }
-
                 for(TiXmlNode* widgetPropertyNode = htcHomeNode->FirstChild("WidgetProperty");
                     widgetPropertyNode != NULL;
                     widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
@@ -1255,6 +1245,8 @@ void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
 {
     if((xmlSettings != NULL) && (FileExists(xmlFilePath)))
     {
+        SetClockEnabledState(xmlFilePath, xmlSettings->bIsAnalogClockEnabled, xmlSettings->bIsDigitalClockEnabled);
+
         TiXmlDocument doc(GetConstCharStarFromCString(xmlFilePath));
         bool loadOkay = doc.LoadFile();
 
@@ -1279,6 +1271,9 @@ void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
                     doc.RemoveChild(nextHtcHomeNode);
                 }
 
+                // I am keeping this next block of code commented out becasuse there might be
+                // some reason I wil lgo back to this style... but not right now
+                /*
                 TiXmlNode* firstImageListNode = firstHtcHomeNode->FirstChild("ImageList");
 
                 if(firstImageListNode != NULL)
@@ -1299,16 +1294,16 @@ void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
                         firstImageListNode->InsertEndChild(xmlSettings->imageListImageElements[i]);
                     }
                 }
+                */
 
                 TiXmlNode* firstWidgetPropertyNode = firstHtcHomeNode->FirstChild("WidgetProperty");
 
                 if(firstWidgetPropertyNode != NULL)
                 {
-                    // copy all children on non firl widget property nodes to the first widget property noded
+                    // copy all children on non first widget property nodes to the first widget property noded
                     for(TiXmlNode* nextWidgetPropertyNode = firstWidgetPropertyNode->NextSibling("WidgetProperty");
                         nextWidgetPropertyNode != NULL;
                         nextWidgetPropertyNode = nextWidgetPropertyNode->NextSibling("WidgetProperty"))
-
                     {
                         for(TiXmlNode* nextWidgetPropertyChildNode = nextWidgetPropertyNode->FirstChild();
                             nextWidgetPropertyChildNode != NULL;
@@ -1390,4 +1385,205 @@ bool ArchiveContainsHTCHomeSettingsXml(CString filePath)
     CloseZip(hz);
 
     return retVal;
+}
+
+void GetClockEnabledState(CString pathToXmlFile, bool* pIsAnalogEnabled, bool* pIsDigitalEnabled)
+{
+    int analogEnabledCount = 0;
+    int analogDisabledCount = 0;
+    int digitalEnabledCount = 0;
+    int digitalDisabledCount = 0;
+
+    if((pIsAnalogEnabled != NULL) && (pIsDigitalEnabled != NULL) && (FileExists(pathToXmlFile)))
+    {
+        TiXmlDocument doc(GetConstCharStarFromCString(pathToXmlFile));
+        bool loadOkay = doc.LoadFile();
+
+        if(loadOkay)
+        {
+            for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome");
+                htcHomeNode != NULL;
+                htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
+            {
+                for(TiXmlNode* imageListNode = htcHomeNode->FirstChild("ImageList");
+                    imageListNode != NULL;
+                    imageListNode = imageListNode->NextSibling("ImageList"))
+                {
+                    for(TiXmlNode* imageListImageNode = imageListNode->FirstChild();
+                        imageListImageNode != NULL;
+                        imageListImageNode = imageListImageNode->NextSibling())
+                    {
+                        CString strVal;
+
+                        TiXmlComment* imageListImageComment = imageListImageNode->ToComment();
+
+                        if(imageListImageComment != NULL)
+                        {
+                            strVal = imageListImageComment->Value();
+                        }
+
+                        TiXmlElement* imageListImageElement = imageListImageNode->ToElement();
+
+                        if(imageListImageElement != NULL)
+                        {
+                            strVal = imageListImageElement->Attribute("name");
+                        }
+
+                        if(strVal.Find(TEXT("hh_hm_aclock")) != -1)
+                        {
+                            if((imageListImageComment != NULL) || (strVal[strVal.GetLength()-1] == 'x'))
+                            {
+                                analogDisabledCount++;
+                            }
+                            else
+                            {
+                                analogEnabledCount++;
+                            }
+                        }
+
+                        if((strVal.Find(TEXT("hh_hm_digit")) != -1) ||
+                            (strVal.Find(TEXT("hh_hm_am")) != -1) ||
+                            (strVal.Find(TEXT("hh_hm_pm")) != -1) ||
+                            (strVal.Find(TEXT("hh_hm_colon")) != -1))
+                        {
+                            if((imageListImageComment != NULL) || (strVal[strVal.GetLength()-1] == 'x'))
+                            {
+                                digitalDisabledCount++;
+                            }
+                            else
+                            {
+                                digitalEnabledCount++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    *pIsAnalogEnabled = (analogEnabledCount != 0);
+    *pIsDigitalEnabled = (digitalEnabledCount != 0);
+}
+
+/*
+    <Image index="43" name="hh_hm_am.png" />
+    <Image index="44" name="hh_hm_pm.png" />
+    <Image index="47" name="hh_hm_colon.png" />
+    <Image index="48" name="hh_hm_digit_0.png" />
+    <Image index="49" name="hh_hm_digit_1.png" />
+    <Image index="50" name="hh_hm_digit_2.png" />
+    <Image index="51" name="hh_hm_digit_3.png" />
+    <Image index="52" name="hh_hm_digit_4.png" />
+    <Image index="53" name="hh_hm_digit_5.png" />
+    <Image index="54" name="hh_hm_digit_6.png" />
+    <Image index="55" name="hh_hm_digit_7.png" />
+    <Image index="56" name="hh_hm_digit_8.png" />
+    <Image index="57" name="hh_hm_digit_9.png" />
+*/
+
+/*
+    <Image index="121" name="hh_hm_aclock_alarm.bmpx" />
+    <Image index="122" name="hh_hm_aclock_alarm_mask.bmpx" />
+    <Image index="123" name="hh_hm_aclock_alarm_shadow.bmpx" />
+    <Image index="124" name="hh_hm_aclock_alarm_shadow_mask.bmpx" />
+    <Image index="125" name="hh_hm_aclock_hour.bmpx" />
+    <Image index="126" name="hh_hm_aclock_hour_mask.bmpx" />
+    <Image index="127" name="hh_hm_aclock_hour_shadow.bmpx" />
+    <Image index="128" name="hh_hm_aclock_hour_shadow_mask.bmpx" />
+    <Image index="209" name="hh_hm_aclock_Minute.bmpx" />
+    <Image index="210" name="hh_hm_aclock_Minute_mask.bmpx" />
+    <Image index="211" name="hh_hm_aclock_Minute_shadow.bmpx" />
+    <Image index="212" name="hh_hm_aclock_Minute_shadow_mask.bmpx" />
+    <Image index="213" name="hh_hm_aclock_Dot.bmpx" />
+    <Image index="214" name="hh_hm_aclock_Dot_mask.bmpx" />
+    <Image index="215" name="hh_hm_aclock_Dot_shadow.bmpx" />
+    <Image index="216" name="hh_hm_aclock_Dot_shadow_mask.bmpx" />
+*/
+
+void SetClockEnabledState(CString pathToXmlFile, bool analogEnabled, bool digitalEnabled)
+{
+    if(FileExists(pathToXmlFile))
+    {
+        TiXmlDocument doc(GetConstCharStarFromCString(pathToXmlFile));
+        bool loadOkay = doc.LoadFile();
+
+        if(loadOkay)
+        {
+            for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome");
+                htcHomeNode != NULL;
+                htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
+            {
+                for(TiXmlNode* imageListNode = htcHomeNode->FirstChild("ImageList");
+                    imageListNode != NULL;
+                    imageListNode = imageListNode->NextSibling("ImageList"))
+                {
+                    for(TiXmlNode* imageListImageNode = imageListNode->FirstChild();
+                        imageListImageNode != NULL;
+                        imageListImageNode = imageListImageNode->NextSibling())
+                    {
+                        CString strVal;
+
+                        TiXmlComment* imageListImageComment = imageListImageNode->ToComment();
+
+                        if(imageListImageComment != NULL)
+                        {
+                            //strVal = imageListImageComment->Value();
+                        }
+
+                        TiXmlElement* imageListImageElement = imageListImageNode->ToElement();
+
+                        if(imageListImageElement != NULL)
+                        {
+                            strVal = imageListImageElement->Attribute("name");
+
+                            if(strVal.Find(TEXT("hh_hm_aclock")) != -1)
+                            {
+                                if(analogEnabled)
+                                {
+                                    if(strVal[strVal.GetLength()-1] == 'x')
+                                    {
+                                        strVal = strVal.Mid(strVal.GetLength()-1);
+                                    }
+                                }
+                                else
+                                {
+                                    if(strVal[strVal.GetLength()-1] != 'x')
+                                    {
+                                        strVal += 'x';
+                                    }
+                                }
+
+                                imageListImageElement->SetAttribute("name", GetConstCharStarFromCString(strVal));
+                            }
+                        }
+
+                        if((strVal.Find(TEXT("hh_hm_digit")) != -1) ||
+                            (strVal.Find(TEXT("hh_hm_am")) != -1) ||
+                            (strVal.Find(TEXT("hh_hm_pm")) != -1) ||
+                            (strVal.Find(TEXT("hh_hm_colon")) != -1))
+                        {
+                            if(digitalEnabled)
+                            {
+                                if(strVal[strVal.GetLength()-1] == 'x')
+                                {
+                                    strVal = strVal.Mid(strVal.GetLength()-1);
+                                }
+                            }
+                            else
+                            {
+                                if(strVal[strVal.GetLength()-1] != 'x')
+                                {
+                                    strVal += 'x';
+                                }
+                            }
+
+                            imageListImageElement->SetAttribute("name", GetConstCharStarFromCString(strVal));
+                        }
+                    }
+                }
+            }
+        }
+
+        doc.SaveFile();
+    }
 }
