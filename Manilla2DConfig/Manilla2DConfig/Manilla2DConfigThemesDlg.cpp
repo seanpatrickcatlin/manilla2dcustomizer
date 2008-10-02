@@ -109,10 +109,12 @@ BOOL CManilla2DConfigThemesDlg::OnSetActive()
 
     if(!IsM2DCThemeSupportEnabled())
     {
-        CString enableStr = TEXT("M2DC theme support has not been activated.\n");
+        CString enableStr;
+        enableStr = "M2DC theme support needs to be initialized.  ";
+        enableStr += "Enabling this feature may take 3-5 Minutes.  ";
         enableStr += "Would you Like to enable this feature now?";
 
-        if(MessageBox(enableStr, TEXT("M2DC Themes"), MB_YESNO) == IDNO)
+        if(MessageBox(enableStr, TEXT("Enable M2DC Themes"), MB_YESNO) == IDNO)
         {
             retVal = FALSE;
         }
