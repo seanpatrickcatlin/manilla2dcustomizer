@@ -257,10 +257,7 @@ void CFileTreeDlg::AddDirectoryToFileSystemTree(HTREEITEM parentItem, CString di
 
                 for(size_t i=0; (i<validExtensions.size()) && (!addItem); i++)
                 {
-                    if(fileExtension == validExtensions[i])
-                    {
-                        addItem = ArchiveContainsHTCHomeSettingsXml(fullFilePath);
-                    }
+                    addItem = (fileExtension == validExtensions[i]);
                 }
 
                 if(addItem)
