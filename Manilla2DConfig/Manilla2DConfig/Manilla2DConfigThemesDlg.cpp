@@ -177,6 +177,17 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
             destPath += GetFileBaseName(pathToNewTheme);
             destPath += ".m2dct";
 
+            if(!ArchiveContainsHTCHomeSettingsXml(pathToNewTheme))
+            {
+                CString msg;
+                msg = TEXT("Unable to find a HTCHomeSettings.xml file in the selected file.\n");
+                msg += TEXT("Cancelling import now.");
+
+                AfxMessageBox(msg);
+
+                return;
+            }
+
             CopyFile(pathToNewTheme, destPath, FALSE);
 
             RefreshThemeList();

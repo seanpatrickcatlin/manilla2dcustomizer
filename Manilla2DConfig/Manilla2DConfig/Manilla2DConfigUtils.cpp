@@ -1439,9 +1439,10 @@ void SetClockEnabledState(CString pathToXmlFile, bool analogEnabled, bool digita
                             {
                                 if(analogEnabled)
                                 {
+
                                     if(strVal[strVal.GetLength()-1] == 'x')
                                     {
-                                        strVal = strVal.Mid(strVal.GetLength()-1);
+                                        strVal = strVal.Mid(0, strVal.GetLength()-1);
                                     }
                                 }
                                 else
@@ -1465,7 +1466,7 @@ void SetClockEnabledState(CString pathToXmlFile, bool analogEnabled, bool digita
                             {
                                 if(strVal[strVal.GetLength()-1] == 'x')
                                 {
-                                    strVal = strVal.Mid(strVal.GetLength()-1);
+                                    strVal = strVal.Mid(0, strVal.GetLength()-1);
                                 }
                             }
                             else
