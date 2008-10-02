@@ -1,5 +1,15 @@
 Manilla 2D Customizer changelog
 
+Oct-2-2008
+v0.8.111
+* tried to fix all errors
+* latest theme supports were broken due to my not parsing the xml correctly
+* this version should work with the latest M2D binaries and the old ones
+* I have only tested the new M2D package
+* there might be some issues with clock enabling/disabling on themes... these
+   will probablly remain until a skinner tells me what they want the proper
+   action to disable clocks to be
+
 Sep-30-2008
 v0.7.104
 * oops, the theme management support for 0.6.97 was not future proof, so when updating to
