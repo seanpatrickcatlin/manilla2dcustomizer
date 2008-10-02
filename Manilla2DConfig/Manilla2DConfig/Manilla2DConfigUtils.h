@@ -92,7 +92,6 @@ bool IsM2DCThemeSupportEnabled();
 int EnableM2DCThemeSupport();
 
 void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool includeNonXmlFiles);
-void SetThemeDirectoryInActualXmlSettingsFile(CString newDirectory);
 
 void SetInstallDirectory(CString installDirectory);
 

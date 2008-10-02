@@ -805,9 +805,9 @@ void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool
                             basePath = basePath.Mid(0, basePath.GetLength()-2);
                         }
 
-                        for(TiXmlElement* imageListItemElement = imageListElement->FirstChildElement("item");
+                        for(TiXmlElement* imageListItemElement = imageListElement->FirstChildElement("Image");
                             imageListItemElement != NULL;
-                            imageListItemElement = imageListItemElement->NextSiblingElement("item"))
+                            imageListItemElement = imageListItemElement->NextSiblingElement("Image"))
                         {
                             CString currentFilePath(imageListItemElement->Attribute("name"));
 
@@ -820,6 +820,10 @@ void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool
                                 }
 
                                 currentFilePath = basePath + currentFilePath;
+
+                                TRACE(TEXT("Adding File: "));
+                                TRACE(currentFilePath);
+                                TRACE(TEXT("\n"));
 
                                 pPathVector->push_back(currentFilePath);
                             }
@@ -865,6 +869,10 @@ void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool
                                     (currentFilePath.Find(TEXT("HH_")) != -1))
                                 {
                                     currentFilePath = baseDir + currentFilePath;
+
+                                    TRACE(TEXT("Adding File: "));
+                                    TRACE(currentFilePath);
+                                    TRACE(TEXT("\n"));
 
                                     pPathVector->push_back(currentFilePath);
                                 }
@@ -912,6 +920,9 @@ void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool
 
                         if(addFileToVector)
                         {
+                            TRACE(TEXT("Adding File: "));
+                            TRACE(currentFilePath);
+                            TRACE(TEXT("\n"));
                             pPathVector->push_back(currentFilePath);
                         }
                     }
@@ -959,80 +970,6 @@ int EnableM2DCThemeSupport()
     g_bThemeSupportEnabled = (retVal == 0);
 
     return retVal;
-}
-
-void SetThemeDirectoryInActualXmlSettingsFile(CString newDirectory)
-{
-    BeginMakingChanges();
-    AfxGetApp()->BeginWaitCursor();
-
-    // change all file paths from the xml settings file to point to the current theme directory
-    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileWorking()));
-    bool loadOkay = doc.LoadFile();
-
-    if(loadOkay)
-    {
-        for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome"); 
-            htcHomeNode != NULL;
-            htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
-        {
-            for(TiXmlNode* imageListNode = htcHomeNode->FirstChild("ImageList");
-                imageListNode != NULL;
-                imageListNode = imageListNode->NextSibling("ImageList"))
-            {
-                TiXmlElement* imageListElement = imageListNode->ToElement();
-
-                if(imageListElement != NULL)
-                {
-                    imageListElement->SetAttribute("path", GetConstCharStarFromCString(newDirectory));
-
-                    for(TiXmlElement* imageListItemElement = imageListElement->FirstChildElement("item");
-                        imageListItemElement != NULL;
-                        imageListItemElement = imageListItemElement->NextSiblingElement("item"))
-                    {
-                        CString currentFilePath(imageListItemElement->Attribute("name"));
-
-                        if(currentFilePath.Find('\\') != -1)
-                        {
-                            CString baseFileName = currentFilePath.Mid(currentFilePath.ReverseFind('\\'));
-
-                            imageListItemElement->SetAttribute("name", GetConstCharStarFromCString(baseFileName));
-                        }
-                    }
-                }
-            }
-
-            for(TiXmlNode* widgetPropertyNode = htcHomeNode->FirstChild("WidgetProperty");
-                widgetPropertyNode != NULL;
-                widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
-            {
-                for(TiXmlNode* widgetPropertyChildNode = widgetPropertyNode->FirstChild();
-                    widgetPropertyChildNode != NULL;
-                    widgetPropertyChildNode = widgetPropertyChildNode->NextSibling())
-                {
-                    for(TiXmlElement* widgetPropertyChildElement = widgetPropertyChildNode->FirstChildElement();
-                        widgetPropertyChildElement != NULL;
-                        widgetPropertyChildElement = widgetPropertyChildElement->NextSiblingElement())
-                    {
-                        CString currentValue(widgetPropertyChildElement->Attribute("value"));
-
-                        if(currentValue.Find('\\') != -1)
-                        {
-                            CString fileName = newDirectory;
-                            fileName += currentValue.Mid(currentValue.ReverseFind('\\'));
-
-                            widgetPropertyChildElement->SetAttribute("value", GetConstCharStarFromCString(fileName));
-                        }
-                    }
-                }
-            }
-        }
-
-        doc.SaveFile();
-    }
-
-    AfxGetApp()->EndWaitCursor();
-    EndMakingChanges();
 }
 
 void BackupAndDisableTodayScreen()
@@ -1118,9 +1055,10 @@ int SetActiveTheme(CString pathToTheme)
 
             for(size_t i=0; ((i<pathsToThemeFiles.size()) && (destString.GetLength() <= 0)); i++)
             {
-                if(pathsToThemeFiles[i].Find(fileNameNoPath) != -1)
+                CString currentThemeFile = pathsToThemeFiles[i];
+                if(currentThemeFile.Find(fileNameNoPath) != -1)
                 {
-                    destString = pathsToThemeFiles[i];
+                    destString = currentThemeFile;
                 }
             }
 
@@ -1130,9 +1068,10 @@ int SetActiveTheme(CString pathToTheme)
 
                 retVal = progDlg.UpdateStatus(msg, zi);
 
-                UnzipItem(hz, zi, destString);
-
+                DWORD dwAttributes =  GetFileAttributes(destString);
                 SetFileAttributes(destString, FILE_ATTRIBUTE_NORMAL);
+                UnzipItem(hz, zi, destString);
+                SetFileAttributes(destString, dwAttributes);
             }
         }
 
@@ -1247,110 +1186,70 @@ void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
     {
         SetClockEnabledState(xmlFilePath, xmlSettings->bIsAnalogClockEnabled, xmlSettings->bIsDigitalClockEnabled);
 
+        CString vectorNameAttribute;
+        CString vectorValueAttribute;
+        CString currentNameAttribute;
+
         TiXmlDocument doc(GetConstCharStarFromCString(xmlFilePath));
         bool loadOkay = doc.LoadFile();
 
         if(loadOkay)
         {
-            TiXmlNode* firstHtcHomeNode = doc.FirstChild("HTCHome");
-
-            if(firstHtcHomeNode != NULL)
+            for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome");
+                htcHomeNode != NULL;
+                htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
             {
-                // Remove all other htcHomeNodes, and add their children to the first htchome node
-                for(TiXmlNode* nextHtcHomeNode = firstHtcHomeNode->NextSibling("HTCHome");
-                    nextHtcHomeNode != NULL;
-                    nextHtcHomeNode = nextHtcHomeNode->NextSibling("HTCHome"))
+                for(TiXmlNode* widgetPropertyNode = htcHomeNode->FirstChild("WidgetProperty");
+                    widgetPropertyNode != NULL;
+                    widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
                 {
-                    for(TiXmlNode* nextHtcHomeChildNode = nextHtcHomeNode->FirstChild();
-                        nextHtcHomeChildNode != NULL;
-                        nextHtcHomeChildNode = nextHtcHomeChildNode->NextSibling())
+                    for(TiXmlNode* homeWidgetNode = widgetPropertyNode->FirstChild("HomeWidget");
+                        homeWidgetNode != NULL;
+                        homeWidgetNode = homeWidgetNode->NextSibling("HomeWidget"))
                     {
-                        firstHtcHomeNode->InsertEndChild(*nextHtcHomeChildNode);
-                    }
-
-                    doc.RemoveChild(nextHtcHomeNode);
-                }
-
-                // I am keeping this next block of code commented out becasuse there might be
-                // some reason I wil lgo back to this style... but not right now
-                /*
-                TiXmlNode* firstImageListNode = firstHtcHomeNode->FirstChild("ImageList");
-
-                if(firstImageListNode != NULL)
-                {
-                    // just remove all non first image list nodes
-                    for(TiXmlNode* nextImageListNode = firstImageListNode->NextSibling("ImageList");
-                        nextImageListNode != NULL;
-                        nextImageListNode = nextImageListNode->NextSibling("ImageList"))
-                    {
-                        firstHtcHomeNode->RemoveChild(nextImageListNode);
-                    }
-
-                    // now we are guaranteed to be the only "ImageList" Node in the document
-                    // add all of the stored values
-                    firstImageListNode->Clear();
-                    for(size_t i=0; i<xmlSettings->imageListImageElements.size(); i++)
-                    {
-                        firstImageListNode->InsertEndChild(xmlSettings->imageListImageElements[i]);
-                    }
-                }
-                */
-
-                TiXmlNode* firstWidgetPropertyNode = firstHtcHomeNode->FirstChild("WidgetProperty");
-
-                if(firstWidgetPropertyNode != NULL)
-                {
-                    // copy all children on non first widget property nodes to the first widget property noded
-                    for(TiXmlNode* nextWidgetPropertyNode = firstWidgetPropertyNode->NextSibling("WidgetProperty");
-                        nextWidgetPropertyNode != NULL;
-                        nextWidgetPropertyNode = nextWidgetPropertyNode->NextSibling("WidgetProperty"))
-                    {
-                        for(TiXmlNode* nextWidgetPropertyChildNode = nextWidgetPropertyNode->FirstChild();
-                            nextWidgetPropertyChildNode != NULL;
-                            nextWidgetPropertyChildNode = nextWidgetPropertyChildNode->NextSibling())
+                        for(TiXmlElement* homeWidgetChildElement = homeWidgetNode->FirstChildElement();
+                            homeWidgetChildElement != NULL;
+                            homeWidgetChildElement = homeWidgetChildElement->NextSiblingElement())
                         {
-                            firstWidgetPropertyNode->InsertEndChild(*nextWidgetPropertyChildNode);
-                        }
+                            currentNameAttribute = homeWidgetChildElement->Attribute("name");
 
-                        firstHtcHomeNode->RemoveChild(nextWidgetPropertyNode);
-                    }
+                            for(size_t i=0; i<xmlSettings->homeWidgetPropertyElements.size(); i++)
+                            {
+                                vectorNameAttribute = xmlSettings->homeWidgetPropertyElements[i].Attribute("name");
+                                vectorValueAttribute = xmlSettings->homeWidgetPropertyElements[i].Attribute("value");
 
-                    TiXmlNode* firstHomeWidgetNode = firstWidgetPropertyNode->FirstChild("HomeWidget");
-
-                    if(firstHomeWidgetNode != NULL)
-                    {
-                        // just remove all non first HomeWidget nodes
-                        for(TiXmlNode* nextHomeWidgetNode = firstHomeWidgetNode->NextSibling("HomeWidget");
-                            nextHomeWidgetNode != NULL;
-                            nextHomeWidgetNode = nextHomeWidgetNode->NextSibling("HomeWidget"))
-                        {
-                            firstWidgetPropertyNode->RemoveChild(nextHomeWidgetNode);
-                        }
-
-                        // now we are guaranteed to be the only home widget node
-                        firstHomeWidgetNode->Clear();
-                        for(size_t i=0; i<xmlSettings->homeWidgetPropertyElements.size(); i++)
-                        {
-                            firstHomeWidgetNode->InsertEndChild(xmlSettings->homeWidgetPropertyElements[i]);
+                                if(vectorNameAttribute.Compare(currentNameAttribute) == 0)
+                                {
+                                    homeWidgetChildElement->SetAttribute("value",
+                                        GetConstCharStarFromCString(vectorValueAttribute));
+                                    break;
+                                }
+                            }
                         }
                     }
 
-                    TiXmlNode* firstTabWidgetNode = firstWidgetPropertyNode->FirstChild("TabWidget");
-                    if(firstTabWidgetNode != NULL)
+                    for(TiXmlNode* tabWidgetNode = widgetPropertyNode->FirstChild("TabWidget");
+                        tabWidgetNode != NULL;
+                        tabWidgetNode = tabWidgetNode->NextSibling("TabWidget"))
                     {
-                        // just remove all non first TabWidget nodes
-                        for(TiXmlNode* nextTabWidgetNode = firstTabWidgetNode->NextSibling("TabWidget");
-                            nextTabWidgetNode != NULL;
-                            nextTabWidgetNode = nextTabWidgetNode->NextSibling("TabWidget"))
+                        for(TiXmlElement* tabWidgetChildElement = tabWidgetNode->FirstChildElement();
+                            tabWidgetChildElement != NULL;
+                            tabWidgetChildElement = tabWidgetChildElement->NextSiblingElement())
                         {
-                            firstWidgetPropertyNode->RemoveChild(nextTabWidgetNode);
-                        }
+                            currentNameAttribute = tabWidgetChildElement->Attribute("name");
 
-                        // now we are guaranteed to be the only tab widget node
-                        firstTabWidgetNode->Clear();
-                        for(size_t i=0; i<xmlSettings->tabWidgetPropertyElements.size(); i++)
-                        {
-                            firstTabWidgetNode->InsertEndChild(xmlSettings->tabWidgetPropertyElements[i]);
+                            for(size_t i=0; i<xmlSettings->tabWidgetPropertyElements.size(); i++)
+                            {
+                                vectorNameAttribute = xmlSettings->tabWidgetPropertyElements[i].Attribute("name");
+                                vectorValueAttribute = xmlSettings->tabWidgetPropertyElements[i].Attribute("value");
+
+                                if(vectorNameAttribute.Compare(currentNameAttribute) == 0)
+                                {
+                                    tabWidgetChildElement->SetAttribute("value",
+                                        GetConstCharStarFromCString(vectorValueAttribute));
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
