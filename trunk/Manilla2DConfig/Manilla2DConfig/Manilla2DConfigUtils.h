@@ -37,7 +37,8 @@ struct TodayScreenRegBackup
 
 struct HTCHomeSettingsStruct
 {
-    std::vector<TiXmlElement> imageListImageElements;
+    bool bIsAnalogClockEnabled;
+    bool bIsDigitalClockEnabled;
     std::vector<TiXmlElement> tabWidgetPropertyElements;
     std::vector<TiXmlElement> homeWidgetPropertyElements;
 };
@@ -103,3 +104,6 @@ void ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
 void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
 
 bool ArchiveContainsHTCHomeSettingsXml(CString filePath);
+
+void GetClockEnabledState(CString pathToXmlFile, bool* pIsAnalogEnabled, bool* pIsDigitalEnabled);
+void SetClockEnabledState(CString pathToXmlFile, bool analogEnabled, bool digitalEnabled);
