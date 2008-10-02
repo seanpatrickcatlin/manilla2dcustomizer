@@ -59,6 +59,7 @@ void DisableAllTodayScreenItems();
 CString GetWin32ErrorString(DWORD err);
 
 CString GetFileBaseName(CString filePath);
+bool DirExists(CString pathToDir);
 bool FileExists(CString pathToFile);
 bool IsDirEmpty(CString dirPath);
 void RecursivelyDeleteDirectory(CString sDirPath);
@@ -72,12 +73,13 @@ CString GetPathToWindowsDirectory();
 
 CString GetPathToM2DCInstallDirectory();
 CString GetPathToM2DCThemesDirectory();
-CString GetPathToM2DCActiveThemeDirectory();
+CString GetPathToM2DCOldActiveThemeDirectory();
 
 CString GetPathToThemeBackupFile();
 CString GetPathToHTCHomeSettingsXmlFileActual();
 CString GetPathToHTCHomeSettingsXmlFileBackup();
 CString GetPathToHTCHomeSettingsXmlFileWorking();
+CString GetPathToHTCHomeSettingsXmlFileActiveTheme();
 
 void BackupTodayScreenItemsRegHive();
 void RestoreTodayScreenItemsRegHive();
