@@ -84,3 +84,4 @@
 #endif
 
 #include <altcecrt.h>
+#include <afxdlgs.h>

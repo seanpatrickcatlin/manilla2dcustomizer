@@ -35,12 +35,31 @@ struct TodayScreenRegBackup
     NameAndEnabledState_vector_t itemVector;
 };
 
+struct HomeWidgetSettings
+{
+    bool bAnalogClockEnabled;
+    bool bDigitalClockEnabled;
+    bool bCalendarEnabled;
+    bool bMissedCallsEnabled;
+};
+
 struct HTCHomeSettingsStruct
 {
-    bool bIsAnalogClockEnabled;
-    bool bIsDigitalClockEnabled;
-    std::vector<TiXmlElement> tabWidgetPropertyElements;
+    HomeWidgetSettings homeSettings;
     std::vector<TiXmlElement> homeWidgetPropertyElements;
+    std::vector<TiXmlElement> tabWidgetPropertyElements;
+    std::vector<TiXmlElement> peopleWidgetPropertyElements;
+    std::vector<TiXmlElement> myfavesWidgetPropertyElements;
+    std::vector<TiXmlElement> weatherWidgetPropertyElements;
+    std::vector<TiXmlElement> launcherWidgetPropertyElements;
+    std::vector<TiXmlElement> operatorWidgetPropertyElements;
+    std::vector<TiXmlElement> musicWidgetPropertyElements;
+    std::vector<TiXmlElement> photoWidgetPropertyElements;
+    std::vector<TiXmlElement> messagingWidgetPropertyElements;
+    std::vector<TiXmlElement> emailWidgetPropertyElements;
+    std::vector<TiXmlElement> settingsWidgetPropertyElements;
+    std::vector<TiXmlElement> internetWidgetPropertyElements;
+    std::vector<TiXmlElement> locationWidgetPropertyElements;
 };
 
 namespace M2DC
@@ -108,6 +127,8 @@ namespace M2DC
 
     bool ArchiveContainsHTCHomeSettingsXml(CString filePath);
 
-    void GetClockEnabledState(CString pathToXmlFile, bool* pIsAnalogEnabled, bool* pIsDigitalEnabled);
-    void SetClockEnabledState(CString pathToXmlFile, bool analogEnabled, bool digitalEnabled);
+    void GetHomeWidgetSettings(CString pathToXmlFile, HomeWidgetSettings* pHomeWidgetSettings);
+    void SetHomeWidgetSettings(CString pathToXmlFile, HomeWidgetSettings* pHomeWidgetSettings);
+
+    void GetVectorOfWidgetPropertyRectPosElements(CString xmlFilePath, CString nodeName, std::vector<TiXmlElement>* pElementVector);
 };

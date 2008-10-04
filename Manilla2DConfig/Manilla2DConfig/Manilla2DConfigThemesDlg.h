@@ -58,4 +58,5 @@ public:
     CListBox m_themeChooserListBox;
     afx_msg void OnBnClickedM2dcThemeApplyBtn();
     afx_msg void OnBnClickedM2dcThemeImportBtn();
+    afx_msg void OnBnClickedM2dcThemeDeleteBtn();
 };

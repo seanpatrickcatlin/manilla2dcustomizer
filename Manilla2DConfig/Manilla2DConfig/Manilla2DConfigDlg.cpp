@@ -22,6 +22,7 @@
 #include "Afxext.h"
 #include "Manilla2DConfig.h"
 #include "Manilla2DConfigDlg.h"
+#include "Manilla2DConfigHomeDlg.h"
 #include "Manilla2DConfigTabsDlg.h"
 #include "Manilla2DConfigThemesDlg.h"
 #include "Manilla2DConfigRestoreDlg.h"
@@ -79,6 +80,12 @@ void CManilla2DConfigDlg::SetupPages()
 
     // here is where we add new tabpages, the rest should be done automatically
     CPropertyPage* newTabPage = new CManilla2DConfigTabsDlg(this); 
+    if(newTabPage != NULL)
+    {
+        m_mainTabVector.push_back(newTabPage);
+    }
+
+    newTabPage = new CManilla2DConfigHomeDlg(this);
     if(newTabPage != NULL)
     {
         m_mainTabVector.push_back(newTabPage);
