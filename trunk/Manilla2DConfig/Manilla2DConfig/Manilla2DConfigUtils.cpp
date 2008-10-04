@@ -364,20 +364,32 @@ int M2DC::BackupActualTheme(bool overwritePreviousBackup)
 
         HZIP hz = CreateZip(GetPathToThemeBackupFile(), 0);
 
-        CManilla2DConfigProgressDlg progDlg(AfxGetApp()->GetMainWnd());
+        CString progMsg;
+        CManilla2DConfigProgressDlg* pProgDlg = NULL;
+        if(g_bAllowPopupDialogs)
+        {
+            pProgDlg = new CManilla2DConfigProgressDlg(AfxGetApp()->GetMainWnd());
+        }
 
-        progDlg.BeginTrackingProgress(TEXT("Backing up theme files"), 0, hh_strVector.size());
+        if(pProgDlg)
+        {
+            progMsg = TEXT("Backing up theme files");
+            pProgDlg->BeginTrackingProgress(progMsg, 0, hh_strVector.size());
+        }
 
-        for(size_t i=0; ((i<hh_strVector.size()) && (retVal == 0)); i++)
+        for(size_t i=0; i<hh_strVector.size(); i++)
         {
             CString fullFilePath = hh_strVector[i];
 
             CString archiveFilePath = fullFilePath;
             archiveFilePath.Replace(TEXT("\\"), TEXT("/"));
 
-            CString msg;
-            msg.Format(TEXT("Backing up theme files\nFile %d of %d\n%s"), i, hh_strVector.size(), fullFilePath.GetBuffer());
-            retVal = progDlg.UpdateStatus(msg, i);
+            if(pProgDlg)
+            {
+                progMsg.Format(TEXT("Backing up theme files\nFile %d of %d\n"), i, hh_strVector.size());
+                progMsg += fullFilePath;
+                pProgDlg->UpdateStatus(progMsg, i);
+            }
 
             ZipAdd(hz, archiveFilePath, fullFilePath);
 
@@ -385,10 +397,15 @@ int M2DC::BackupActualTheme(bool overwritePreviousBackup)
             SetFileAttributes(fullFilePath, FILE_ATTRIBUTE_NORMAL);
         }
 
-        progDlg.EndTrackingProgress();
-
         CloseZip(hz);
         TRACE(TEXT("End Zip HH_ files\n"));
+
+        if(pProgDlg)
+        {
+            pProgDlg->EndTrackingProgress();
+            delete pProgDlg;
+            pProgDlg = NULL;
+        }
     }
 
     AfxGetApp()->EndWaitCursor();
@@ -447,37 +464,43 @@ void M2DC::RestoreM2DCFiles()
 
         int numitems = ze.index;
 
-        CString msg;
+        CString progMsg;
         CManilla2DConfigProgressDlg* pProgDlg = NULL;
 
         if(g_bAllowPopupDialogs)
         {
-            pProgDlg = new CManilla2DConfigProgressDlg(NULL);
+            pProgDlg = new CManilla2DConfigProgressDlg(AfxGetApp()->GetMainWnd());
+        }
 
-            msg = TEXT("Restoring theme from backup");
-            pProgDlg->BeginTrackingProgress(msg, 0, numitems);
+        if(pProgDlg)
+        {
+            progMsg = TEXT("Restoring theme from backup");
+            pProgDlg->BeginTrackingProgress(progMsg, 0, numitems);
         }
 
         int retVal = 0;
         
-        for(int zi=0; ((zi<numitems) && (retVal == 0)); zi++)
+        for(int zi=0; zi<numitems; zi++)
         {
             ZIPENTRY ze;
             
             GetZipItem(hz, zi, &ze);            // fetch individual details
 
-            if(g_bAllowPopupDialogs && pProgDlg)
+            if(pProgDlg)
             {
-                msg.Format(TEXT("Restoring theme from backup\nFile %d of %d\n%s"), zi, numitems, ze.name);            
-                retVal = pProgDlg->UpdateStatus(msg, zi);
+                progMsg.Format(TEXT("Restoring theme from backup\nFile %d of %d\n%s"), zi, numitems, ze.name);            
+                pProgDlg->UpdateStatus(progMsg, zi);
             }
 
             UnzipItem(hz, zi, ze.name);
         }
 
-        if(g_bAllowPopupDialogs && pProgDlg)
+        if(pProgDlg != NULL)
         {
+            pProgDlg->EndTrackingProgress();
             delete pProgDlg;
+            pProgDlg = NULL;
+
         }
 
         CloseZip(hz);
@@ -757,15 +780,19 @@ void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector
 {
     int progMax = 10;
     CString progMsg;
-    CManilla2DConfigProgressDlg* progDlg = NULL;
+    CManilla2DConfigProgressDlg* pProgDlg = NULL;
 
     if(pPathVector != NULL)
     {
         if(g_bAllowPopupDialogs)
         {
-            progDlg = new CManilla2DConfigProgressDlg(AfxGetApp()->GetMainWnd());
+            pProgDlg = new CManilla2DConfigProgressDlg(AfxGetApp()->GetMainWnd());
+        }
+
+        if(pProgDlg != NULL)
+        {
             progMsg = TEXT("Building M2D file list");
-            progDlg->BeginTrackingProgress(progMsg, 0, progMax);
+            pProgDlg->BeginTrackingProgress(progMsg, 0, progMax);
         }
 
         TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileActual()));
@@ -818,11 +845,11 @@ void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector
                                 TRACE(currentFilePath);
                                 TRACE(TEXT("\n"));
 
-                                if(g_bAllowPopupDialogs && (progDlg != NULL))
+                                if(pProgDlg != NULL)
                                 {
-                                    progMsg = TEXT("Step 1 of 3\n");
+                                    progMsg = TEXT("Building M2D file list\nStep 1 of 3\n");
                                     progMsg += currentFilePath;
-                                    progDlg->UpdateStatus(progMsg, (progMax/4)*1);
+                                    pProgDlg->UpdateStatus(progMsg, (progMax/4)*1);
                                 }
 
                                 pPathVector->push_back(currentFilePath);
@@ -874,11 +901,11 @@ void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector
                                     TRACE(currentFilePath);
                                     TRACE(TEXT("\n"));
 
-                                    if(g_bAllowPopupDialogs && (progDlg != NULL))
+                                    if(pProgDlg != NULL)
                                     {
-                                        progMsg = TEXT("Step 2 of 3\n");
+                                        progMsg = TEXT("Building M2D file list\nStep 2 of 3\n");
                                         progMsg += currentFilePath;
-                                        progDlg->UpdateStatus(progMsg, (progMax/4)*2);
+                                        pProgDlg->UpdateStatus(progMsg, (progMax/4)*2);
                                     }
 
                                     pPathVector->push_back(currentFilePath);
@@ -931,11 +958,11 @@ void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector
                             TRACE(currentFilePath);
                             TRACE(TEXT("\n"));
 
-                            if(g_bAllowPopupDialogs && (progDlg != NULL))
+                            if(pProgDlg != NULL)
                             {
-                                progMsg = TEXT("Step 3 of 3\n");
+                                progMsg = TEXT("Building M2D file list\nStep 3 of 3\n");
                                 progMsg += currentFilePath;
-                                progDlg->UpdateStatus(progMsg, (progMax/4)*3);
+                                pProgDlg->UpdateStatus(progMsg, (progMax/4)*3);
                             }
 
                             pPathVector->push_back(currentFilePath);
@@ -950,9 +977,11 @@ void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector
         }
     }
 
-    if(g_bAllowPopupDialogs && (progDlg != NULL))
+    if(pProgDlg != NULL)
     {
-        progDlg->EndTrackingProgress();
+        pProgDlg->EndTrackingProgress();
+        delete pProgDlg;
+        pProgDlg = NULL;
     }
 }
 
@@ -1028,10 +1057,8 @@ int M2DC::SetActiveTheme(CString pathToTheme)
 {
     int retVal = 0;    
 
-    CString themeName = pathToTheme.Mid('\\');;
+    CString themeName = pathToTheme.Mid(pathToTheme.Find('\\')+1);;
     themeName = themeName.Mid(0, themeName.Find('.')-1);
-
-    CString msg;
 
     // unzip the files to their appropriate destinations according to the
     // paths from the current XML file
@@ -1050,15 +1077,24 @@ int M2DC::SetActiveTheme(CString pathToTheme)
         // -1 gives overall information about the zipfile
         GetZipItem(hz,-1,&ze);
 
-        CManilla2DConfigProgressDlg progDlg(AfxGetApp()->GetMainWnd());
+        CString progMsg;
+        CManilla2DConfigProgressDlg* pProgDlg = NULL;
+        
+        if(g_bAllowPopupDialogs)
+        {
+            pProgDlg = new CManilla2DConfigProgressDlg(AfxGetApp()->GetMainWnd());
+        }
 
         int numitems = ze.index;
 
-        msg.Format(TEXT("Applying theme: %s"), themeName);
+        if(pProgDlg != NULL)
+        {
+            progMsg = TEXT("Applying theme: ");
+            progMsg += themeName;
+            pProgDlg->BeginTrackingProgress(progMsg, 0, numitems);
+        }
 
-        progDlg.BeginTrackingProgress(msg, 0, numitems);
-
-        for(int zi=0; ((zi<numitems) && (retVal == 0)); zi++)
+        for(int zi=0; zi<numitems; zi++)
         {
             ZIPENTRY ze;
 
@@ -1084,15 +1120,25 @@ int M2DC::SetActiveTheme(CString pathToTheme)
 
             if(destString.GetLength() > 0)
             {
-                msg.Format(TEXT("Applying theme: %s\nFile %d of %d\n%s"), themeName, zi, numitems, fileNameNoPath);
-
-                retVal = progDlg.UpdateStatus(msg, zi);
+                if(pProgDlg != NULL)
+                {
+                    progMsg.Format(TEXT("Applying theme: %s\nFile %d of %d\n"), themeName.GetBuffer(), zi, numitems);
+                    progMsg += fileNameNoPath;
+                    pProgDlg->UpdateStatus(progMsg, zi);
+                }
 
                 DWORD dwAttributes =  GetFileAttributes(destString);
                 SetFileAttributes(destString, FILE_ATTRIBUTE_NORMAL);
                 UnzipItem(hz, zi, destString);
                 SetFileAttributes(destString, dwAttributes);
             }
+        }
+
+        if(pProgDlg != NULL)
+        {
+            pProgDlg->EndTrackingProgress();
+            delete pProgDlg;
+            pProgDlg = NULL;
         }
 
         CloseZip(hz);

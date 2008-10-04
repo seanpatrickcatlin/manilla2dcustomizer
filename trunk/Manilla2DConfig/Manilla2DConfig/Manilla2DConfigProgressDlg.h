@@ -33,15 +33,21 @@ private:
     CStatic m_messageText;
     CProgressCtrl m_progressCtrl;
 
+    int m_lastVal;
+    int m_curVal;
+
+    CString m_curMsg;
+    CString m_lastMsg;
+
     int m_minVal;
     int m_maxVal;
-    int m_curVal;
+    
     UINT m_timerId;
     bool m_updateMessage;
     bool m_updateProgress;
     bool m_userPressedCancel;
     bool m_pumpingMessages;
-    CString m_messageString;
+    
 
     CWnd* m_parent;
 

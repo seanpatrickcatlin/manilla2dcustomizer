@@ -78,16 +78,16 @@ void CManilla2DConfigProgressDlg::OnTimer(UINT nIDEvent)
 {
     if((nIDEvent == m_timerId) && (!m_userPressedCancel))
     {
-        if(m_updateMessage)
+        if(m_curMsg != m_lastMsg)
         {
-            m_updateMessage = false;
-            m_messageText.SetWindowText(m_messageString);
+            m_messageText.SetWindowText(m_curMsg);
+            m_lastMsg = m_curMsg;
         }
 
-        if(m_updateProgress)
+        if(m_curVal != m_lastVal)
         {
-            m_updateProgress = false;
             m_progressCtrl.SetPos(m_curVal);
+            m_lastVal = m_curVal;
         }
     }
 
@@ -108,11 +108,9 @@ void CManilla2DConfigProgressDlg::BeginTrackingProgress(CString message, int min
 {
     m_minVal = min;
     m_maxVal = max;
-    m_curVal = min;
-    m_messageString = message;
 
-    m_updateMessage = true;
-    m_updateProgress = true;
+    m_curVal = min;
+    m_curMsg = message;
 
     Create(CManilla2DConfigProgressDlg::IDD, m_parent);
 
@@ -133,31 +131,20 @@ void CManilla2DConfigProgressDlg::EndTrackingProgress()
 }
 
 int CManilla2DConfigProgressDlg::UpdateStatus(CString message, int newVal)
-{
-    if(m_userPressedCancel)
-    {
-        return -1;
-    }
- 
+{ 
     int retVal = 0;
 
-    m_updateMessage = (m_messageString != message);
+    m_curMsg = message;
+    m_curVal = newVal;
 
-    if(m_updateMessage)
-    {
-        m_messageString = message;
-    }
-
-    m_updateProgress = (m_curVal != newVal);
-
-    if(m_updateProgress)
-    {
-        m_curVal = newVal;
-    }
-
-    if(m_updateMessage || m_updateProgress)
+    if((m_curMsg != m_lastMsg) || (m_curVal != m_lastVal))
     {
         PumpMessages();
+    }
+
+    if(m_userPressedCancel)
+    {
+        retVal = -1;
     }
 
     return retVal;
