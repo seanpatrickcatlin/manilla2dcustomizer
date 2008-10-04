@@ -40,6 +40,7 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
+    void OnPaint();
     void OnOK();
     void OnCancel();
 
