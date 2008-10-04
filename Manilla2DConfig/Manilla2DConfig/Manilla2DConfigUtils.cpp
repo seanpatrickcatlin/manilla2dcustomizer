@@ -34,30 +34,12 @@ CString g_installDirectory;
 bool g_bThemeSupportEnabled = false;
 bool g_bRestoreTodayScreenNeeded = false;
 bool g_bAlreadyBeganMakingChanges = false;
+bool g_bAllowPopupDialogs = true;
 TodayScreenRegBackup g_todayScreenRegBackup;
 
-void PrintNameAndEnabledStateContents(NameAndEnabledState_vector_t* nameAndStateVector)
+void M2DC::SetAllowPopupDialogs(bool allow)
 {
-	if(nameAndStateVector == NULL)
-	{
-		return;
-	}
-
-    char tempStr[1024];
-    CString debugStr;
-
-    TRACE(TEXT("---------------"));
-
-    for(size_t i=0; i<nameAndStateVector->size(); i++)
-    {
-        sprintf(tempStr, "Item: %d, Name: ", i);
-        debugStr = tempStr;
-        debugStr += (*nameAndStateVector)[i].name;
-        sprintf(tempStr, ", Enabled: %d\n", (*nameAndStateVector)[i].enabled);
-        debugStr += tempStr;
-
-        TRACE(debugStr);
-    }
+    g_bAllowPopupDialogs = allow;
 }
 
 bool M2DC::CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1, NameAndEnabledState_vector_t* vec2)
@@ -446,7 +428,7 @@ CString M2DC::GetWin32ErrorString(DWORD err)
     return Error;
 } // ErrorString
 
-void M2DC::RestoreM2DCFiles(bool showProgress)
+void M2DC::RestoreM2DCFiles()
 {
     BeginMakingChanges();
     AfxGetApp()->BeginWaitCursor();
@@ -468,7 +450,7 @@ void M2DC::RestoreM2DCFiles(bool showProgress)
         CString msg;
         CManilla2DConfigProgressDlg* pProgDlg = NULL;
 
-        if(showProgress)
+        if(g_bAllowPopupDialogs)
         {
             pProgDlg = new CManilla2DConfigProgressDlg(NULL);
 
@@ -484,7 +466,7 @@ void M2DC::RestoreM2DCFiles(bool showProgress)
             
             GetZipItem(hz, zi, &ze);            // fetch individual details
 
-            if(showProgress && pProgDlg)
+            if(g_bAllowPopupDialogs && pProgDlg)
             {
                 msg.Format(TEXT("Restoring theme from backup\nFile %d of %d\n%s"), zi, numitems, ze.name);            
                 retVal = pProgDlg->UpdateStatus(msg, zi);
@@ -493,7 +475,7 @@ void M2DC::RestoreM2DCFiles(bool showProgress)
             UnzipItem(hz, zi, ze.name);
         }
 
-        if(showProgress && pProgDlg)
+        if(g_bAllowPopupDialogs && pProgDlg)
         {
             delete pProgDlg;
         }
@@ -773,8 +755,19 @@ void M2DC::RecursivelyDeleteDirectory(CString sDirPath)
 
 void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool includeNonXmlFiles)
 {
+    int progMax = 10;
+    CString progMsg;
+    CManilla2DConfigProgressDlg* progDlg = NULL;
+
     if(pPathVector != NULL)
     {
+        if(g_bAllowPopupDialogs)
+        {
+            progDlg = new CManilla2DConfigProgressDlg(AfxGetApp()->GetMainWnd());
+            progMsg = TEXT("Building M2D file list");
+            progDlg->BeginTrackingProgress(progMsg, 0, progMax);
+        }
+
         TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileActual()));
         bool loadOkay = doc.LoadFile();
         
@@ -825,6 +818,13 @@ void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector
                                 TRACE(currentFilePath);
                                 TRACE(TEXT("\n"));
 
+                                if(g_bAllowPopupDialogs && (progDlg != NULL))
+                                {
+                                    progMsg = TEXT("Step 1 of 3\n");
+                                    progMsg += currentFilePath;
+                                    progDlg->UpdateStatus(progMsg, (progMax/4)*1);
+                                }
+
                                 pPathVector->push_back(currentFilePath);
                             }
                         }
@@ -873,6 +873,13 @@ void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector
                                     TRACE(TEXT("Adding File: "));
                                     TRACE(currentFilePath);
                                     TRACE(TEXT("\n"));
+
+                                    if(g_bAllowPopupDialogs && (progDlg != NULL))
+                                    {
+                                        progMsg = TEXT("Step 2 of 3\n");
+                                        progMsg += currentFilePath;
+                                        progDlg->UpdateStatus(progMsg, (progMax/4)*2);
+                                    }
 
                                     pPathVector->push_back(currentFilePath);
                                 }
@@ -923,6 +930,14 @@ void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector
                             TRACE(TEXT("Adding File: "));
                             TRACE(currentFilePath);
                             TRACE(TEXT("\n"));
+
+                            if(g_bAllowPopupDialogs && (progDlg != NULL))
+                            {
+                                progMsg = TEXT("Step 3 of 3\n");
+                                progMsg += currentFilePath;
+                                progDlg->UpdateStatus(progMsg, (progMax/4)*3);
+                            }
+
                             pPathVector->push_back(currentFilePath);
                         }
                     }
@@ -933,6 +948,11 @@ void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector
 
             FindClose(hFindHandle);
         }
+    }
+
+    if(g_bAllowPopupDialogs && (progDlg != NULL))
+    {
+        progDlg->EndTrackingProgress();
     }
 }
 
@@ -949,7 +969,7 @@ bool M2DC::IsM2DCThemeSupportEnabled()
             msg += "  Disabling theme support and restoring default theme now";
             AfxMessageBox(msg);
 
-            RestoreM2DCFiles(true);
+            RestoreM2DCFiles();
             DeleteFile(GetPathToThemeBackupFile());
             RecursivelyDeleteDirectory(GetPathToM2DCOldActiveThemeDirectory());
         }

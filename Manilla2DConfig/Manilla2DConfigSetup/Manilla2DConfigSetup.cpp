@@ -120,8 +120,9 @@ codeUNINSTALL_INIT Uninstall_Init(HWND hwndParent, LPCTSTR pszInstallDir)
         CString debugMsg = TEXT("Uninstall_Init InstallDirectory: ");
         debugMsg += pszInstallDir;
 
+        M2DC::SetAllowPopupDialogs(false);
         M2DC::SetInstallDirectory(pszInstallDir);
-        M2DC::RestoreM2DCFiles(false);
+        M2DC::RestoreM2DCFiles();
         M2DC::RecursivelyDeleteDirectory(pszInstallDir);
     }
 
