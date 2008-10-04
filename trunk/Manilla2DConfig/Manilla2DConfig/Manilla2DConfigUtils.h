@@ -45,6 +45,8 @@ struct HTCHomeSettingsStruct
 
 namespace M2DC
 {
+    void SetAllowPopupDialogs(bool allow);
+
     void PrintNameAndEnabledStateVector(NameAndEnabledState_vector_t nameAndStateVector);
     bool CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1, NameAndEnabledState_vector_t* vec2);
 
@@ -54,7 +56,7 @@ namespace M2DC
     void BackupHTCHomeSettingsXml(bool overwritePreviousBackup = false);
 
     void RestoreAndReEnableTodayScreen();
-    void RestoreM2DCFiles(bool showProgress = true);
+    void RestoreM2DCFiles();
 
     void RefreshTodayScreen();
     void DisableAllTodayScreenItems();
