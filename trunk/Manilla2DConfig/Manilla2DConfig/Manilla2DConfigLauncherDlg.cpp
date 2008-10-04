@@ -179,7 +179,7 @@ void CManilla2DConfigLauncherDlg::OnOK()
         m_numberOfRows = currentRowCount;
         m_numberOfColumns = currentColumnCount;
 
-        BeginMakingChanges();
+        M2DC::BeginMakingChanges();
         WriteValuesToXml();
     }
 }
@@ -192,7 +192,7 @@ void CManilla2DConfigLauncherDlg::ReadValuesFromXml()
     std::string launcherRowStr = "IDLAUNCHERWG_ROW";
     std::string launcherColStr = "IDLAUNCHERWG_COLUMN";
 
-    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileActual()));
+    TiXmlDocument doc(M2DC::GetConstCharStarFromCString(M2DC::GetPathToHTCHomeSettingsXmlFileActual()));
     bool loadOkay = doc.LoadFile();
 
     if(loadOkay)
@@ -274,7 +274,7 @@ void CManilla2DConfigLauncherDlg::WriteValuesToXml()
         yIntStr = "0";
     }
 
-    TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileWorking()));
+    TiXmlDocument doc(M2DC::GetConstCharStarFromCString(M2DC::GetPathToHTCHomeSettingsXmlFileWorking()));
     bool loadOkay = doc.LoadFile();
 
     if(loadOkay)

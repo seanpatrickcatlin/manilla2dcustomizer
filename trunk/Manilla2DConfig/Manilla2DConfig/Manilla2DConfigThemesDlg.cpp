@@ -107,7 +107,7 @@ BOOL CManilla2DConfigThemesDlg::OnSetActive()
 
     CPropertyPage::OnSetActive();
 
-    if(!IsM2DCThemeSupportEnabled())
+    if(!M2DC::IsM2DCThemeSupportEnabled())
     {
         CString enableStr;
         enableStr = "M2DC theme support needs to be initialized.  ";
@@ -121,7 +121,7 @@ BOOL CManilla2DConfigThemesDlg::OnSetActive()
 
         if(retVal == TRUE)
         {
-            if(EnableM2DCThemeSupport() != 0)
+            if(M2DC::EnableM2DCThemeSupport() != 0)
             {
                 retVal = FALSE;
             }
@@ -153,12 +153,12 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeApplyBtn()
 
     m_themeChooserListBox.GetText(index, selectedTheme);
 
-    CString themePath = GetPathToM2DCThemesDirectory();
+    CString themePath = M2DC::GetPathToM2DCThemesDirectory();
     themePath += "\\";
     themePath += selectedTheme;
     themePath += ".m2dct";
 
-    SetActiveTheme(themePath);
+    M2DC::SetActiveTheme(themePath);
 
     EndDialog(IDOK);
 }
@@ -170,14 +170,14 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
     {
         CString pathToNewTheme = fileDlg.GetFilePath();
 
-        if(FileExists(pathToNewTheme))
+        if(M2DC::FileExists(pathToNewTheme))
         {
-            CString destPath = GetPathToM2DCThemesDirectory();
+            CString destPath = M2DC::GetPathToM2DCThemesDirectory();
             destPath += "\\";
-            destPath += GetFileBaseName(pathToNewTheme);
+            destPath += M2DC::GetFileBaseName(pathToNewTheme);
             destPath += ".m2dct";
 
-            if(!ArchiveContainsHTCHomeSettingsXml(pathToNewTheme))
+            if(!M2DC::ArchiveContainsHTCHomeSettingsXml(pathToNewTheme))
             {
                 CString msg;
                 msg = TEXT("Unable to find a HTCHomeSettings.xml file in the selected file.\n");
@@ -198,7 +198,7 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
 void CManilla2DConfigThemesDlg::RefreshThemeList()
 {
     std::vector<CString> themeNames;
-    GetNamesOfInstalledThemes(&themeNames);
+    M2DC::GetNamesOfInstalledThemes(&themeNames);
 
     m_themeChooserListBox.ResetContent();
     for(size_t i=0; i<themeNames.size(); i++)

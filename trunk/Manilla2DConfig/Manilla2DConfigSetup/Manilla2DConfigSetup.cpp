@@ -120,9 +120,9 @@ codeUNINSTALL_INIT Uninstall_Init(HWND hwndParent, LPCTSTR pszInstallDir)
         CString debugMsg = TEXT("Uninstall_Init InstallDirectory: ");
         debugMsg += pszInstallDir;
 
-        SetInstallDirectory(pszInstallDir);
-        RestoreM2DCFiles(false);
-        RecursivelyDeleteDirectory(pszInstallDir);
+        M2DC::SetInstallDirectory(pszInstallDir);
+        M2DC::RestoreM2DCFiles(false);
+        M2DC::RecursivelyDeleteDirectory(pszInstallDir);
     }
 
     return codeUNINSTALL_INIT_CONTINUE;
@@ -132,6 +132,6 @@ codeUNINSTALL_EXIT Uninstall_Exit(HWND hwndParent)
 {
     AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
-    RestoreAndReEnableTodayScreen();
+    M2DC::RestoreAndReEnableTodayScreen();
     return codeUNINSTALL_EXIT_DONE;
 } 
