@@ -500,7 +500,6 @@ void M2DC::RestoreM2DCFiles()
             pProgDlg->EndTrackingProgress();
             delete pProgDlg;
             pProgDlg = NULL;
-
         }
 
         CloseZip(hz);
@@ -1330,6 +1329,7 @@ bool M2DC::ArchiveContainsHTCHomeSettingsXml(CString filePath)
 {
     bool retVal = false;
 
+    AfxGetApp()->BeginWaitCursor();
     HZIP hz = OpenZip(filePath, 0);
     ZIPENTRY ze;
 
@@ -1348,6 +1348,7 @@ bool M2DC::ArchiveContainsHTCHomeSettingsXml(CString filePath)
     }
 
     CloseZip(hz);
+    AfxGetApp()->EndWaitCursor();
 
     return retVal;
 }
