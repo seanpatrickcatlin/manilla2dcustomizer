@@ -72,9 +72,9 @@ CString M2DC::GetPathToHTCHomeSettingsXmlFileActiveTheme()
 
     TRACE(debugStr);
 
-    if(!g_bAlreadyBeganMakingChanges)
+    if(!FileExists(retVal))
     {
-        BeginMakingChanges();
+        retVal = GetPathToHTCHomeSettingsXmlFileBackup();
     }
 
     return retVal;
@@ -1054,7 +1054,7 @@ void M2DC::SetInstallDirectory(CString installDirectory)
 
 int M2DC::SetActiveTheme(CString pathToTheme)
 {
-    int retVal = 0;    
+    int retVal = 0;
 
     CString themeName = pathToTheme.Mid(pathToTheme.Find('\\')+1);;
     themeName = themeName.Mid(0, themeName.Find('.')-1);
@@ -1199,10 +1199,8 @@ void M2DC::GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector)
 
 void M2DC::ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
 {
-    if((xmlSettings != NULL) && (FileExists(xmlFilePath)))
+    if(FileExists(xmlFilePath) && (xmlSettings != NULL))
     {
-        GetClockEnabledState(xmlFilePath, &xmlSettings->bIsAnalogClockEnabled, &xmlSettings->bIsDigitalClockEnabled);
-
         TiXmlDocument doc(GetConstCharStarFromCString(xmlFilePath));
         bool loadOkay = doc.LoadFile();
 
@@ -1216,27 +1214,88 @@ void M2DC::ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSett
                     widgetPropertyNode != NULL;
                     widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
                 {
-                    for(TiXmlNode* homeWidgetNode = widgetPropertyNode->FirstChild("HomeWidget");
-                        homeWidgetNode != NULL;
-                        homeWidgetNode = homeWidgetNode->NextSibling("HomeWidget"))
+                    for(TiXmlNode* widgetPropertyChildNode = widgetPropertyNode->FirstChild();
+                        widgetPropertyChildNode != NULL;
+                        widgetPropertyChildNode = widgetPropertyChildNode->NextSibling())
                     {
-                        for(TiXmlElement* homeWidgetChildElement = homeWidgetNode->FirstChildElement();
-                            homeWidgetChildElement != NULL;
-                            homeWidgetChildElement = homeWidgetChildElement->NextSiblingElement())
-                        {
-                            xmlSettings->homeWidgetPropertyElements.push_back(*homeWidgetChildElement);
-                        }
-                    }
+                        CString currentNodeName;
+                        currentNodeName = widgetPropertyChildNode->Value();
 
-                    for(TiXmlNode* tabWidgetNode = widgetPropertyNode->FirstChild("TabWidget");
-                        tabWidgetNode != NULL;
-                        tabWidgetNode = tabWidgetNode->NextSibling("TabWidget"))
-                    {
-                        for(TiXmlElement* tabWidgetChildElement = tabWidgetNode->FirstChildElement();
-                            tabWidgetChildElement != NULL;
-                            tabWidgetChildElement = tabWidgetChildElement->NextSiblingElement())
+                        std::vector<TiXmlElement>* pRelevantVector = NULL;
+
+                        if(currentNodeName.Find(TEXT("HomeWidget")) != -1)
                         {
-                            xmlSettings->tabWidgetPropertyElements.push_back(*tabWidgetChildElement);
+                            pRelevantVector = &(xmlSettings->homeWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("TabWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->tabWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("PeopleWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->peopleWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("MyFavesWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->myfavesWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("WeatherWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->weatherWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("LauncherWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->launcherWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("OperatorWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->operatorWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("MusicWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->musicWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("PhotoWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->photoWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("MessagingWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->messagingWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("EmailWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->emailWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("SettingsWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->settingsWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("InternetWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->internetWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("LocationWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->locationWidgetPropertyElements);
+                        }
+
+                        if(pRelevantVector != NULL)
+                        {
+                            for(TiXmlElement* widgetPropertyChildElement = widgetPropertyChildNode->FirstChildElement();
+                                widgetPropertyChildElement != NULL;
+                                widgetPropertyChildElement = widgetPropertyChildElement->NextSiblingElement())
+                            {
+                                CString currentNameAttribute;
+
+                                currentNameAttribute = widgetPropertyChildElement->Attribute("name");
+
+                                if((currentNameAttribute.Find(TEXT("POS")) != -1) ||
+                                    (currentNameAttribute.Find(TEXT("RECT")) != -1))
+                                {
+                                    pRelevantVector->push_back(*widgetPropertyChildElement);
+                                }
+                            }
                         }
                     }
                 }
@@ -1247,10 +1306,8 @@ void M2DC::ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSett
 
 void M2DC::WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
 {
-    if((xmlSettings != NULL) && (FileExists(xmlFilePath)))
+    if(FileExists(xmlFilePath) && (xmlSettings != NULL))
     {
-        SetClockEnabledState(xmlFilePath, xmlSettings->bIsAnalogClockEnabled, xmlSettings->bIsDigitalClockEnabled);
-
         CString vectorNameAttribute;
         CString vectorValueAttribute;
         CString currentNameAttribute;
@@ -1268,51 +1325,91 @@ void M2DC::WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSetti
                     widgetPropertyNode != NULL;
                     widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
                 {
-                    for(TiXmlNode* homeWidgetNode = widgetPropertyNode->FirstChild("HomeWidget");
-                        homeWidgetNode != NULL;
-                        homeWidgetNode = homeWidgetNode->NextSibling("HomeWidget"))
+                    for(TiXmlNode* widgetPropertyChildNode = widgetPropertyNode->FirstChild();
+                        widgetPropertyChildNode != NULL;
+                        widgetPropertyChildNode = widgetPropertyChildNode->NextSibling())
                     {
-                        for(TiXmlElement* homeWidgetChildElement = homeWidgetNode->FirstChildElement();
-                            homeWidgetChildElement != NULL;
-                            homeWidgetChildElement = homeWidgetChildElement->NextSiblingElement())
+                        CString currentNodeName;
+                        currentNodeName = widgetPropertyChildNode->Value();
+
+                        std::vector<TiXmlElement>* pRelevantVector = NULL;
+
+                        if(currentNodeName.Find(TEXT("HomeWidget")) != -1)
                         {
-                            currentNameAttribute = homeWidgetChildElement->Attribute("name");
-
-                            for(size_t i=0; i<xmlSettings->homeWidgetPropertyElements.size(); i++)
-                            {
-                                vectorNameAttribute = xmlSettings->homeWidgetPropertyElements[i].Attribute("name");
-                                vectorValueAttribute = xmlSettings->homeWidgetPropertyElements[i].Attribute("value");
-
-                                if(vectorNameAttribute.Compare(currentNameAttribute) == 0)
-                                {
-                                    homeWidgetChildElement->SetAttribute("value",
-                                        GetConstCharStarFromCString(vectorValueAttribute));
-                                    break;
-                                }
-                            }
+                            pRelevantVector = &(xmlSettings->homeWidgetPropertyElements);
                         }
-                    }
-
-                    for(TiXmlNode* tabWidgetNode = widgetPropertyNode->FirstChild("TabWidget");
-                        tabWidgetNode != NULL;
-                        tabWidgetNode = tabWidgetNode->NextSibling("TabWidget"))
-                    {
-                        for(TiXmlElement* tabWidgetChildElement = tabWidgetNode->FirstChildElement();
-                            tabWidgetChildElement != NULL;
-                            tabWidgetChildElement = tabWidgetChildElement->NextSiblingElement())
+                        else if(currentNodeName.Find(TEXT("TabWidget")) != -1)
                         {
-                            currentNameAttribute = tabWidgetChildElement->Attribute("name");
+                            pRelevantVector = &(xmlSettings->tabWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("PeopleWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->peopleWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("MyFavesWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->myfavesWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("WeatherWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->weatherWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("LauncherWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->launcherWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("OperatorWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->operatorWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("MusicWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->musicWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("PhotoWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->photoWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("MessagingWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->messagingWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("EmailWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->emailWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("SettingsWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->settingsWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("InternetWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->internetWidgetPropertyElements);
+                        }
+                        else if(currentNodeName.Find(TEXT("LocationWidget")) != -1)
+                        {
+                            pRelevantVector = &(xmlSettings->locationWidgetPropertyElements);
+                        }
 
-                            for(size_t i=0; i<xmlSettings->tabWidgetPropertyElements.size(); i++)
+                        if(pRelevantVector != NULL)
+                        {
+                            for(TiXmlElement* widgetPropertyChildElement = widgetPropertyChildNode->FirstChildElement();
+                                widgetPropertyChildElement != NULL;
+                                widgetPropertyChildElement = widgetPropertyChildElement->NextSiblingElement())
                             {
-                                vectorNameAttribute = xmlSettings->tabWidgetPropertyElements[i].Attribute("name");
-                                vectorValueAttribute = xmlSettings->tabWidgetPropertyElements[i].Attribute("value");
+                                currentNameAttribute = widgetPropertyChildElement->Attribute("name");
 
-                                if(vectorNameAttribute.Compare(currentNameAttribute) == 0)
+                                for(size_t i=0; i<pRelevantVector->size(); i++)
                                 {
-                                    tabWidgetChildElement->SetAttribute("value",
-                                        GetConstCharStarFromCString(vectorValueAttribute));
-                                    break;
+                                    vectorNameAttribute = (*pRelevantVector)[i].Attribute("name");
+                                    vectorValueAttribute = (*pRelevantVector)[i].Attribute("value");
+
+                                    if(vectorNameAttribute.Compare(currentNameAttribute) == 0)
+                                    {
+                                        widgetPropertyChildElement->SetAttribute("value",
+                                            GetConstCharStarFromCString(vectorValueAttribute));
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -1353,123 +1450,68 @@ bool M2DC::ArchiveContainsHTCHomeSettingsXml(CString filePath)
     return retVal;
 }
 
-void M2DC::GetClockEnabledState(CString pathToXmlFile, bool* pIsAnalogEnabled, bool* pIsDigitalEnabled)
+void M2DC::GetHomeWidgetSettings(CString pathToXmlFile, HomeWidgetSettings* pHomeWidgetSettings)
 {
-    int analogEnabledCount = 0;
-    int analogDisabledCount = 0;
-    int digitalEnabledCount = 0;
-    int digitalDisabledCount = 0;
-
-    if((pIsAnalogEnabled != NULL) && (pIsDigitalEnabled != NULL) && (FileExists(pathToXmlFile)))
+    if(FileExists(pathToXmlFile) && (pHomeWidgetSettings != NULL))
     {
-        TiXmlDocument doc(GetConstCharStarFromCString(pathToXmlFile));
-        bool loadOkay = doc.LoadFile();
+        pHomeWidgetSettings->bAnalogClockEnabled = true;
+        pHomeWidgetSettings->bDigitalClockEnabled = true;
+        pHomeWidgetSettings->bMissedCallsEnabled = true;
+        pHomeWidgetSettings->bCalendarEnabled = true;
 
-        if(loadOkay)
+        // prepare a vector of elements from the current theme file home elements
+        std::vector<TiXmlElement> homeWidgetPropertyElements;
+        GetVectorOfWidgetPropertyRectPosElements(
+            pathToXmlFile,
+            TEXT("HomeWidget"),
+            &homeWidgetPropertyElements);
+
+        CString currentNameAttribute;
+        CString currentValueAttribute;
+
+        for(size_t i=0; i<homeWidgetPropertyElements.size(); i++)
         {
-            for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome");
-                htcHomeNode != NULL;
-                htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
+            currentNameAttribute = homeWidgetPropertyElements[i].Attribute("name");
+            currentValueAttribute = homeWidgetPropertyElements[i].Attribute("value");
+
+            if((currentNameAttribute.Find(TEXT("POS")) != -1) ||
+                (currentNameAttribute.Find(TEXT("RECT")) != -1))
             {
-                for(TiXmlNode* imageListNode = htcHomeNode->FirstChild("ImageList");
-                    imageListNode != NULL;
-                    imageListNode = imageListNode->NextSibling("ImageList"))
+                if(currentValueAttribute.Find(TEXT("-1")) != -1)
                 {
-                    for(TiXmlNode* imageListImageNode = imageListNode->FirstChild();
-                        imageListImageNode != NULL;
-                        imageListImageNode = imageListImageNode->NextSibling())
+                    if(currentNameAttribute.Find(TEXT("CLOCKBTN")) != -1)
                     {
-                        CString strVal;
-
-                        TiXmlComment* imageListImageComment = imageListImageNode->ToComment();
-
-                        if(imageListImageComment != NULL)
-                        {
-                            strVal = imageListImageComment->Value();
-                        }
-
-                        TiXmlElement* imageListImageElement = imageListImageNode->ToElement();
-
-                        if(imageListImageElement != NULL)
-                        {
-                            strVal = imageListImageElement->Attribute("name");
-                        }
-
-                        if(strVal.Find(TEXT("hh_hm_aclock")) != -1)
-                        {
-                            if((imageListImageComment != NULL) || (strVal[strVal.GetLength()-1] == 'x'))
-                            {
-                                analogDisabledCount++;
-                            }
-                            else
-                            {
-                                analogEnabledCount++;
-                            }
-                        }
-
-                        if((strVal.Find(TEXT("hh_hm_digit")) != -1) ||
-                            (strVal.Find(TEXT("hh_hm_am")) != -1) ||
-                            (strVal.Find(TEXT("hh_hm_pm")) != -1) ||
-                            (strVal.Find(TEXT("hh_hm_colon")) != -1))
-                        {
-                            if((imageListImageComment != NULL) || (strVal[strVal.GetLength()-1] == 'x'))
-                            {
-                                digitalDisabledCount++;
-                            }
-                            else
-                            {
-                                digitalEnabledCount++;
-                            }
-                        }
+                        pHomeWidgetSettings->bDigitalClockEnabled = false;
+                    }
+                    else if(currentNameAttribute.Find(TEXT("ANALOGCLOCK")) != -1)
+                    {
+                        pHomeWidgetSettings->bAnalogClockEnabled = false;
+                    }
+                    else if(currentNameAttribute.Find(TEXT("CALENDARBTN")) != -1)
+                    {
+                        pHomeWidgetSettings->bCalendarEnabled = false;
+                    }
+                    else if(currentNameAttribute.Find(TEXT("MISSEDCALLBTN")) != -1)
+                    {
+                        pHomeWidgetSettings->bMissedCallsEnabled = false;
                     }
                 }
             }
         }
     }
-
-    *pIsAnalogEnabled = (analogEnabledCount != 0);
-    *pIsDigitalEnabled = (digitalEnabledCount != 0);
 }
 
-/*
-    <Image index="43" name="hh_hm_am.png" />
-    <Image index="44" name="hh_hm_pm.png" />
-    <Image index="47" name="hh_hm_colon.png" />
-    <Image index="48" name="hh_hm_digit_0.png" />
-    <Image index="49" name="hh_hm_digit_1.png" />
-    <Image index="50" name="hh_hm_digit_2.png" />
-    <Image index="51" name="hh_hm_digit_3.png" />
-    <Image index="52" name="hh_hm_digit_4.png" />
-    <Image index="53" name="hh_hm_digit_5.png" />
-    <Image index="54" name="hh_hm_digit_6.png" />
-    <Image index="55" name="hh_hm_digit_7.png" />
-    <Image index="56" name="hh_hm_digit_8.png" />
-    <Image index="57" name="hh_hm_digit_9.png" />
-*/
-
-/*
-    <Image index="121" name="hh_hm_aclock_alarm.bmpx" />
-    <Image index="122" name="hh_hm_aclock_alarm_mask.bmpx" />
-    <Image index="123" name="hh_hm_aclock_alarm_shadow.bmpx" />
-    <Image index="124" name="hh_hm_aclock_alarm_shadow_mask.bmpx" />
-    <Image index="125" name="hh_hm_aclock_hour.bmpx" />
-    <Image index="126" name="hh_hm_aclock_hour_mask.bmpx" />
-    <Image index="127" name="hh_hm_aclock_hour_shadow.bmpx" />
-    <Image index="128" name="hh_hm_aclock_hour_shadow_mask.bmpx" />
-    <Image index="209" name="hh_hm_aclock_Minute.bmpx" />
-    <Image index="210" name="hh_hm_aclock_Minute_mask.bmpx" />
-    <Image index="211" name="hh_hm_aclock_Minute_shadow.bmpx" />
-    <Image index="212" name="hh_hm_aclock_Minute_shadow_mask.bmpx" />
-    <Image index="213" name="hh_hm_aclock_Dot.bmpx" />
-    <Image index="214" name="hh_hm_aclock_Dot_mask.bmpx" />
-    <Image index="215" name="hh_hm_aclock_Dot_shadow.bmpx" />
-    <Image index="216" name="hh_hm_aclock_Dot_shadow_mask.bmpx" />
-*/
-
-void M2DC::SetClockEnabledState(CString pathToXmlFile, bool analogEnabled, bool digitalEnabled)
+void M2DC::SetHomeWidgetSettings(CString pathToXmlFile, HomeWidgetSettings* pHomeWidgetSettings)
 {
-    if(FileExists(pathToXmlFile))
+    if(FileExists(pathToXmlFile) && (pHomeWidgetSettings != NULL))
     {
+        // prepare a vector of elements from the current theme file home elements
+        std::vector<TiXmlElement> themeHomeWidgetPropertyElements;
+        GetVectorOfWidgetPropertyRectPosElements(
+            M2DC::GetPathToHTCHomeSettingsXmlFileActiveTheme(),
+            TEXT("HomeWidget"),
+            &themeHomeWidgetPropertyElements);
+
         TiXmlDocument doc(GetConstCharStarFromCString(pathToXmlFile));
         bool loadOkay = doc.LoadFile();
 
@@ -1479,72 +1521,102 @@ void M2DC::SetClockEnabledState(CString pathToXmlFile, bool analogEnabled, bool 
                 htcHomeNode != NULL;
                 htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
             {
-                for(TiXmlNode* imageListNode = htcHomeNode->FirstChild("ImageList");
-                    imageListNode != NULL;
-                    imageListNode = imageListNode->NextSibling("ImageList"))
+                for(TiXmlNode* widgetPropertyNode = htcHomeNode->FirstChild("WidgetProperty");
+                    widgetPropertyNode != NULL;
+                    widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
                 {
-                    for(TiXmlNode* imageListImageNode = imageListNode->FirstChild();
-                        imageListImageNode != NULL;
-                        imageListImageNode = imageListImageNode->NextSibling())
+                    for(TiXmlNode* widgetPropertyChildNode = widgetPropertyNode->FirstChild("HomeWidget");
+                        widgetPropertyChildNode != NULL;
+                        widgetPropertyChildNode = widgetPropertyChildNode->NextSibling("HomeWidget"))
                     {
-                        CString strVal;
-
-                        TiXmlComment* imageListImageComment = imageListImageNode->ToComment();
-
-                        if(imageListImageComment != NULL)
+                        for(TiXmlElement* widgetPropertyChildElement = widgetPropertyChildNode->FirstChildElement();
+                            widgetPropertyChildElement != NULL;
+                            widgetPropertyChildElement = widgetPropertyChildElement->NextSiblingElement())
                         {
-                            //strVal = imageListImageComment->Value();
-                        }
+                            CString currentNameAttribute;
+                            CString themeNameAttribute;
+                            CString themeValueAttribute;
 
-                        TiXmlElement* imageListImageElement = imageListImageNode->ToElement();
+                            currentNameAttribute = widgetPropertyChildElement->Attribute("name");
 
-                        if(imageListImageElement != NULL)
-                        {
-                            strVal = imageListImageElement->Attribute("name");
+                            CString posValue = TEXT("-1,-1");
+                            CString rectValue = TEXT("-1,-1,-1,-1");
 
-                            if(strVal.Find(TEXT("hh_hm_aclock")) != -1)
+                            if((currentNameAttribute.Find(TEXT("POS")) != -1) ||
+                                (currentNameAttribute.Find(TEXT("RECT")) != -1))
                             {
-                                if(analogEnabled)
-                                {
+                                CString enabledValue;
+                                CString disabledValue = posValue;
 
-                                    if(strVal[strVal.GetLength()-1] == 'x')
+                                if(currentNameAttribute.Find(TEXT("RECT")) != -1)
+                                {
+                                    disabledValue = rectValue;
+                                }
+
+                                for(size_t i=0; i<themeHomeWidgetPropertyElements.size(); i++)
+                                {
+                                    themeNameAttribute = themeHomeWidgetPropertyElements[i].Attribute("name");
+
+                                    if(themeNameAttribute.Compare(currentNameAttribute) == 0)
                                     {
-                                        strVal = strVal.Mid(0, strVal.GetLength()-1);
+                                        enabledValue = themeHomeWidgetPropertyElements[i].Attribute("value");
+                                        break;
                                     }
                                 }
-                                else
+
+                                if(currentNameAttribute.Find(TEXT("CLOCKBTN")) != -1)
                                 {
-                                    if(strVal[strVal.GetLength()-1] != 'x')
+                                    if(pHomeWidgetSettings->bDigitalClockEnabled)
                                     {
-                                        strVal += 'x';
+                                        widgetPropertyChildElement->SetAttribute("value",
+                                            GetConstCharStarFromCString(enabledValue));
+                                    }
+                                    else
+                                    {
+                                        widgetPropertyChildElement->SetAttribute("value",
+                                            GetConstCharStarFromCString(disabledValue));
                                     }
                                 }
-
-                                imageListImageElement->SetAttribute("name", GetConstCharStarFromCString(strVal));
-                            }
-                        }
-
-                        if((strVal.Find(TEXT("hh_hm_digit")) != -1) ||
-                            (strVal.Find(TEXT("hh_hm_am")) != -1) ||
-                            (strVal.Find(TEXT("hh_hm_pm")) != -1) ||
-                            (strVal.Find(TEXT("hh_hm_colon")) != -1))
-                        {
-                            if(digitalEnabled)
-                            {
-                                if(strVal[strVal.GetLength()-1] == 'x')
+                                else if(currentNameAttribute.Find(TEXT("ANALOGCLOCK")) != -1)
                                 {
-                                    strVal = strVal.Mid(0, strVal.GetLength()-1);
+                                    if(pHomeWidgetSettings->bAnalogClockEnabled)
+                                    {
+                                        widgetPropertyChildElement->SetAttribute("value",
+                                            GetConstCharStarFromCString(enabledValue));
+                                    }
+                                    else
+                                    {
+                                        widgetPropertyChildElement->SetAttribute("value",
+                                            GetConstCharStarFromCString(disabledValue));
+                                    }
+                                }
+                                else if(currentNameAttribute.Find(TEXT("CALENDARBTN")) != -1)
+                                {
+                                    if(pHomeWidgetSettings->bCalendarEnabled)
+                                    {
+                                        widgetPropertyChildElement->SetAttribute("value",
+                                            GetConstCharStarFromCString(enabledValue));
+                                    }
+                                    else
+                                    {
+                                        widgetPropertyChildElement->SetAttribute("value",
+                                            GetConstCharStarFromCString(disabledValue));
+                                    }
+                                }
+                                else if(currentNameAttribute.Find(TEXT("MISSEDCALLBTN")) != -1)
+                                {
+                                    if(pHomeWidgetSettings->bMissedCallsEnabled)
+                                    {
+                                        widgetPropertyChildElement->SetAttribute("value",
+                                            GetConstCharStarFromCString(enabledValue));
+                                    }
+                                    else
+                                    {
+                                        widgetPropertyChildElement->SetAttribute("value",
+                                            GetConstCharStarFromCString(disabledValue));
+                                    }
                                 }
                             }
-                            else
-                            {
-                                if(strVal[strVal.GetLength()-1] != 'x')
-                                {
-                                    strVal += 'x';
-                                }
-                            }
-
-                            imageListImageElement->SetAttribute("name", GetConstCharStarFromCString(strVal));
                         }
                     }
                 }
@@ -1552,5 +1624,46 @@ void M2DC::SetClockEnabledState(CString pathToXmlFile, bool analogEnabled, bool 
         }
 
         doc.SaveFile();
+    }
+}
+
+void M2DC::GetVectorOfWidgetPropertyRectPosElements(CString xmlFilePath, CString nodeName, std::vector<TiXmlElement>* pElementVector)
+{
+    if(FileExists(xmlFilePath) && (pElementVector != NULL))
+    {
+        TiXmlDocument doc(GetConstCharStarFromCString(xmlFilePath));
+        bool loadOkay = doc.LoadFile();
+
+        if(loadOkay)
+        {
+            for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome");
+                htcHomeNode != NULL;
+                htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
+            {
+                for(TiXmlNode* widgetPropertyNode = htcHomeNode->FirstChild("WidgetProperty");
+                    widgetPropertyNode != NULL;
+                    widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
+                {
+                    for(TiXmlNode* widgetPropertyChildNode = widgetPropertyNode->FirstChild(GetConstCharStarFromCString(nodeName));
+                        widgetPropertyChildNode != NULL;
+                        widgetPropertyChildNode = widgetPropertyChildNode->NextSibling(GetConstCharStarFromCString(nodeName)))
+                    {
+                        for(TiXmlElement* widgetPropertyChildElement = widgetPropertyChildNode->FirstChildElement();
+                            widgetPropertyChildElement != NULL;
+                            widgetPropertyChildElement = widgetPropertyChildElement->NextSiblingElement())
+                        {
+                            CString currentNameAttribute;
+                            currentNameAttribute = widgetPropertyChildElement->Attribute("name");
+
+                            if((currentNameAttribute.Find(TEXT("POS")) != -1) ||
+                                (currentNameAttribute.Find(TEXT("RECT")) != -1))
+                            {
+                                pElementVector->push_back(*widgetPropertyChildElement);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

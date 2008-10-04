@@ -43,11 +43,11 @@ public:
     BOOL OnInitDialog();
 
 	DECLARE_MESSAGE_MAP()
-public:
-    afx_msg void OnBnClickedRestoreButton();
 
 private:
     CCommandBar m_cmdBar;
+
 public:
+    afx_msg void OnBnClickedRestoreButton();
     afx_msg void OnBnClickedBackupButton();
 };

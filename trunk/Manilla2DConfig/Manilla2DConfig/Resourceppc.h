@@ -8,6 +8,8 @@
 #define IDD_M2DC_THEMES_DLG             104
 #define IDD_FILE_TREE_DLG               105
 #define IDD_M2DC_PROGRESS_DLG           106
+#define IDD_POCKETPC_PORTRAIT           107
+#define IDD_M2DC_HOME_DLG               107
 #define IDR_M2DC_ICO                    128
 #define IDR_M2DC_APPLY_CANCEL_MENU      129
 #define IDR_FILE_TREE_DLG_OKCANCEL_MENU 130
@@ -15,6 +17,7 @@
 #define IDS_M2DC_LAUNCHER_STR           132
 #define IDS_M2DC_TABS_STR               133
 #define IDS_M2DC_THEMES_STR             134
+#define IDS_M2DC_HOME_STR               135
 #define IDC_M2DC_TABS_UP_BTN            1001
 #define IDC_M2DC_TABS_DOWN_BTN          1002
 #define IDC_M2DC_TABS_MAIN_LC           1003
@@ -33,6 +36,11 @@
 #define IDC_M2DC_LAUNCHER_3_ROW_RB      1016
 #define IDC_M2DC_LAUNCHER_6_ROW_RB      1017
 #define IDC_M2DC_LAUNCHER_9_ROW_RB      1018
+#define IDC_M2DC_THEME_DELETE_BTN       1019
+#define IDC_M2DC_ENABLE_ANALOG_CB       1020
+#define IDC_M2DC_ENABLE_DIGITAL_CB      1021
+#define IDC_M2DC_ENABLE_MISSEDCALLS_CB  1022
+#define IDC_M2DC_ENABLE_CALENDAR_CB     1023
 #define ID_RESTORE_DEFAULTS             32771
 #define IDT_M2DC_PROGRESS_TIMER         32772
 
@@ -40,9 +48,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        135
+#define _APS_NEXT_RESOURCE_VALUE        136
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1019
-#define _APS_NEXT_SYMED_VALUE           107
+#define _APS_NEXT_CONTROL_VALUE         1024
+#define _APS_NEXT_SYMED_VALUE           108
 #endif
 #endif

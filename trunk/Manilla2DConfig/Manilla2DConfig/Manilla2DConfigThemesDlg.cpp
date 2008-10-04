@@ -60,6 +60,7 @@ BEGIN_MESSAGE_MAP(CManilla2DConfigThemesDlg, CPropertyPage)
     ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigThemesDlg::OnQuerySiblings)
     ON_BN_CLICKED(IDC_M2DC_THEME_APPLY_BTN, &CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeApplyBtn)
     ON_BN_CLICKED(IDC_M2DC_THEME_IMPORT_BTN, &CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn)
+    ON_BN_CLICKED(IDC_M2DC_THEME_DELETE_BTN, &CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeDeleteBtn)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigThemesDlg message handlers
@@ -204,5 +205,34 @@ void CManilla2DConfigThemesDlg::RefreshThemeList()
     for(size_t i=0; i<themeNames.size(); i++)
     {
         m_themeChooserListBox.AddString(themeNames[i]);
+    }
+}
+
+void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeDeleteBtn()
+{
+    CString selectedTheme;
+    int index = m_themeChooserListBox.GetCurSel();
+
+    if((index < 0) || (index >= m_themeChooserListBox.GetCount()))
+    {
+        return;
+    }
+
+    m_themeChooserListBox.GetText(index, selectedTheme);
+
+    CString themePath = M2DC::GetPathToM2DCThemesDirectory();
+    themePath += "\\";
+    themePath += selectedTheme;
+    themePath += ".m2dct";
+
+    if(themePath == M2DC::GetPathToThemeBackupFile())
+    {
+        CString msg = TEXT("Unable to delete default theme backup file!");
+        AfxMessageBox(msg);
+    }
+    else
+    {
+        DeleteFile(themePath);
+        RefreshThemeList();
     }
 }
