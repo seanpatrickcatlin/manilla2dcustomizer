@@ -100,7 +100,7 @@ void CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton()
     CString caption("This will restore all Manilla 2D settings from your backup copy.\nWould you like to continue?");
     if(MessageBox(caption, TEXT("Restore Settings?"), MB_YESNO) == IDYES)
     {
-        RestoreM2DCFiles();
+        M2DC::RestoreM2DCFiles();
         EndDialog(IDCANCEL);
     }
 }
@@ -110,6 +110,6 @@ void CManilla2DConfigRestoreDlg::OnBnClickedBackupButton()
     CString caption("This will backup you Manilla 2D settings and delete any previous backups.\nWould you like to continue?");
     if(MessageBox(caption, TEXT("Backup Settings?"), MB_YESNO) == IDYES)
     {
-        BackupM2DCFiles();
+        M2DC::BackupM2DCFiles();
     }
 }

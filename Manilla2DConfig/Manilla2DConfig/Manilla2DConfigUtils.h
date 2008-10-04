@@ -43,66 +43,69 @@ struct HTCHomeSettingsStruct
     std::vector<TiXmlElement> homeWidgetPropertyElements;
 };
 
-void PrintNameAndEnabledStateVector(NameAndEnabledState_vector_t nameAndStateVector);
-bool CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1, NameAndEnabledState_vector_t* vec2);
+namespace M2DC
+{
+    void PrintNameAndEnabledStateVector(NameAndEnabledState_vector_t nameAndStateVector);
+    bool CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1, NameAndEnabledState_vector_t* vec2);
 
-void BackupM2DCFiles();
-void BackupAndDisableTodayScreen();
-int BackupActualTheme(bool overwritePreviousBackup = false);
-void BackupHTCHomeSettingsXml(bool overwritePreviousBackup = false);
+    void BackupM2DCFiles();
+    void BackupAndDisableTodayScreen();
+    int BackupActualTheme(bool overwritePreviousBackup = false);
+    void BackupHTCHomeSettingsXml(bool overwritePreviousBackup = false);
 
-void RestoreAndReEnableTodayScreen();
-void RestoreM2DCFiles(bool showProgress = true);
+    void RestoreAndReEnableTodayScreen();
+    void RestoreM2DCFiles(bool showProgress = true);
 
-void RefreshTodayScreen();
-void DisableAllTodayScreenItems();
+    void RefreshTodayScreen();
+    void DisableAllTodayScreenItems();
 
-CString GetWin32ErrorString(DWORD err);
+    CString GetWin32ErrorString(DWORD err);
 
-CString GetFileBaseName(CString filePath);
-bool DirExists(CString pathToDir);
-bool FileExists(CString pathToFile);
-bool IsDirEmpty(CString dirPath);
-void RecursivelyDeleteDirectory(CString sDirPath);
+    CString GetFileBaseName(CString filePath);
+    bool DirExists(CString pathToDir);
+    bool FileExists(CString pathToFile);
+    bool IsDirEmpty(CString dirPath);
+    void RecursivelyDeleteDirectory(CString sDirPath);
 
-const char* GetConstCharStarFromCString(CString str);
+    const char* GetConstCharStarFromCString(CString str);
 
-CString GetPathToRunningBinary();
-CString GetDirectoryOfFile(CString fullFilePath);
+    CString GetPathToRunningBinary();
+    CString GetDirectoryOfFile(CString fullFilePath);
 
-CString GetPathToWindowsDirectory();
+    CString GetPathToWindowsDirectory();
 
-CString GetPathToM2DCInstallDirectory();
-CString GetPathToM2DCThemesDirectory();
-CString GetPathToM2DCOldActiveThemeDirectory();
+    CString GetPathToM2DCInstallDirectory();
+    CString GetPathToM2DCThemesDirectory();
+    CString GetPathToM2DCOldActiveThemeDirectory();
 
-CString GetPathToThemeBackupFile();
-CString GetPathToHTCHomeSettingsXmlFileActual();
-CString GetPathToHTCHomeSettingsXmlFileBackup();
-CString GetPathToHTCHomeSettingsXmlFileWorking();
-CString GetPathToHTCHomeSettingsXmlFileActiveTheme();
+    CString GetPathToThemeBackupFile();
+    CString GetPathToHTCHomeSettingsXmlFileActual();
+    CString GetPathToHTCHomeSettingsXmlFileBackup();
+    CString GetPathToHTCHomeSettingsXmlFileWorking();
+    CString GetPathToHTCHomeSettingsXmlFileActiveTheme();
 
-void BackupTodayScreenItemsRegHive();
-void RestoreTodayScreenItemsRegHive();
+    void BackupTodayScreenItemsRegHive();
+    void RestoreTodayScreenItemsRegHive();
 
-void BeginMakingChanges();
-void EndMakingChanges();
+    void BeginMakingChanges();
+    void EndMakingChanges();
 
-bool IsM2DCThemeSupportEnabled();
-int EnableM2DCThemeSupport();
+    bool IsM2DCThemeSupportEnabled();
+    int EnableM2DCThemeSupport();
 
-void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool includeNonXmlFiles);
+    void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool includeNonXmlFiles);
 
-void SetInstallDirectory(CString installDirectory);
+    void SetInstallDirectory(CString installDirectory);
 
-int SetActiveTheme(CString pathToTheme);
+    int SetActiveTheme(CString pathToTheme);
 
-void GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector);
+    void GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector);
 
-void ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
-void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
+    void ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
+    void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
 
-bool ArchiveContainsHTCHomeSettingsXml(CString filePath);
+    bool ArchiveContainsHTCHomeSettingsXml(CString filePath);
 
-void GetClockEnabledState(CString pathToXmlFile, bool* pIsAnalogEnabled, bool* pIsDigitalEnabled);
-void SetClockEnabledState(CString pathToXmlFile, bool analogEnabled, bool digitalEnabled);
+    void GetClockEnabledState(CString pathToXmlFile, bool* pIsAnalogEnabled, bool* pIsDigitalEnabled);
+    void SetClockEnabledState(CString pathToXmlFile, bool analogEnabled, bool digitalEnabled);
+};

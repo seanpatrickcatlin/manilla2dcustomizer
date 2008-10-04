@@ -60,7 +60,7 @@ void PrintNameAndEnabledStateContents(NameAndEnabledState_vector_t* nameAndState
     }
 }
 
-bool CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1, NameAndEnabledState_vector_t* vec2)
+bool M2DC::CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1, NameAndEnabledState_vector_t* vec2)
 {
     if(vec1->size() != vec2->size())
     {
@@ -79,7 +79,7 @@ bool CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1, NameA
     return false;
 }
 
-CString GetPathToHTCHomeSettingsXmlFileActiveTheme()
+CString M2DC::GetPathToHTCHomeSettingsXmlFileActiveTheme()
 {
 	CString retVal = GetPathToM2DCInstallDirectory();
     retVal += "\\HTCHomeSettings-ActiveTheme.xml";
@@ -98,7 +98,7 @@ CString GetPathToHTCHomeSettingsXmlFileActiveTheme()
     return retVal;
 }
 
-CString GetPathToHTCHomeSettingsXmlFileWorking()
+CString M2DC::GetPathToHTCHomeSettingsXmlFileWorking()
 {
 	CString retVal = GetPathToM2DCInstallDirectory();
     retVal += "\\HTCHomeSettings-WorkingCopy.xml";
@@ -117,7 +117,7 @@ CString GetPathToHTCHomeSettingsXmlFileWorking()
     return retVal;
 }
 
-CString GetPathToHTCHomeSettingsXmlFileActual()
+CString M2DC::GetPathToHTCHomeSettingsXmlFileActual()
 {
 	CString retVal = GetPathToWindowsDirectory();
     retVal += "\\HTCHomeSettings.xml";
@@ -131,7 +131,7 @@ CString GetPathToHTCHomeSettingsXmlFileActual()
     return retVal;
 }
 
-CString GetPathToHTCHomeSettingsXmlFileBackup()
+CString M2DC::GetPathToHTCHomeSettingsXmlFileBackup()
 {
 	CString retVal = GetPathToM2DCInstallDirectory();
 	retVal += "\\HTCHomeSettings-BACKUP.xml";
@@ -145,7 +145,7 @@ CString GetPathToHTCHomeSettingsXmlFileBackup()
     return retVal;
 }
 
-CString GetPathToThemeBackupFile()
+CString M2DC::GetPathToThemeBackupFile()
 {
 	CString retVal = GetPathToM2DCThemesDirectory();
 	retVal += "\\DefaultThemeBACKUP.m2dct";
@@ -159,7 +159,7 @@ CString GetPathToThemeBackupFile()
     return retVal;
 }
 
-CString GetDirectoryOfFile(CString fullFilePath)
+CString M2DC::GetDirectoryOfFile(CString fullFilePath)
 {
 	CString retVal = fullFilePath;
 
@@ -180,7 +180,7 @@ CString GetDirectoryOfFile(CString fullFilePath)
 }
 
 
-CString GetPathToWindowsDirectory()
+CString M2DC::GetPathToWindowsDirectory()
 {
 	CString retVal("\\Windows");
 
@@ -197,7 +197,7 @@ CString GetPathToWindowsDirectory()
 	return retVal;
 }
 
-CString GetPathToM2DCInstallDirectory()
+CString M2DC::GetPathToM2DCInstallDirectory()
 {
     CString retVal;
 
@@ -217,7 +217,7 @@ CString GetPathToM2DCInstallDirectory()
 	return retVal;
 }
 
-CString GetPathToM2DCThemesDirectory()
+CString M2DC::GetPathToM2DCThemesDirectory()
 {
     CString retVal = GetPathToM2DCInstallDirectory();
     retVal += "\\";
@@ -227,7 +227,7 @@ CString GetPathToM2DCThemesDirectory()
 	TRACE(retVal);
 	TRACE(TEXT("\n"));
 
-    if(!FileExists(retVal))
+    if(!M2DC::FileExists(retVal))
     {
         CreateDirectory(retVal, NULL);
     }
@@ -235,7 +235,7 @@ CString GetPathToM2DCThemesDirectory()
 	return retVal;
 }
 
-bool IsDirEmpty(CString dirPath)
+bool M2DC::IsDirEmpty(CString dirPath)
 {
     bool retVal = true;
 
@@ -266,7 +266,7 @@ bool IsDirEmpty(CString dirPath)
     return retVal;
 }
 
-CString GetPathToM2DCOldActiveThemeDirectory()
+CString M2DC::GetPathToM2DCOldActiveThemeDirectory()
 {
     CString retVal = GetPathToM2DCInstallDirectory();
     retVal += "\\";
@@ -279,7 +279,7 @@ CString GetPathToM2DCOldActiveThemeDirectory()
 	return retVal;
 }
 
-CString GetPathToRunningBinary()
+CString M2DC::GetPathToRunningBinary()
 {
 	CString retVal("\\");
 
@@ -296,7 +296,7 @@ CString GetPathToRunningBinary()
 	return retVal;
 }
 
-bool FileExists(CString pathToFile)
+bool M2DC::FileExists(CString pathToFile)
 {
     bool retVal = false;
 
@@ -312,7 +312,7 @@ bool FileExists(CString pathToFile)
     return retVal;
 }
 
-bool DirExists(CString pathToDir)
+bool M2DC::DirExists(CString pathToDir)
 {
     bool retVal = false;
 
@@ -332,19 +332,19 @@ bool DirExists(CString pathToDir)
     return retVal;
 }
 
-void RefreshTodayScreen()
+void M2DC::RefreshTodayScreen()
 {
     // Send message to refresh today screen
     ::SendMessage(HWND_BROADCAST, WM_WININICHANGE, 0xF2, 0);
 }
 
-void BackupM2DCFiles()
+void M2DC::BackupM2DCFiles()
 {
     BackupHTCHomeSettingsXml(true);
     BackupActualTheme(true);
 }
 
-void BackupHTCHomeSettingsXml(bool overwritePreviousBackup)
+void M2DC::BackupHTCHomeSettingsXml(bool overwritePreviousBackup)
 {
     bool fileExists = FileExists(GetPathToHTCHomeSettingsXmlFileBackup());
 
@@ -363,7 +363,7 @@ void BackupHTCHomeSettingsXml(bool overwritePreviousBackup)
     }
 }
 
-int BackupActualTheme(bool overwritePreviousBackup)
+int M2DC::BackupActualTheme(bool overwritePreviousBackup)
 {
     int retVal = 0;
     AfxGetApp()->BeginWaitCursor();
@@ -414,7 +414,7 @@ int BackupActualTheme(bool overwritePreviousBackup)
     return retVal;
 }
 
-const char* GetConstCharStarFromCString(CString str)
+const char* M2DC::GetConstCharStarFromCString(CString str)
 {
     CT2CA pszConvertedAnsiString(str);
 	g_tempStr = pszConvertedAnsiString;
@@ -422,7 +422,7 @@ const char* GetConstCharStarFromCString(CString str)
 	return g_tempStr.c_str();
 }
 
-CString GetWin32ErrorString(DWORD err)
+CString M2DC::GetWin32ErrorString(DWORD err)
 {
     CString Error;
     LPTSTR s;
@@ -446,7 +446,7 @@ CString GetWin32ErrorString(DWORD err)
     return Error;
 } // ErrorString
 
-void RestoreM2DCFiles(bool showProgress)
+void M2DC::RestoreM2DCFiles(bool showProgress)
 {
     BeginMakingChanges();
     AfxGetApp()->BeginWaitCursor();
@@ -510,7 +510,7 @@ void RestoreM2DCFiles(bool showProgress)
     EndMakingChanges();
 }
 
-void DisableAllTodayScreenItems()
+void M2DC::DisableAllTodayScreenItems()
 {
     HKEY mainHKey;
     DWORD enabledState = 0;
@@ -567,7 +567,7 @@ void DisableAllTodayScreenItems()
 }
 
 
-void BackupTodayScreenItemsRegHive()
+void M2DC::BackupTodayScreenItemsRegHive()
 {
     g_todayScreenRegBackup.dateEnabled = FALSE;
     g_todayScreenRegBackup.itemVector.clear();
@@ -635,7 +635,7 @@ void BackupTodayScreenItemsRegHive()
     }
 }
 
-void RestoreTodayScreenItemsRegHive()
+void M2DC::RestoreTodayScreenItemsRegHive()
 {
     HKEY hKey;
     DWORD enabledState = 0;
@@ -669,7 +669,7 @@ void RestoreTodayScreenItemsRegHive()
     }
 }
 
-void BeginMakingChanges()
+void M2DC::BeginMakingChanges()
 {
     if(!g_bAlreadyBeganMakingChanges)
     {
@@ -689,7 +689,7 @@ void BeginMakingChanges()
     }
 }
 
-void EndMakingChanges()
+void M2DC::EndMakingChanges()
 {
     if(g_bAlreadyBeganMakingChanges)
     {
@@ -704,7 +704,7 @@ void EndMakingChanges()
     }
 }
 
-void RecursivelyDeleteDirectory(CString sDirPath)
+void M2DC::RecursivelyDeleteDirectory(CString sDirPath)
 {
     // Declare variables
     WIN32_FIND_DATA wfd;
@@ -771,7 +771,7 @@ void RecursivelyDeleteDirectory(CString sDirPath)
     RemoveDirectory(sDirPath);
 }
 
-void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool includeNonXmlFiles)
+void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool includeNonXmlFiles)
 {
     if(pPathVector != NULL)
     {
@@ -936,7 +936,7 @@ void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool
     }
 }
 
-bool IsM2DCThemeSupportEnabled()
+bool M2DC::IsM2DCThemeSupportEnabled()
 {
     if(!g_bThemeSupportEnabled)
     {
@@ -963,7 +963,7 @@ bool IsM2DCThemeSupportEnabled()
     return g_bThemeSupportEnabled;
 }
 
-int EnableM2DCThemeSupport()
+int M2DC::EnableM2DCThemeSupport()
 {
     int retVal = BackupActualTheme(true);
 
@@ -972,7 +972,7 @@ int EnableM2DCThemeSupport()
     return retVal;
 }
 
-void BackupAndDisableTodayScreen()
+void M2DC::BackupAndDisableTodayScreen()
 {
     if(!g_bRestoreTodayScreenNeeded)
     {
@@ -986,7 +986,7 @@ void BackupAndDisableTodayScreen()
     }
 }
 
-void RestoreAndReEnableTodayScreen()
+void M2DC::RestoreAndReEnableTodayScreen()
 {
     if(g_bRestoreTodayScreenNeeded)
     {
@@ -999,12 +999,12 @@ void RestoreAndReEnableTodayScreen()
     }
 }
 
-void SetInstallDirectory(CString installDirectory)
+void M2DC::SetInstallDirectory(CString installDirectory)
 {
     g_installDirectory = installDirectory;
 }
 
-int SetActiveTheme(CString pathToTheme)
+int M2DC::SetActiveTheme(CString pathToTheme)
 {
     int retVal = 0;    
 
@@ -1093,7 +1093,7 @@ int SetActiveTheme(CString pathToTheme)
     return retVal;
 }
 
-CString GetFileBaseName(CString filePath)
+CString M2DC::GetFileBaseName(CString filePath)
 {
     CString retVal = filePath;
 
@@ -1103,7 +1103,7 @@ CString GetFileBaseName(CString filePath)
     return retVal;
 }
 
-void GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector)
+void M2DC::GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector)
 {
     if(pThemeNameVector != NULL)
     {
@@ -1132,7 +1132,7 @@ void GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector)
     }
 }
 
-void ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
+void M2DC::ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
 {
     if((xmlSettings != NULL) && (FileExists(xmlFilePath)))
     {
@@ -1180,7 +1180,7 @@ void ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
     }
 }
 
-void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
+void M2DC::WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
 {
     if((xmlSettings != NULL) && (FileExists(xmlFilePath)))
     {
@@ -1260,7 +1260,7 @@ void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
     }
 }
 
-bool ArchiveContainsHTCHomeSettingsXml(CString filePath)
+bool M2DC::ArchiveContainsHTCHomeSettingsXml(CString filePath)
 {
     bool retVal = false;
 
@@ -1286,7 +1286,7 @@ bool ArchiveContainsHTCHomeSettingsXml(CString filePath)
     return retVal;
 }
 
-void GetClockEnabledState(CString pathToXmlFile, bool* pIsAnalogEnabled, bool* pIsDigitalEnabled)
+void M2DC::GetClockEnabledState(CString pathToXmlFile, bool* pIsAnalogEnabled, bool* pIsDigitalEnabled)
 {
     int analogEnabledCount = 0;
     int analogDisabledCount = 0;
@@ -1399,7 +1399,7 @@ void GetClockEnabledState(CString pathToXmlFile, bool* pIsAnalogEnabled, bool* p
     <Image index="216" name="hh_hm_aclock_Dot_shadow_mask.bmpx" />
 */
 
-void SetClockEnabledState(CString pathToXmlFile, bool analogEnabled, bool digitalEnabled)
+void M2DC::SetClockEnabledState(CString pathToXmlFile, bool analogEnabled, bool digitalEnabled)
 {
     if(FileExists(pathToXmlFile))
     {

@@ -72,17 +72,17 @@ BOOL CManilla2DConfigApp::InitInstance()
     }
 #endif
 
-    BackupHTCHomeSettingsXml(false);
+    M2DC::BackupHTCHomeSettingsXml(false);
 
 	CManilla2DConfigDlg dlg(TEXT("Manilla 2D Customizer"));
     dlg.SetupPages();
     
     if(dlg.DoModal() == IDOK)
     {
-        EndMakingChanges();
+        M2DC::EndMakingChanges();
     }
 
-    RestoreAndReEnableTodayScreen();
+    M2DC::RestoreAndReEnableTodayScreen();
 
 	// Since the dialog has been closed, return FALSE so that we exit the
 	//  application, rather than start the application's message pump.
