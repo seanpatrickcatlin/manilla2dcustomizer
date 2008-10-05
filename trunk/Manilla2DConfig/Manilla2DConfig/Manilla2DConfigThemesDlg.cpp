@@ -108,31 +108,9 @@ BOOL CManilla2DConfigThemesDlg::OnSetActive()
 
     CPropertyPage::OnSetActive();
 
-    if(!M2DC::IsM2DCThemeSupportEnabled())
-    {
-        CString enableStr;
-        enableStr = "M2DC theme support needs to be initialized.  ";
-        enableStr += "Enabling this feature may take 3-5 Minutes.  ";
-        enableStr += "Would you Like to enable this feature now?";
+    // I used to force users to backup their original theme files, now I no longer do that
 
-        if(MessageBox(enableStr, TEXT("Enable M2DC Themes"), MB_YESNO) == IDNO)
-        {
-            retVal = FALSE;
-        }
-
-        if(retVal == TRUE)
-        {
-            if(M2DC::EnableM2DCThemeSupport() != 0)
-            {
-                retVal = FALSE;
-            }
-        }
-    }
-
-    if(retVal == TRUE)
-    {
-        RefreshThemeList();
-    }
+    RefreshThemeList();
 
     return retVal;
 }
@@ -189,7 +167,7 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
                 return;
             }
 
-            CopyFile(pathToNewTheme, destPath, FALSE);
+            MoveFile(pathToNewTheme, destPath);
 
             RefreshThemeList();
         }
@@ -225,14 +203,6 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeDeleteBtn()
     themePath += selectedTheme;
     themePath += ".m2dct";
 
-    if(themePath == M2DC::GetPathToThemeBackupFile())
-    {
-        CString msg = TEXT("Unable to delete default theme backup file!");
-        AfxMessageBox(msg);
-    }
-    else
-    {
-        DeleteFile(themePath);
-        RefreshThemeList();
-    }
+    DeleteFile(themePath);
+    RefreshThemeList();
 }
