@@ -125,7 +125,7 @@ namespace M2DC
     void ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
     void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
 
-    bool ArchiveContainsHTCHomeSettingsXml(CString filePath);
+    bool ArchiveIsValidM2DCTheme(CString filePath);
 
     void GetHomeWidgetSettings(CString pathToXmlFile, HomeWidgetSettings* pHomeWidgetSettings);
     void SetHomeWidgetSettings(CString pathToXmlFile, HomeWidgetSettings* pHomeWidgetSettings);
