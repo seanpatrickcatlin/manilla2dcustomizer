@@ -151,11 +151,6 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
 
         if(M2DC::FileExists(pathToNewTheme))
         {
-            CString destPath = M2DC::GetPathToM2DCThemesDirectory();
-            destPath += "\\";
-            destPath += M2DC::GetFileBaseName(pathToNewTheme);
-            destPath += ".m2dct";
-
             if(!M2DC::ArchiveContainsHTCHomeSettingsXml(pathToNewTheme))
             {
                 CString msg;
@@ -166,6 +161,11 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
 
                 return;
             }
+
+            CString destPath = M2DC::GetPathToM2DCThemesDirectory();
+            destPath += "\\";
+            destPath += M2DC::GetFileBaseName(pathToNewTheme);
+            destPath += ".m2dct";
 
             MoveFile(pathToNewTheme, destPath);
 
