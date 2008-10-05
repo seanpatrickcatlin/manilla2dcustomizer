@@ -1,7 +1,7 @@
 Manilla 2D Customizer changelog
 
 Oct-05-2008
-v0.9.126
+v0.9.127
 * alot of gui cleanup
 * no longer forces user to make a backup of current theme
 * no longer copies files when importing, now completely moves the file
