@@ -1421,6 +1421,10 @@ void M2DC::GetHomeWidgetSettings(CString pathToXmlFile, HomeWidgetSettings* pHom
         pHomeWidgetSettings->bDigitalClockEnabled = true;
         pHomeWidgetSettings->bMissedCallsEnabled = true;
         pHomeWidgetSettings->bCalendarEnabled = true;
+        pHomeWidgetSettings->bAlarmStatusEnabled = true;
+        pHomeWidgetSettings->bLine1Enabled = true;
+        pHomeWidgetSettings->bLine2Enabled = true;
+        pHomeWidgetSettings->bLine3Enabled = true;
 
         // prepare a vector of elements from the current theme file home elements
         std::vector<TiXmlElement> homeWidgetPropertyElements;
@@ -1457,6 +1461,22 @@ void M2DC::GetHomeWidgetSettings(CString pathToXmlFile, HomeWidgetSettings* pHom
                     else if(currentNameAttribute.Find(TEXT("MISSEDCALLBTN")) != -1)
                     {
                         pHomeWidgetSettings->bMissedCallsEnabled = false;
+                    }
+                    else if(currentNameAttribute.Find(TEXT("ALARMSTATUS")) != -1)
+                    {
+                        pHomeWidgetSettings->bAlarmStatusEnabled = false;
+                    }
+                    else if(currentNameAttribute.Find(TEXT("LINE1")) != -1)
+                    {
+                        pHomeWidgetSettings->bLine1Enabled = false;
+                    }
+                    else if(currentNameAttribute.Find(TEXT("LINE2")) != -1)
+                    {
+                        pHomeWidgetSettings->bLine2Enabled = false;
+                    }
+                    else if(currentNameAttribute.Find(TEXT("LINE3")) != -1)
+                    {
+                        pHomeWidgetSettings->bLine3Enabled = false;
                     }
                 }
             }
@@ -1527,57 +1547,44 @@ void M2DC::SetHomeWidgetSettings(CString pathToXmlFile, HomeWidgetSettings* pHom
                                     }
                                 }
 
+                                CString valueToWrite;
+
                                 if(currentNameAttribute.Find(TEXT("CLOCKBTN")) != -1)
                                 {
-                                    if(pHomeWidgetSettings->bDigitalClockEnabled)
-                                    {
-                                        widgetPropertyChildElement->SetAttribute("value",
-                                            GetConstCharStarFromCString(enabledValue));
-                                    }
-                                    else
-                                    {
-                                        widgetPropertyChildElement->SetAttribute("value",
-                                            GetConstCharStarFromCString(disabledValue));
-                                    }
+                                    valueToWrite = pHomeWidgetSettings->bDigitalClockEnabled ? enabledValue : disabledValue;
                                 }
                                 else if(currentNameAttribute.Find(TEXT("ANALOGCLOCK")) != -1)
                                 {
-                                    if(pHomeWidgetSettings->bAnalogClockEnabled)
-                                    {
-                                        widgetPropertyChildElement->SetAttribute("value",
-                                            GetConstCharStarFromCString(enabledValue));
-                                    }
-                                    else
-                                    {
-                                        widgetPropertyChildElement->SetAttribute("value",
-                                            GetConstCharStarFromCString(disabledValue));
-                                    }
+                                    valueToWrite = pHomeWidgetSettings->bAnalogClockEnabled ? enabledValue : disabledValue;
                                 }
                                 else if(currentNameAttribute.Find(TEXT("CALENDARBTN")) != -1)
                                 {
-                                    if(pHomeWidgetSettings->bCalendarEnabled)
-                                    {
-                                        widgetPropertyChildElement->SetAttribute("value",
-                                            GetConstCharStarFromCString(enabledValue));
-                                    }
-                                    else
-                                    {
-                                        widgetPropertyChildElement->SetAttribute("value",
-                                            GetConstCharStarFromCString(disabledValue));
-                                    }
+                                    valueToWrite = pHomeWidgetSettings->bCalendarEnabled ? enabledValue : disabledValue;
                                 }
                                 else if(currentNameAttribute.Find(TEXT("MISSEDCALLBTN")) != -1)
                                 {
-                                    if(pHomeWidgetSettings->bMissedCallsEnabled)
-                                    {
-                                        widgetPropertyChildElement->SetAttribute("value",
-                                            GetConstCharStarFromCString(enabledValue));
-                                    }
-                                    else
-                                    {
-                                        widgetPropertyChildElement->SetAttribute("value",
-                                            GetConstCharStarFromCString(disabledValue));
-                                    }
+                                    valueToWrite = pHomeWidgetSettings->bMissedCallsEnabled ? enabledValue : disabledValue;
+                                }
+                                else if(currentNameAttribute.Find(TEXT("ALARMSTATUS")) != -1)
+                                {
+                                    valueToWrite = pHomeWidgetSettings->bAlarmStatusEnabled ? enabledValue : disabledValue;
+                                }
+                                else if(currentNameAttribute.Find(TEXT("LINE1")) != -1)
+                                {
+                                    valueToWrite = pHomeWidgetSettings->bLine1Enabled ? enabledValue : disabledValue;
+                                }
+                                else if(currentNameAttribute.Find(TEXT("LINE2")) != -1)
+                                {
+                                    valueToWrite = pHomeWidgetSettings->bLine2Enabled ? enabledValue : disabledValue;
+                                }
+                                else if(currentNameAttribute.Find(TEXT("LINE3")) != -1)
+                                {
+                                    valueToWrite = pHomeWidgetSettings->bLine3Enabled ? enabledValue : disabledValue;
+                                }
+
+                                if(valueToWrite.GetLength() > 0)
+                                {
+                                    widgetPropertyChildElement->SetAttribute("value", GetConstCharStarFromCString(valueToWrite));
                                 }
                             }
                         }
