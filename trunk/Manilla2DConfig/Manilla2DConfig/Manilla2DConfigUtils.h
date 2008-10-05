@@ -41,6 +41,10 @@ struct HomeWidgetSettings
     bool bDigitalClockEnabled;
     bool bCalendarEnabled;
     bool bMissedCallsEnabled;
+    bool bAlarmStatusEnabled;
+    bool bLine1Enabled;
+    bool bLine2Enabled;
+    bool bLine3Enabled;
 };
 
 struct HTCHomeSettingsStruct
