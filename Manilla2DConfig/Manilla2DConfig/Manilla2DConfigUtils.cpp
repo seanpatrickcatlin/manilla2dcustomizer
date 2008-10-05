@@ -31,7 +31,6 @@
 
 std::string g_tempStr;
 CString g_installDirectory;
-bool g_bThemeSupportEnabled = false;
 bool g_bRestoreTodayScreenNeeded = false;
 bool g_bAlreadyBeganMakingChanges = false;
 bool g_bAllowPopupDialogs = true;
@@ -982,42 +981,6 @@ void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector
         delete pProgDlg;
         pProgDlg = NULL;
     }
-}
-
-bool M2DC::IsM2DCThemeSupportEnabled()
-{
-    if(!g_bThemeSupportEnabled)
-    {
-        AfxGetApp()->BeginWaitCursor();
-
-        if(DirExists(GetPathToM2DCOldActiveThemeDirectory()))
-        {
-            CString msg;
-            msg = "Oops! M2DC v0.6.97 and v0.7.104 had a bug in the theme support implementation.";
-            msg += "  Disabling theme support and restoring default theme now";
-            AfxMessageBox(msg);
-
-            RestoreM2DCFiles();
-            DeleteFile(GetPathToThemeBackupFile());
-            RecursivelyDeleteDirectory(GetPathToM2DCOldActiveThemeDirectory());
-        }
-
-        // check to see if the Zip file exists
-        g_bThemeSupportEnabled = FileExists(GetPathToThemeBackupFile());
-
-        AfxGetApp()->EndWaitCursor();
-    }
-
-    return g_bThemeSupportEnabled;
-}
-
-int M2DC::EnableM2DCThemeSupport()
-{
-    int retVal = BackupActualTheme(true);
-
-    g_bThemeSupportEnabled = (retVal == 0);
-
-    return retVal;
 }
 
 void M2DC::BackupAndDisableTodayScreen()

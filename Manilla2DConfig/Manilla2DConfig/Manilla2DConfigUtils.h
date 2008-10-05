@@ -45,7 +45,6 @@ struct HomeWidgetSettings
 
 struct HTCHomeSettingsStruct
 {
-    HomeWidgetSettings homeSettings;
     std::vector<TiXmlElement> homeWidgetPropertyElements;
     std::vector<TiXmlElement> tabWidgetPropertyElements;
     std::vector<TiXmlElement> peopleWidgetPropertyElements;
@@ -110,9 +109,6 @@ namespace M2DC
 
     void BeginMakingChanges();
     void EndMakingChanges();
-
-    bool IsM2DCThemeSupportEnabled();
-    int EnableM2DCThemeSupport();
 
     void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool includeNonXmlFiles);
 
