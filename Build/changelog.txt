@@ -1,6 +1,22 @@
 Manilla 2D Customizer changelog
 
-Oct-2-2008
+Oct-05-2008
+v0.9.126
+* alot of gui cleanup
+* no longer forces user to make a backup of current theme
+* no longer copies files when importing, now completely moves the file
+* added "Home" tab which allows for easy disablign of items on the Home Widget
+* backup/restore page now has 4 buttons, separated the theme and xml
+   backup/restore for my own selfish reasons
+* Now tries to read all position inforamtion from themes... ie 2DC will ready and
+   apply all line form the HTCHomeSettings.xml that contain the string "POS" or
+   "RECT".  To disable an item in hte xml in a nice way for M2DC to pick up on the
+   fact that you have hidden it please set POS values to "-1,-1" and RECT values to
+   "-1,-1,-1,-1"
+* added some more user feedback in some areas where the screen used to hang alot
+* updated themes readme file with some more documentation
+
+Oct-02-2008
 v0.8.111
 * tried to fix all errors
 * latest theme supports were broken due to my not parsing the xml correctly
