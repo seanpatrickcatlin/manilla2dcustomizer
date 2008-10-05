@@ -1020,7 +1020,7 @@ int M2DC::SetActiveTheme(CString pathToTheme)
     int retVal = 0;
 
     CString themeName = pathToTheme.Mid(pathToTheme.ReverseFind('\\')+1);;
-    themeName = themeName.Mid(0, themeName.Find('.')-1);
+    themeName = themeName.Mid(0, themeName.Find('.'));
 
     // unzip the files to their appropriate destinations according to the
     // paths from the current XML file
