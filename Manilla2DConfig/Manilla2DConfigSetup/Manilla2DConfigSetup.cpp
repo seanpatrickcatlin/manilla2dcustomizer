@@ -122,7 +122,8 @@ codeUNINSTALL_INIT Uninstall_Init(HWND hwndParent, LPCTSTR pszInstallDir)
 
         M2DC::SetAllowPopupDialogs(false);
         M2DC::SetInstallDirectory(pszInstallDir);
-        M2DC::RestoreM2DCFiles();
+        M2DC::RestoreActiveThemeFromBackup();
+        M2DC::RestoreHTCHomeSettingsXmlFromBackup();
         M2DC::RecursivelyDeleteDirectory(pszInstallDir);
     }
 

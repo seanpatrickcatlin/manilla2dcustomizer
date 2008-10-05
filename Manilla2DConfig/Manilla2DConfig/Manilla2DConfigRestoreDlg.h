@@ -50,4 +50,6 @@ private:
 public:
     afx_msg void OnBnClickedRestoreButton();
     afx_msg void OnBnClickedBackupButton();
+    afx_msg void OnBnClickedM2dcRestoreBackupThemeBtn();
+    afx_msg void OnBnClickedM2dcRestoreRestoreThemeBtn();
 };
