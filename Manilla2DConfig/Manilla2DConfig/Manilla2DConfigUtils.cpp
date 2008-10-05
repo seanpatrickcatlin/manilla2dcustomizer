@@ -1026,6 +1026,7 @@ int M2DC::SetActiveTheme(CString pathToTheme)
     // paths from the current XML file
     if(FileExists(pathToTheme))
     {
+        // delete the last active theme file
         DeleteFile(GetPathToHTCHomeSettingsXmlFileActiveTheme());
 
         BeginMakingChanges();
@@ -1109,11 +1110,9 @@ int M2DC::SetActiveTheme(CString pathToTheme)
 
         // Read specific values from the HTCHomeSettings.xml file in the ActiveThemeDirectory
         // write the values to the working xml file
-        CString pathToThemeXml = GetPathToHTCHomeSettingsXmlFileActiveTheme();
-
         HTCHomeSettingsStruct xmlSettings;
 
-        ReadValuesFromXml(pathToThemeXml, &xmlSettings);
+        ReadValuesFromXml(GetPathToHTCHomeSettingsXmlFileActiveTheme(), &xmlSettings);
         WriteValuesToXml(GetPathToHTCHomeSettingsXmlFileWorking(), &xmlSettings);
 
         AfxGetApp()->EndWaitCursor();
