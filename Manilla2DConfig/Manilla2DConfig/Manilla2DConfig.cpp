@@ -61,7 +61,7 @@ BOOL CManilla2DConfigApp::InitInstance()
 	SetRegistryKey(_T("M2DC"));
 
 #ifndef _DEBUG
-    if(!FileExists(GetPathToHTCHomeSettingsXmlFileActual()))
+    if(!M2DC::FileExists(M2DC::GetPathToHTCHomeSettingsXmlFileActual()))
     {
         CString msg = TEXT("Unable to find Manilla 2D settings file.\n");
         msg += TEXT("Is Manilla 2D installed?\n");
