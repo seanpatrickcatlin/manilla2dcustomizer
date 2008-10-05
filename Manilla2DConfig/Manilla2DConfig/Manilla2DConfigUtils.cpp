@@ -776,7 +776,7 @@ void M2DC::RecursivelyDeleteDirectory(CString sDirPath)
 
 void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool includeNonXmlFiles)
 {
-    int progMax = 10;
+    int progMax = 12;
     CString progMsg;
     CManilla2DConfigProgressDlg* pProgDlg = NULL;
 
@@ -1019,7 +1019,7 @@ int M2DC::SetActiveTheme(CString pathToTheme)
 {
     int retVal = 0;
 
-    CString themeName = pathToTheme.Mid(pathToTheme.Find('\\')+1);;
+    CString themeName = pathToTheme.Mid(pathToTheme.ReverseFind('\\')+1);;
     themeName = themeName.Mid(0, themeName.Find('.')-1);
 
     // unzip the files to their appropriate destinations according to the
@@ -1385,7 +1385,7 @@ void M2DC::WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSetti
     }
 }
 
-bool M2DC::ArchiveContainsHTCHomeSettingsXml(CString filePath)
+bool M2DC::ArchiveIsValidM2DCTheme(CString filePath)
 {
     bool retVal = false;
 
@@ -1404,7 +1404,10 @@ bool M2DC::ArchiveContainsHTCHomeSettingsXml(CString filePath)
         GetZipItem(hz, zi, &ze);            // fetch individual details
 
         CString filePathFromZip(ze.name);
-        retVal = (filePathFromZip.Find(TEXT("HTCHomeSettings.xml")) != -1);
+
+        retVal = ((filePathFromZip.Find(TEXT("HTCHomeSettings.xml")) != -1) ||
+                    (filePathFromZip.Find(TEXT("HH_")) != -1) ||
+                    (filePathFromZip.Find(TEXT("hh_")) != -1));
     }
 
     CloseZip(hz);

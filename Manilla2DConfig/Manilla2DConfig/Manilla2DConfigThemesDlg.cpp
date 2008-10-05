@@ -151,11 +151,11 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
 
         if(M2DC::FileExists(pathToNewTheme))
         {
-            if(!M2DC::ArchiveContainsHTCHomeSettingsXml(pathToNewTheme))
+            if(!M2DC::ArchiveIsValidM2DCTheme(pathToNewTheme))
             {
                 CString msg;
-                msg = TEXT("Unable to find a HTCHomeSettings.xml file in the selected file.\n");
-                msg += TEXT("Cancelling import now.");
+                msg = TEXT("Unable to find HTCHomeSettings.xml or a hh_* file in the selected archive.\n");
+                msg += TEXT("Aborting import.");
 
                 AfxMessageBox(msg);
 
@@ -203,6 +203,13 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeDeleteBtn()
     themePath += selectedTheme;
     themePath += ".m2dct";
 
-    DeleteFile(themePath);
-    RefreshThemeList();
+    CString msg = TEXT("Are you sure you want to delete ");
+    msg += selectedTheme;
+    msg += "?";
+
+    if(AfxMessageBox(msg, MB_YESNO) == IDYES)
+    {
+        DeleteFile(themePath);
+        RefreshThemeList();
+    }
 }
