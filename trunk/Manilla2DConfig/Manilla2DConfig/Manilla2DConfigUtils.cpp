@@ -1026,6 +1026,8 @@ int M2DC::SetActiveTheme(CString pathToTheme)
     // paths from the current XML file
     if(FileExists(pathToTheme))
     {
+        DeleteFile(GetPathToHTCHomeSettingsXmlFileActiveTheme());
+
         BeginMakingChanges();
         AfxGetApp()->BeginWaitCursor();
 
