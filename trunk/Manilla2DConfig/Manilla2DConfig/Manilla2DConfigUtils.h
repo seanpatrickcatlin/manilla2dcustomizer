@@ -72,13 +72,14 @@ namespace M2DC
     void PrintNameAndEnabledStateVector(NameAndEnabledState_vector_t nameAndStateVector);
     bool CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1, NameAndEnabledState_vector_t* vec2);
 
-    void BackupM2DCFiles();
     void BackupAndDisableTodayScreen();
-    int BackupActualTheme(bool overwritePreviousBackup = false);
+
     void BackupHTCHomeSettingsXml(bool overwritePreviousBackup = false);
+    void RestoreHTCHomeSettingsXmlFromBackup();
+    void BackupActiveTheme(bool overwritePreviousBackup = false);
+    void RestoreActiveThemeFromBackup();
 
     void RestoreAndReEnableTodayScreen();
-    void RestoreM2DCFiles();
 
     void RefreshTodayScreen();
     void DisableAllTodayScreenItems();

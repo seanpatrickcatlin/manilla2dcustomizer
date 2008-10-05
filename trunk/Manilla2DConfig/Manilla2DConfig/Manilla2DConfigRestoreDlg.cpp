@@ -57,6 +57,8 @@ BEGIN_MESSAGE_MAP(CManilla2DConfigRestoreDlg, CPropertyPage)
     ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigRestoreDlg::OnQuerySiblings)
     ON_BN_CLICKED(IDC_M2DC_RESTORE_BACKUP_BTN, &CManilla2DConfigRestoreDlg::OnBnClickedBackupButton)
     ON_BN_CLICKED(IDC_M2DC_RESTORE_RESTORE_BTN, &CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton)
+    ON_BN_CLICKED(IDC_M2DC_RESTORE_BACKUP_THEME_BTN, &CManilla2DConfigRestoreDlg::OnBnClickedM2dcRestoreBackupThemeBtn)
+    ON_BN_CLICKED(IDC_M2DC_RESTORE_RESTORE_THEME_BTN, &CManilla2DConfigRestoreDlg::OnBnClickedM2dcRestoreRestoreThemeBtn)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigRestoreDlg message handlers
@@ -97,19 +99,38 @@ LRESULT CManilla2DConfigRestoreDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam
 
 void CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton()
 {
-    CString caption("This will restore all Manilla 2D settings from your backup copy.\nWould you like to continue?");
+    CString caption("This will restore all Manilla 2D xml settings from your backup copy.\nWould you like to continue?");
     if(MessageBox(caption, TEXT("Restore Settings?"), MB_YESNO) == IDYES)
     {
-        M2DC::RestoreM2DCFiles();
+        M2DC::RestoreHTCHomeSettingsXmlFromBackup();
         EndDialog(IDCANCEL);
     }
 }
 
 void CManilla2DConfigRestoreDlg::OnBnClickedBackupButton()
 {
-    CString caption("This will backup you Manilla 2D settings and delete any previous backups.\nWould you like to continue?");
+    CString caption("This will backup you Manilla 2D xml settings and delete any previous backups.\nWould you like to continue?");
     if(MessageBox(caption, TEXT("Backup Settings?"), MB_YESNO) == IDYES)
     {
-        M2DC::BackupM2DCFiles();
+        M2DC::BackupHTCHomeSettingsXml(true);
+    }
+}
+
+void CManilla2DConfigRestoreDlg::OnBnClickedM2dcRestoreBackupThemeBtn()
+{
+    CString caption("This will backup you Manilla 2D theme files and delete any previous backups.\nWould you like to continue?");
+    if(MessageBox(caption, TEXT("Backup Settings?"), MB_YESNO) == IDYES)
+    {
+        M2DC::BackupActiveTheme(true);
+    }
+}
+
+void CManilla2DConfigRestoreDlg::OnBnClickedM2dcRestoreRestoreThemeBtn()
+{
+    CString caption("This will restore all Manilla 2D theme files from your backup copy.\nWould you like to continue?");
+    if(MessageBox(caption, TEXT("Restore Settings?"), MB_YESNO) == IDYES)
+    {
+        M2DC::RestoreActiveThemeFromBackup();
+        EndDialog(IDCANCEL);
     }
 }

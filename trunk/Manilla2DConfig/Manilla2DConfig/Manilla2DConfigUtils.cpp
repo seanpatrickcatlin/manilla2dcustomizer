@@ -319,12 +319,6 @@ void M2DC::RefreshTodayScreen()
     ::SendMessage(HWND_BROADCAST, WM_WININICHANGE, 0xF2, 0);
 }
 
-void M2DC::BackupM2DCFiles()
-{
-    BackupHTCHomeSettingsXml(true);
-    BackupActualTheme(true);
-}
-
 void M2DC::BackupHTCHomeSettingsXml(bool overwritePreviousBackup)
 {
     bool fileExists = FileExists(GetPathToHTCHomeSettingsXmlFileBackup());
@@ -344,9 +338,8 @@ void M2DC::BackupHTCHomeSettingsXml(bool overwritePreviousBackup)
     }
 }
 
-int M2DC::BackupActualTheme(bool overwritePreviousBackup)
+void M2DC::BackupActiveTheme(bool overwritePreviousBackup)
 {
-    int retVal = 0;
     AfxGetApp()->BeginWaitCursor();
 
     bool fileExists = FileExists(GetPathToThemeBackupFile());
@@ -408,8 +401,6 @@ int M2DC::BackupActualTheme(bool overwritePreviousBackup)
     }
 
     AfxGetApp()->EndWaitCursor();
-
-    return retVal;
 }
 
 const char* M2DC::GetConstCharStarFromCString(CString str)
@@ -444,69 +435,22 @@ CString M2DC::GetWin32ErrorString(DWORD err)
     return Error;
 } // ErrorString
 
-void M2DC::RestoreM2DCFiles()
+void M2DC::RestoreActiveThemeFromBackup()
 {
-    BeginMakingChanges();
     AfxGetApp()->BeginWaitCursor();
-    
-    CString zipBackupPath = GetPathToThemeBackupFile();
-    CString workingXmlPath = GetPathToHTCHomeSettingsXmlFileWorking();
-    CString backupXmlPath = GetPathToHTCHomeSettingsXmlFileBackup();
+    SetActiveTheme(M2DC::GetPathToThemeBackupFile());
 
-    if(FileExists(zipBackupPath))
+    AfxGetApp()->EndWaitCursor();
+    M2DC::EndMakingChanges();
+}
+
+void M2DC::RestoreHTCHomeSettingsXmlFromBackup()
+{
+    AfxGetApp()->BeginWaitCursor();
+
+    if(FileExists(M2DC::GetPathToHTCHomeSettingsXmlFileBackup()))
     {
-        HZIP hz = OpenZip(zipBackupPath, 0);
-        ZIPENTRY ze;
-
-        // -1 gives overall information about the zipfile
-        GetZipItem(hz, -1, &ze);
-
-        int numitems = ze.index;
-
-        CString progMsg;
-        CManilla2DConfigProgressDlg* pProgDlg = NULL;
-
-        if(g_bAllowPopupDialogs)
-        {
-            pProgDlg = new CManilla2DConfigProgressDlg(AfxGetApp()->GetMainWnd());
-        }
-
-        if(pProgDlg)
-        {
-            progMsg = TEXT("Restoring theme from backup");
-            pProgDlg->BeginTrackingProgress(progMsg, 0, numitems);
-        }
-
-        int retVal = 0;
-        
-        for(int zi=0; zi<numitems; zi++)
-        {
-            ZIPENTRY ze;
-            
-            GetZipItem(hz, zi, &ze);            // fetch individual details
-
-            if(pProgDlg)
-            {
-                progMsg.Format(TEXT("Restoring theme from backup\nFile %d of %d\n%s"), zi, numitems, ze.name);            
-                pProgDlg->UpdateStatus(progMsg, zi);
-            }
-
-            UnzipItem(hz, zi, ze.name);
-        }
-
-        if(pProgDlg != NULL)
-        {
-            pProgDlg->EndTrackingProgress();
-            delete pProgDlg;
-            pProgDlg = NULL;
-        }
-
-        CloseZip(hz);
-    }
-
-    if(FileExists(backupXmlPath))
-    {
-        CopyFile(backupXmlPath, workingXmlPath, FALSE);
+        CopyFile(M2DC::GetPathToHTCHomeSettingsXmlFileBackup(), M2DC::GetPathToHTCHomeSettingsXmlFileWorking(), FALSE);
     }
     
     AfxGetApp()->EndWaitCursor();
