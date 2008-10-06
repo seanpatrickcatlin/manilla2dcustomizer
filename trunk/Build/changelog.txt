@@ -1,14 +1,19 @@
 Manilla 2D Customizer changelog
 
 Oct-05-2008
-v0.10.129
-- changed the way the themes work, now no longer are themes imported,
-   they now are kept track of in an xml file, this way people can have
-   their themes sit anywhere they want on their device.  All themes that
-   are in the "M2DC\Themes" directory will be discovered whenever you click
-   on the themes tab.
+v0.10.130
+- changed the way that M2DC stores and access theme files.
+   Now no longer are themes copied to the install directory,
+   You have 2 ways of getting M2DC to recogize your theme files.
+   1) Copy the theme files directly to the "M2DC\Themes" filder
+   2) Press the "Add THeme" button.
+   When you press teh add theme button the theme will not be copied,
+   instead of copying the theme M2DC now keeps track of all of the
+   themes that you have added and displays to you the themes files
+   that exist on the system.
+   So now you can keep all o fyour themes on your SD card with no problems.
 - no longer removes the original theme file during add theme
-- now offers more prompts for deletion
+- added more prompts for theme deletion
 
 Oct-05-2008
 v0.9.127
