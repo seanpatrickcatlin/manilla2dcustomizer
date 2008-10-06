@@ -132,12 +132,7 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeApplyBtn()
 
     m_themeChooserListBox.GetText(index, selectedTheme);
 
-    CString themePath = M2DC::GetPathToM2DCThemesDirectory();
-    themePath += "\\";
-    themePath += selectedTheme;
-    themePath += ".m2dct";
-
-    M2DC::SetActiveTheme(themePath);
+    M2DC::SetActiveTheme(selectedTheme);
 
     EndDialog(IDOK);
 }
@@ -151,7 +146,7 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
 
         if(M2DC::FileExists(pathToNewTheme))
         {
-            if(!M2DC::ArchiveIsValidM2DCTheme(pathToNewTheme))
+            if(!M2DC::FileIsValidM2DCTheme(pathToNewTheme))
             {
                 CString msg;
                 msg = TEXT("Unable to find HTCHomeSettings.xml or a hh_* file in the selected archive.\n");
@@ -162,12 +157,7 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
                 return;
             }
 
-            CString destPath = M2DC::GetPathToM2DCThemesDirectory();
-            destPath += "\\";
-            destPath += M2DC::GetFileBaseName(pathToNewTheme);
-            destPath += ".m2dct";
-
-            MoveFile(pathToNewTheme, destPath);
+            M2DC::AddToM2DCThemeList(pathToNewTheme);
 
             RefreshThemeList();
         }
@@ -177,13 +167,31 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
 void CManilla2DConfigThemesDlg::RefreshThemeList()
 {
     std::vector<CString> themeNames;
-    M2DC::GetNamesOfInstalledThemes(&themeNames);
+    M2DC::GetNamesOfAvailableM2DCThemes(&themeNames);
 
     m_themeChooserListBox.ResetContent();
     for(size_t i=0; i<themeNames.size(); i++)
     {
         m_themeChooserListBox.AddString(themeNames[i]);
     }
+
+    // Find the longest string in the list box.
+    CString str;
+    CSize sz;
+    int dx=0;
+    CDC* pDC = m_themeChooserListBox.GetDC();
+    for(int i=0; i < m_themeChooserListBox.GetCount(); i++)
+    {
+        m_themeChooserListBox.GetText( i, str );
+        sz = pDC->GetTextExtent(str);
+
+        if (sz.cx > dx)
+        {
+            dx = sz.cx;
+        }
+    }
+    m_themeChooserListBox.ReleaseDC(pDC);
+    m_themeChooserListBox.SetHorizontalExtent(dx);
 }
 
 void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeDeleteBtn()
@@ -198,18 +206,43 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeDeleteBtn()
 
     m_themeChooserListBox.GetText(index, selectedTheme);
 
-    CString themePath = M2DC::GetPathToM2DCThemesDirectory();
-    themePath += "\\";
-    themePath += selectedTheme;
-    themePath += ".m2dct";
+    CString pathToTheme = M2DC::GetPathOfM2DCThemeFromName(selectedTheme);
 
-    CString msg = TEXT("Are you sure you want to delete ");
-    msg += selectedTheme;
-    msg += "?";
-
-    if(AfxMessageBox(msg, MB_YESNO) == IDYES)
+    if(M2DC::FileExists(pathToTheme))
     {
-        DeleteFile(themePath);
-        RefreshThemeList();
+        CString msg;
+        if(pathToTheme.Find(M2DC::GetPathToM2DCThemesDirectory())  == -1)
+        {
+            msg = TEXT("Are you sure that you would like to remove this theme from your list?");
+
+            int ret = AfxMessageBox(msg, MB_YESNO);
+
+            if(ret == IDYES)
+            {
+                M2DC::RemoveFromM2DCThemeList(selectedTheme);
+
+                msg = TEXT("Would you like to delete the theme file?");
+                ret = AfxMessageBox(msg, MB_YESNO);
+
+                if(ret == IDYES)
+                {
+                    DeleteFile(pathToTheme);
+                }
+            }
+        }
+        else
+        {
+            msg = TEXT("To remove a file from the themes directory you must delete it.\nAre you sure you want to delete this theme file?");
+
+            int ret = AfxMessageBox(msg, MB_YESNO);
+
+            if(ret == IDYES)
+            {
+                DeleteFile(pathToTheme);
+                M2DC::RemoveFromM2DCThemeList(selectedTheme);
+            }
+        }
     }
+    
+    RefreshThemeList();
 }
