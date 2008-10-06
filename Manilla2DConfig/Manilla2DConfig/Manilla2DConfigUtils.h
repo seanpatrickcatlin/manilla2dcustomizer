@@ -119,17 +119,20 @@ namespace M2DC
 
     void SetInstallDirectory(CString installDirectory);
 
-    int SetActiveTheme(CString pathToTheme);
-
-    void GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector);
-
     void ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
     void WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings);
-
-    bool ArchiveIsValidM2DCTheme(CString filePath);
 
     void GetHomeWidgetSettings(CString pathToXmlFile, HomeWidgetSettings* pHomeWidgetSettings);
     void SetHomeWidgetSettings(CString pathToXmlFile, HomeWidgetSettings* pHomeWidgetSettings);
 
     void GetVectorOfWidgetPropertyRectPosElements(CString xmlFilePath, CString nodeName, std::vector<TiXmlElement>* pElementVector);
+
+    CString GetPathToM2DCThemeListXml();
+    void GetNamesOfAvailableM2DCThemes(std::vector<CString>* pThemeNameVector);
+    CString GetPathOfM2DCThemeFromName(CString themeName);
+    bool FileIsValidM2DCTheme(CString filePath);
+    int SetActiveTheme(CString themeName);
+
+    void AddToM2DCThemeList(CString pathToTheme);
+    void RemoveFromM2DCThemeList(CString themeName);
 };

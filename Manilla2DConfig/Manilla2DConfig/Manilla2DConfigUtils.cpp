@@ -959,12 +959,11 @@ void M2DC::SetInstallDirectory(CString installDirectory)
     g_installDirectory = installDirectory;
 }
 
-int M2DC::SetActiveTheme(CString pathToTheme)
+int M2DC::SetActiveTheme(CString themeName)
 {
     int retVal = 0;
 
-    CString themeName = pathToTheme.Mid(pathToTheme.ReverseFind('\\')+1);;
-    themeName = themeName.Mid(0, themeName.Find('.'));
+    CString pathToTheme = M2DC::GetPathOfM2DCThemeFromName(themeName);
 
     // unzip the files to their appropriate destinations according to the
     // paths from the current XML file
@@ -1070,21 +1069,25 @@ CString M2DC::GetFileBaseName(CString filePath)
 {
     CString retVal = filePath;
 
-    retVal = retVal.Mid(retVal.ReverseFind('\\'));
+    retVal = retVal.Mid(retVal.ReverseFind('\\')+1);
     retVal = retVal.Mid(0, retVal.Find('.'));
 
     return retVal;
 }
 
-void M2DC::GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector)
+void M2DC::GetNamesOfAvailableM2DCThemes(std::vector<CString>* pThemeNameVector)
 {
     if(pThemeNameVector != NULL)
     {
         CString searchString = GetPathToM2DCThemesDirectory();
-        searchString += "\\*.m2dct";
+        searchString += "\\*";
 
         WIN32_FIND_DATA findData;
         HANDLE hFindHandle = FindFirstFile(searchString, &findData);
+
+        CString currentFileName;
+        CString currentFileExtension;
+        CString currentFilePath;
 
         if(hFindHandle != INVALID_HANDLE_VALUE)
         {
@@ -1092,9 +1095,21 @@ void M2DC::GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector)
 
             while(keepSearching == TRUE)
             {
-                if((lstrcmp(findData.cFileName, TEXT(".")) != 0) && (lstrcmp(findData.cFileName, TEXT("..")) != 0))
+                currentFileName = findData.cFileName;
+
+                if((currentFileName.CompareNoCase(TEXT(".")) != 0) && (currentFileName.CompareNoCase(TEXT("..")) != 0))
                 {
-                    pThemeNameVector->push_back(GetFileBaseName(findData.cFileName));
+                    currentFileExtension = currentFileName.Mid(currentFileName.ReverseFind('.')+1);
+
+                    if((currentFileExtension.CompareNoCase(TEXT("zip")) == 0) ||
+                        (currentFileExtension.CompareNoCase(TEXT("m2dct")) == 0))
+                    {
+                        currentFilePath = GetPathToM2DCThemesDirectory();
+                        currentFilePath += "\\";
+                        currentFilePath += currentFileName;
+
+                        M2DC::AddToM2DCThemeList(currentFilePath);
+                    }
                 }
 
                 keepSearching = FindNextFile(hFindHandle, &findData);
@@ -1102,6 +1117,33 @@ void M2DC::GetNamesOfInstalledThemes(std::vector<CString>* pThemeNameVector)
         }
 
         FindClose(hFindHandle);
+
+        CString currentThemeName;
+        CString currentThemePath;
+
+        TiXmlDocument doc(GetConstCharStarFromCString(M2DC::GetPathToM2DCThemeListXml()));
+        bool loadOkay = doc.LoadFile();
+
+        if(loadOkay)
+        {
+            for(TiXmlNode* m2dcNode = doc.FirstChild("M2DC");
+                m2dcNode != NULL;
+                m2dcNode = m2dcNode->NextSibling("M2DC"))
+            {
+                for(TiXmlElement* themeElement = m2dcNode->FirstChildElement("Theme");
+                    themeElement != NULL;
+                    themeElement = themeElement->NextSiblingElement("Theme"))
+                {
+                    currentThemeName = themeElement->Attribute("name");
+                    currentThemePath = themeElement->Attribute("path");
+
+                    if(FileExists(currentThemePath))
+                    {
+                        pThemeNameVector->push_back(currentThemeName);
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -1330,7 +1372,7 @@ void M2DC::WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSetti
     }
 }
 
-bool M2DC::ArchiveIsValidM2DCTheme(CString filePath)
+bool M2DC::FileIsValidM2DCTheme(CString filePath)
 {
     bool retVal = false;
 
@@ -1349,6 +1391,7 @@ bool M2DC::ArchiveIsValidM2DCTheme(CString filePath)
         GetZipItem(hz, zi, &ze);            // fetch individual details
 
         CString filePathFromZip(ze.name);
+        CString fileExt = filePathFromZip.Mid(filePathFromZip.ReverseFind('.')+1);
 
         retVal = ((filePathFromZip.Find(TEXT("HTCHomeSettings.xml")) != -1) ||
                     (filePathFromZip.Find(TEXT("HH_")) != -1) ||
@@ -1584,4 +1627,157 @@ void M2DC::GetVectorOfWidgetPropertyRectPosElements(CString xmlFilePath, CString
             }
         }
     }
+}
+
+
+CString M2DC::GetPathToM2DCThemeListXml()
+{
+	CString retVal = GetPathToM2DCThemesDirectory();
+	retVal += "\\AvailableThemes.xml";
+
+    CString debugStr = TEXT("GetPathToM2DCThemeListXml ");
+    debugStr += retVal;
+    debugStr += "\n";
+
+    TRACE(debugStr);
+
+    return retVal;
+
+}
+
+void M2DC::AddToM2DCThemeList(CString pathToTheme)
+{
+    int duplicateCount = 0;
+    CString currentThemeName;
+    CString currentThemePath;
+
+    CString themeBaseName = GetFileBaseName(pathToTheme);
+
+    if(!FileExists(M2DC::GetPathToM2DCThemeListXml()))
+    {
+        TiXmlDocument newdoc;
+        TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "", "");
+        TiXmlElement* element = new TiXmlElement("M2DC");
+        newdoc.LinkEndChild(decl);
+        newdoc.LinkEndChild(element);
+
+        newdoc.SaveFile(GetConstCharStarFromCString(M2DC::GetPathToM2DCThemeListXml()));
+    }
+
+    TiXmlDocument doc(GetConstCharStarFromCString(M2DC::GetPathToM2DCThemeListXml()));
+    bool loadOkay = doc.LoadFile();
+
+    if(loadOkay)
+    {
+        for(TiXmlNode* m2dcNode = doc.FirstChild("M2DC");
+            m2dcNode != NULL;
+            m2dcNode = m2dcNode->NextSibling("M2DC"))
+        {
+            for(TiXmlElement* themeElement = m2dcNode->FirstChildElement("Theme");
+                themeElement != NULL;
+                themeElement = themeElement->NextSiblingElement("Theme"))
+            {
+                currentThemeName = themeElement->Attribute("name");
+                currentThemePath = themeElement->Attribute("path");
+
+                if(currentThemePath.CompareNoCase(pathToTheme) == 0)
+                {
+                    // don't bother to add the theme, its path already exists
+                    return;
+                }
+
+                if(currentThemeName.Find(themeBaseName) != -1)
+                {
+                    duplicateCount++;
+                }
+            }
+        }
+
+        TiXmlElement* m2dcElement = doc.FirstChildElement("M2DC");
+
+        if(m2dcElement == NULL)
+        {
+            m2dcElement = new TiXmlElement("M2DC");
+            doc.InsertEndChild(*m2dcElement);
+        }
+
+        if(duplicateCount > 0)
+        {
+            CString tmpStr;
+            tmpStr.Format(TEXT("-%d"), duplicateCount);
+
+            themeBaseName += tmpStr;
+        }
+
+        TiXmlElement* newThemeElement = new TiXmlElement("Theme");
+        newThemeElement->SetAttribute("name", GetConstCharStarFromCString(themeBaseName));
+        newThemeElement->SetAttribute("path", GetConstCharStarFromCString(pathToTheme));
+
+        m2dcElement->LinkEndChild(newThemeElement);
+
+        doc.SaveFile();
+    }
+}
+
+void M2DC::RemoveFromM2DCThemeList(CString themeName)
+{
+    CString currentThemeName;
+
+    TiXmlDocument doc(GetConstCharStarFromCString(M2DC::GetPathToM2DCThemeListXml()));
+    bool loadOkay = doc.LoadFile();
+
+    if(loadOkay)
+    {
+        for(TiXmlNode* m2dcNode = doc.FirstChild("M2DC");
+            m2dcNode != NULL;
+            m2dcNode = m2dcNode->NextSibling("M2DC"))
+        {
+            for(TiXmlElement* themeElement = m2dcNode->FirstChildElement("Theme");
+                themeElement != NULL;
+                themeElement = themeElement->NextSiblingElement("Theme"))
+            {
+                currentThemeName = themeElement->Attribute("name");
+
+                if(currentThemeName.Compare(themeName) == 0)
+                {
+                    m2dcNode->RemoveChild(themeElement);
+                    doc.SaveFile();
+                    return;
+                }
+            }
+        }
+    }
+}
+
+CString M2DC::GetPathOfM2DCThemeFromName(CString themeName)
+{
+    CString retVal;
+
+    CString currentThemeName;
+
+    TiXmlDocument doc(GetConstCharStarFromCString(M2DC::GetPathToM2DCThemeListXml()));
+    bool loadOkay = doc.LoadFile();
+
+    if(loadOkay)
+    {
+        for(TiXmlNode* m2dcNode = doc.FirstChild("M2DC");
+            m2dcNode != NULL;
+            m2dcNode = m2dcNode->NextSibling("M2DC"))
+        {
+            for(TiXmlElement* themeElement = m2dcNode->FirstChildElement("Theme");
+                themeElement != NULL;
+                themeElement = themeElement->NextSiblingElement("Theme"))
+            {
+                currentThemeName = themeElement->Attribute("name");
+
+                if(currentThemeName.Compare(themeName) == 0)
+                {
+                    retVal = themeElement->Attribute("path");
+                    break;
+                }
+            }
+        }
+    }
+
+    return retVal;
 }
