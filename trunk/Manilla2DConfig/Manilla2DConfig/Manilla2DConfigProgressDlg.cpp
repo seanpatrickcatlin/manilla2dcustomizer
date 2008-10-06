@@ -118,6 +118,8 @@ void CManilla2DConfigProgressDlg::BeginTrackingProgress(CString message, int min
     
     m_timerId = SetTimer(IDT_M2DC_PROGRESS_TIMER, PROGRESS_TIMER_INTERVAL, 0);
 
+    CenterWindow();
+
     SetWindowText(message);
 
     ShowWindow(SW_SHOW);
