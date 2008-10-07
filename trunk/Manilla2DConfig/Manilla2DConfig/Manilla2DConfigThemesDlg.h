@@ -59,4 +59,6 @@ public:
     afx_msg void OnBnClickedM2dcThemeApplyBtn();
     afx_msg void OnBnClickedM2dcThemeImportBtn();
     afx_msg void OnBnClickedM2dcThemeDeleteBtn();
+    CStatic m_pictureBox;
+    CButton m_removeButton;
 };
