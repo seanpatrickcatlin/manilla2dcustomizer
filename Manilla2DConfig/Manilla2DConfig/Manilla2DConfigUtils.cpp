@@ -60,6 +60,20 @@ bool M2DC::CompareNameAndEnabledStateVectors(NameAndEnabledState_vector_t* vec1,
     return false;
 }
 
+CString M2DC::GetPathToNullThemePreview()
+{
+	CString retVal = GetPathToM2DCThemesDirectory();
+	retVal += "\\null.jpeg";
+
+    CString debugStr = TEXT("GetPathToNullThemePreview ");
+    debugStr += retVal;
+    debugStr += "\n";
+
+    TRACE(debugStr);
+
+    return retVal;
+}
+
 CString M2DC::GetPathToHTCHomeSettingsXmlFileActiveTheme()
 {
 	CString retVal = GetPathToM2DCInstallDirectory();
@@ -160,6 +174,22 @@ CString M2DC::GetDirectoryOfFile(CString fullFilePath)
 	return retVal;
 }
 
+CString M2DC::GetPathToTemporaryThemeFile()
+{
+	CString retVal("\\Temp");
+
+	TCHAR winDirStr[MAX_PATH];
+	if(SHGetSpecialFolderPath(NULL, winDirStr, CSIDL_WINDOWS, 0) == TRUE)
+	{
+		retVal = winDirStr;
+	}
+
+	TRACE(TEXT("GetPathToWindowsDirectory "));
+	TRACE(retVal);
+	TRACE(TEXT("\n"));
+
+	return retVal;
+}
 
 CString M2DC::GetPathToWindowsDirectory()
 {
@@ -438,7 +468,7 @@ CString M2DC::GetWin32ErrorString(DWORD err)
 void M2DC::RestoreActiveThemeFromBackup()
 {
     AfxGetApp()->BeginWaitCursor();
-    SetActiveTheme(M2DC::GetPathToThemeBackupFile());
+    M2DC::SetActiveThemeFromPath(M2DC::GetPathToThemeBackupFile(), TEXT("BACKUP"));
 
     AfxGetApp()->EndWaitCursor();
     M2DC::EndMakingChanges();
@@ -961,14 +991,29 @@ void M2DC::SetInstallDirectory(CString installDirectory)
 
 int M2DC::SetActiveTheme(CString themeName)
 {
-    int retVal = 0;
-
     CString pathToTheme = M2DC::GetPathOfM2DCThemeFromName(themeName);
+    return SetActiveThemeFromPath(pathToTheme, themeName);
+}
+
+int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
+{
+    int retVal = 0;
 
     // unzip the files to their appropriate destinations according to the
     // paths from the current XML file
-    if(FileExists(pathToTheme))
+    if(FileExists(themePath))
     {
+        if(!FileIsValidM2DCTheme(themePath))
+        {
+            CString msg;
+            msg = TEXT("Unable to find HTCHomeSettings.xml or a hh_* file in the selected theme.\n");
+            msg += TEXT("Unable to apply");
+
+            AfxMessageBox(msg, MB_OK);
+
+            return -1;
+        }
+
         // delete the last active theme file
         DeleteFile(GetPathToHTCHomeSettingsXmlFileActiveTheme());
 
@@ -979,7 +1024,7 @@ int M2DC::SetActiveTheme(CString themeName)
 
         GetVectorOfThemeFilesCurrentlyInUse(&pathsToThemeFiles, true);
 
-        HZIP hz = OpenZip(pathToTheme, 0);
+        HZIP hz = OpenZip(themePath, 0);
         ZIPENTRY ze;
 
         // -1 gives overall information about the zipfile
@@ -1011,10 +1056,18 @@ int M2DC::SetActiveTheme(CString themeName)
             CString destString;
             CString filePathFromZip = ze.name;
             CString fileNameNoPath = filePathFromZip.Mid(filePathFromZip.ReverseFind('/')+1);
+            CString fileExt = fileNameNoPath.Mid(fileNameNoPath.ReverseFind('.')+1);
 
             if(fileNameNoPath.Compare(TEXT("HTCHomeSettings.xml")) == 0)
             {
                 destString = GetPathToHTCHomeSettingsXmlFileActiveTheme();
+            }
+
+            if(fileExt.CompareNoCase(TEXT("tsk")) == 0)
+            {
+                destString = M2DC::GetPathToWindowsDirectory();
+                destString += "\\";
+                destString += fileNameNoPath;
             }
 
             for(size_t i=0; ((i<pathsToThemeFiles.size()) && (destString.GetLength() <= 0)); i++)
@@ -1039,6 +1092,11 @@ int M2DC::SetActiveTheme(CString themeName)
                 SetFileAttributes(destString, FILE_ATTRIBUTE_NORMAL);
                 UnzipItem(hz, zi, destString);
                 SetFileAttributes(destString, dwAttributes);
+
+                if(fileExt.CompareNoCase(TEXT("tsk")) == 0)
+                {
+                    SetNewTskTheme(destString);
+                }
             }
         }
 
@@ -1140,6 +1198,10 @@ void M2DC::GetNamesOfAvailableM2DCThemes(std::vector<CString>* pThemeNameVector)
                     if(FileExists(currentThemePath))
                     {
                         pThemeNameVector->push_back(currentThemeName);
+                    }
+                    else
+                    {
+                        m2dcNode->RemoveChild(themeElement);
                     }
                 }
             }
@@ -1709,9 +1771,51 @@ void M2DC::AddToM2DCThemeList(CString pathToTheme)
             themeBaseName += tmpStr;
         }
 
+        CString previewPath = GetPathToNullThemePreview();;
+
+        
+        // check to see if a file named "preview.jpeg" exists
+        // if it does exist extract it and sav the path
+        // get information about the zip file
+        HZIP hz = OpenZip(pathToTheme, 0);
+        ZIPENTRY ze;
+
+        // -1 gives overall information about the zipfile
+        GetZipItem(hz, -1, &ze);
+
+        int numitems = ze.index;
+
+        for(int zi=0; zi < numitems; zi++)
+        {
+            ZIPENTRY ze;
+            GetZipItem(hz, zi, &ze);            // fetch individual details
+
+            CString filePathFromZip(ze.name);
+
+            CString fileName = filePathFromZip.Mid(filePathFromZip.ReverseFind('/') + 1);
+
+            if((fileName.CompareNoCase(TEXT("preview.jpg")) == 0) ||
+                (fileName.CompareNoCase(TEXT("preview.jpeg")) == 0))
+            {
+                CString destString = M2DC::GetPathToM2DCThemesDirectory();
+                destString += "\\";
+                destString += themeBaseName;
+                destString += ".jpeg";
+
+                UnzipItem(hz, zi, destString);
+
+                previewPath = destString;
+            }
+        }
+
+        CloseZip(hz);
+        
+        // - getting default null preview path
+
         TiXmlElement* newThemeElement = new TiXmlElement("Theme");
         newThemeElement->SetAttribute("name", GetConstCharStarFromCString(themeBaseName));
         newThemeElement->SetAttribute("path", GetConstCharStarFromCString(pathToTheme));
+        newThemeElement->SetAttribute("preview", GetConstCharStarFromCString(previewPath));
 
         m2dcElement->LinkEndChild(newThemeElement);
 
@@ -1780,4 +1884,84 @@ CString M2DC::GetPathOfM2DCThemeFromName(CString themeName)
     }
 
     return retVal;
+}
+
+CString M2DC::GetPathOfM2DCThemePreviewFromName(CString themeName)
+{
+    CString retVal = M2DC::GetPathToNullThemePreview();
+
+    CString currentThemeName;
+
+    TiXmlDocument doc(GetConstCharStarFromCString(M2DC::GetPathToM2DCThemeListXml()));
+    bool loadOkay = doc.LoadFile();
+
+    if(loadOkay)
+    {
+        for(TiXmlNode* m2dcNode = doc.FirstChild("M2DC");
+            m2dcNode != NULL;
+            m2dcNode = m2dcNode->NextSibling("M2DC"))
+        {
+            for(TiXmlElement* themeElement = m2dcNode->FirstChildElement("Theme");
+                themeElement != NULL;
+                themeElement = themeElement->NextSiblingElement("Theme"))
+            {
+                currentThemeName = themeElement->Attribute("name");
+
+                if(currentThemeName.Compare(themeName) == 0)
+                {
+                    retVal = themeElement->Attribute("preview");
+                    break;
+                }
+            }
+        }
+    }
+
+    if(retVal.GetLength() <= 0)
+    {
+        retVal = M2DC::GetPathToNullThemePreview();
+    }
+
+    return retVal;
+}
+
+void M2DC::SetNewTskTheme(CString pathToTskTheme)
+{
+#ifndef _DEBUG
+    return;
+#endif
+
+    PROCESS_INFORMATION pi;
+    HKEY hKey;
+    LONG lRet;
+    TCHAR szCmdLine[MAX_PATH+1];
+
+    //
+    // Set the theme
+    //
+    lRet = RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\Microsoft\\Today"), 0, 0, &hKey);
+
+    if(ERROR_SUCCESS == lRet)
+    {
+        RegDeleteValue(hKey, _T("UseStartImage"));
+        wcscpy(szCmdLine, _T("/delete 0 /noui \""));
+        wcscat(szCmdLine, pathToTskTheme.GetBuffer());
+        wcscat(szCmdLine, _T("\""));
+
+
+        if(::CreateProcess(_T("\\Windows\\wceload.exe"), 
+            szCmdLine,
+            NULL, NULL, FALSE, 0, NULL, NULL, NULL, &pi))
+        {
+            ::WaitForSingleObject(pi.hProcess, INFINITE);
+
+            RegSetValueEx(hKey, _T("Skin"), 0, REG_SZ, (BYTE*)pathToTskTheme.GetBuffer(),
+                sizeof(TCHAR) * (wcslen(pathToTskTheme.GetBuffer()) + 1));
+
+            RegCloseKey(hKey);
+
+            ::SendMessage(HWND_BROADCAST, WM_SYSCOLORCHANGE, 0, 0); 
+        }
+    }
+ 
+    g_bRestoreTodayScreenNeeded = true;
 }

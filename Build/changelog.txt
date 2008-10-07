@@ -1,5 +1,14 @@
 Manilla 2D Customizer changelog
 
+Oct-07-2008
+v0.11.13X
+- fixed bug where the m2dc theme backup did not restore via the restore button
+- added preview functionality
+  -- if a theme file (m2dc or zip) has a file named "preview.jpg" or "preview.jpeg"
+     then the file will be saved to the "\M2DC\Themes" filder and the file will be
+     displayed in the lower right hand corner of the theme screen, this file will be
+     scaled to fit, the recommended size of the preview is 75x100
+
 Oct-05-2008
 v0.10.130
 - changed the way that M2DC stores and access theme files.

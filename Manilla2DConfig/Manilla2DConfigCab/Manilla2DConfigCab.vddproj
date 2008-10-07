@@ -32,6 +32,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_4C7EE819157D42F5B1B70E2CFB48982C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_549138ADD0C24C3A9338275E2CEB6150"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -146,6 +152,24 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{BA458234-9B71-4F46-8107-E91156377184}:_4C7EE819157D42F5B1B70E2CFB48982C"
+            {
+            "SourcePath" = "8:..\\Manilla2DConfig\\null.jpeg"
+            "TargetName" = "8:null.jpeg"
+            "Tag" = "8:"
+            "Folder" = "8:_DFE4E67C1DB142449FCDB8F2EE2ABBB1"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{BA458234-9B71-4F46-8107-E91156377184}:_918F8CE7EFD1466FB5E891E10AF04EFA"
             {
             "SourcePath" = "8:..\\Manilla2DConfig\\M2DC.xml"
@@ -211,6 +235,15 @@
             "Property" = "8:%InstallDir%"
                 "Folders"
                 {
+                    "{5943FCFD-5B64-4EE4-96C9-4618EC95352A}:_DFE4E67C1DB142449FCDB8F2EE2ABBB1"
+                    {
+                    "Name" = "8:Themes"
+                    "Condition" = "8:"
+                    "Property" = "8:_61D2F8A200C8499AAE3010EDDC67FFE8"
+                        "Folders"
+                        {
+                        }
+                    }
                 }
             }
             "{F6DFDB62-1DD1-498B-89B7-27BAC542EE5A}:_154953CE879743F78BDFF6FE1D8C59A9"

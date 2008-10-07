@@ -52,13 +52,18 @@ protected:
 private:
     CCommandBar m_cmdBar;
 
+    int m_previewWidth;
+    int m_previewHeight;
+
     void RefreshThemeList();
 
 public:
+    CStatic m_pictureBox;
+    CButton m_removeButton;
     CListBox m_themeChooserListBox;
+
     afx_msg void OnBnClickedM2dcThemeApplyBtn();
     afx_msg void OnBnClickedM2dcThemeImportBtn();
     afx_msg void OnBnClickedM2dcThemeDeleteBtn();
-    CStatic m_pictureBox;
-    CButton m_removeButton;
+    afx_msg void OnLbnSelchangeM2dcThemeListbox();
 };
