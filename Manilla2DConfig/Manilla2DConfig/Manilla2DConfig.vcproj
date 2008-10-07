@@ -68,6 +68,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,5.02"
+				AdditionalDependencies="imaging.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				StackReserveSize="65536"
@@ -155,6 +156,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,5.02"
+				AdditionalDependencies="imaging.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				StackReserveSize="65536"

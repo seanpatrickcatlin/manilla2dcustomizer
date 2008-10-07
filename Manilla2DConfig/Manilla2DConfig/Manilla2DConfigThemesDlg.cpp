@@ -25,6 +25,10 @@
 #include "Manilla2DConfigUtils.h"
 #include "Manilla2DConfigThemesDlg.h"
 
+#include <INITGUID.h>
+#include <imaging.h>
+
+HBITMAP LoadImageThumbnailWithImagingApi(const CString &strFileName, int imgWid, int imgHei);
 
 // CManilla2DConfigThemesDlg dialog
 
@@ -43,6 +47,8 @@ void CManilla2DConfigThemesDlg::DoDataExchange(CDataExchange* pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_M2DC_THEME_LISTBOX, m_themeChooserListBox);
+    DDX_Control(pDX, IDC_M2DC_THEMES_PICTURE, m_pictureBox);
+    DDX_Control(pDX, IDC_M2DC_THEME_DELETE_BTN, m_removeButton);
 }
 
 BOOL CManilla2DConfigThemesDlg::OnInitDialog()
@@ -51,6 +57,20 @@ BOOL CManilla2DConfigThemesDlg::OnInitDialog()
 
     m_cmdBar.Create(this);
     m_cmdBar.InsertMenuBar(IDR_M2DC_APPLY_CANCEL_MENU);
+
+    CString imageFilePath = M2DC::GetPathToM2DCThemesDirectory();
+    imageFilePath += "\\preview.jpg";
+
+
+    RECT buttonRect;
+    m_removeButton.GetWindowRect(&buttonRect); 
+
+    int buttonWidth = buttonRect.right - buttonRect.left;
+    int imageHeight = (buttonWidth * 4) / 3;
+
+    HBITMAP previewBitmap = LoadImageThumbnailWithImagingApi(imageFilePath, buttonWidth, imageHeight);
+
+    m_pictureBox.SetBitmap(previewBitmap);
 
     return FALSE;
 }
@@ -245,4 +265,42 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeDeleteBtn()
     }
     
     RefreshThemeList();
+}
+
+HBITMAP LoadImageThumbnailWithImagingApi(const CString &strFileName, int imgWid, int imgHei)
+{
+    IImagingFactory *pImgFactory = NULL;
+    IImage *pImage = NULL;
+    IImage *pImageThumb = NULL;
+    CoInitializeEx(NULL, COINIT_MULTITHREADED);
+    HBITMAP hResult = 0;
+    if (SUCCEEDED(CoCreateInstance (CLSID_ImagingFactory,
+        NULL,
+        CLSCTX_INPROC_SERVER,
+        IID_IImagingFactory,
+        (void **)&pImgFactory)))
+    {
+        ImageInfo imageInfo;
+        if (SUCCEEDED(pImgFactory->CreateImageFromFile(strFileName, &pImage))
+            && SUCCEEDED(pImage->GetThumbnail(imgWid, imgHei, &pImageThumb))
+            && SUCCEEDED(pImageThumb->GetImageInfo(&imageInfo)))
+        {
+            CWindowDC dc(0);
+            CDC dcBitmap;
+            dcBitmap.CreateCompatibleDC(&dc);
+            hResult = CreateCompatibleBitmap(dc.GetSafeHdc(), imageInfo.Width, imageInfo.Height);
+            if (hResult)
+            {
+                HGDIOBJ hOldBitmap = dcBitmap.SelectObject(hResult);
+                pImage->Draw(dcBitmap.GetSafeHdc(), CRect(0, 0, imageInfo.Width, imageInfo.Height), NULL);
+                dcBitmap.SelectObject(hOldBitmap);
+            }
+            pImageThumb->Release();
+            pImage->Release();
+        }
+        pImgFactory->Release();
+    }
+    CoUninitialize();
+
+    return hResult;
 }
