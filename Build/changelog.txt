@@ -1,7 +1,7 @@
 Manilla 2D Customizer changelog
 
 Oct-07-2008
-v0.11.13X
+v0.11.133
 - fixed bug where the m2dc theme backup did not restore via the restore button
 - added preview functionality
   -- if a theme file (m2dc or zip) has a file named "preview.jpg" or "preview.jpeg"
