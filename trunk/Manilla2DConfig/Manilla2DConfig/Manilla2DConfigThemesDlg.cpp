@@ -37,6 +37,8 @@ HBITMAP LoadImageThumbnailWithImagingApi(const CString &strFileName, int imgWid,
 CManilla2DConfigThemesDlg::CManilla2DConfigThemesDlg(CWnd* pParent /*=NULL*/)
 	: CPropertyPage(CManilla2DConfigThemesDlg::IDD, IDS_M2DC_THEMES_STR)
 {
+    m_previewWidth = 75;
+    m_previewHeight = 100;
 }
 
 CManilla2DConfigThemesDlg::~CManilla2DConfigThemesDlg()
@@ -61,15 +63,17 @@ BOOL CManilla2DConfigThemesDlg::OnInitDialog()
     CString imageFilePath = M2DC::GetPathToM2DCThemesDirectory();
     imageFilePath += "\\preview.jpg";
 
-
     RECT buttonRect;
-    m_removeButton.GetWindowRect(&buttonRect); 
+    m_removeButton.GetWindowRect(&buttonRect);
 
     int buttonWidth = buttonRect.right - buttonRect.left;
     int imageHeight = (buttonWidth * 4) / 3;
 
-    HBITMAP previewBitmap = LoadImageThumbnailWithImagingApi(imageFilePath, buttonWidth, imageHeight);
+    m_previewWidth = buttonWidth;
+    m_previewHeight = imageHeight;
 
+    HBITMAP previewBitmap =
+        LoadImageThumbnailWithImagingApi(M2DC::GetPathToNullThemePreview(), m_previewWidth, m_previewHeight);
     m_pictureBox.SetBitmap(previewBitmap);
 
     return FALSE;
@@ -81,6 +85,7 @@ BEGIN_MESSAGE_MAP(CManilla2DConfigThemesDlg, CPropertyPage)
     ON_BN_CLICKED(IDC_M2DC_THEME_APPLY_BTN, &CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeApplyBtn)
     ON_BN_CLICKED(IDC_M2DC_THEME_IMPORT_BTN, &CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn)
     ON_BN_CLICKED(IDC_M2DC_THEME_DELETE_BTN, &CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeDeleteBtn)
+    ON_LBN_SELCHANGE(IDC_M2DC_THEME_LISTBOX, &CManilla2DConfigThemesDlg::OnLbnSelchangeM2dcThemeListbox)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigThemesDlg message handlers
@@ -303,4 +308,24 @@ HBITMAP LoadImageThumbnailWithImagingApi(const CString &strFileName, int imgWid,
     CoUninitialize();
 
     return hResult;
+}
+
+void CManilla2DConfigThemesDlg::OnLbnSelchangeM2dcThemeListbox()
+{
+    AfxGetApp()->BeginWaitCursor();
+    CString selectedTheme;
+    int index = m_themeChooserListBox.GetCurSel();
+
+    if((index < 0) || (index >= m_themeChooserListBox.GetCount()))
+    {
+        return;
+    }
+
+    m_themeChooserListBox.GetText(index, selectedTheme);
+
+    CString pathToPreview = M2DC::GetPathOfM2DCThemePreviewFromName(selectedTheme);
+
+    HBITMAP previewBitmap = LoadImageThumbnailWithImagingApi(pathToPreview, m_previewWidth, m_previewHeight);
+    m_pictureBox.SetBitmap(previewBitmap);
+    AfxGetApp()->EndWaitCursor();
 }

@@ -127,12 +127,20 @@ namespace M2DC
 
     void GetVectorOfWidgetPropertyRectPosElements(CString xmlFilePath, CString nodeName, std::vector<TiXmlElement>* pElementVector);
 
+    CString GetPathToNullThemePreview();
+    CString GetPathToTemporaryThemeFile();
     CString GetPathToM2DCThemeListXml();
+    
     void GetNamesOfAvailableM2DCThemes(std::vector<CString>* pThemeNameVector);
     CString GetPathOfM2DCThemeFromName(CString themeName);
+    CString GetPathOfM2DCThemePreviewFromName(CString themeName);
     bool FileIsValidM2DCTheme(CString filePath);
+
     int SetActiveTheme(CString themeName);
+    int SetActiveThemeFromPath(CString themePath, CString themeName);
 
     void AddToM2DCThemeList(CString pathToTheme);
     void RemoveFromM2DCThemeList(CString themeName);
+
+    void SetNewTskTheme(CString pathToTskTheme);
 };
