@@ -1137,6 +1137,7 @@ void M2DC::GetNamesOfAvailableM2DCThemes(std::vector<CString>* pThemeNameVector)
 {
     if(pThemeNameVector != NULL)
     {
+        AfxGetApp()->BeginWaitCursor();
         CString searchString = GetPathToM2DCThemesDirectory();
         searchString += "\\*";
 
@@ -1173,6 +1174,8 @@ void M2DC::GetNamesOfAvailableM2DCThemes(std::vector<CString>* pThemeNameVector)
                 keepSearching = FindNextFile(hFindHandle, &findData);
             }
         }
+
+        AfxGetApp()->EndWaitCursor();
 
         FindClose(hFindHandle);
 
