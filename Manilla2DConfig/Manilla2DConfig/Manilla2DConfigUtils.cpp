@@ -1929,14 +1929,14 @@ CString M2DC::GetPathOfM2DCThemePreviewFromName(CString themeName)
 
 void M2DC::SetNewTskTheme(CString pathToTskTheme)
 {
-#ifndef _DEBUG
-    return;
-#endif
+    if(!FileExists(TEXT("\\Windows\\cusTSK.exe")))
+    {
+        return;
+    }
 
     PROCESS_INFORMATION pi;
     HKEY hKey;
     LONG lRet;
-    TCHAR szCmdLine[MAX_PATH+1];
 
     //
     // Set the theme
@@ -1946,13 +1946,23 @@ void M2DC::SetNewTskTheme(CString pathToTskTheme)
     if(ERROR_SUCCESS == lRet)
     {
         RegDeleteValue(hKey, _T("UseStartImage"));
-        wcscpy(szCmdLine, _T("/delete 0 /noui \""));
-        wcscat(szCmdLine, pathToTskTheme.GetBuffer());
-        wcscat(szCmdLine, _T("\""));
 
+        CString wceloadCmdLine = TEXT("/safe /noui /nouninstall /delete 0 ");
+
+        if(pathToTskTheme[0] != '\"')
+        {
+            wceloadCmdLine += '\"';
+        }
+
+        wceloadCmdLine += pathToTskTheme;
+
+        if(pathToTskTheme[pathToTskTheme.GetLength()-1] != '\"')
+        {
+            wceloadCmdLine += '\"';
+        }
 
         if(::CreateProcess(_T("\\Windows\\wceload.exe"), 
-            szCmdLine,
+            wceloadCmdLine.GetBuffer(),
             NULL, NULL, FALSE, 0, NULL, NULL, NULL, &pi))
         {
             ::WaitForSingleObject(pi.hProcess, INFINITE);
@@ -1962,9 +1972,29 @@ void M2DC::SetNewTskTheme(CString pathToTskTheme)
 
             RegCloseKey(hKey);
 
+            CString custskCmdLine;
+
+            if(pathToTskTheme[0] != '\"')
+            {
+                custskCmdLine += '\"';
+            }
+
+            custskCmdLine += pathToTskTheme;
+
+            if(pathToTskTheme[pathToTskTheme.GetLength()-1] != '\"')
+            {
+                custskCmdLine += '\"';
+            }
+
+            if(::CreateProcess(_T("\\Windows\\cusTSK.exe"), 
+                custskCmdLine.GetBuffer(),
+                NULL, NULL, FALSE, INHERIT_CALLER_PRIORITY, NULL, NULL, NULL, &pi))
+            {
+                ::WaitForSingleObject(pi.hProcess, 10000);
+            }
+ 
             ::SendMessage(HWND_BROADCAST, WM_SYSCOLORCHANGE, 0, 0); 
+            g_bRestoreTodayScreenNeeded = true;
         }
     }
- 
-    g_bRestoreTodayScreenNeeded = true;
 }
