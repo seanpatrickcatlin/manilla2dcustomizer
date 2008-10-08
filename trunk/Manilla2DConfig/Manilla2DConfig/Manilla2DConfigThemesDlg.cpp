@@ -162,8 +162,44 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeApplyBtn()
     EndDialog(IDOK);
 }
 
+#include "unzip.h"
+
 void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
 {
+#ifdef _DEBUG
+    CFileTreeDlg fileDlg(this, TEXT("\\"), TEXT("cab"));
+    if(fileDlg.DoModal() == IDOK)
+    {
+        CString pathToNewTheme = fileDlg.GetFilePath();
+
+        HZIP hz = OpenZip(pathToNewTheme, 0);
+        ZIPENTRY ze;
+
+        // -1 gives overall information about the zipfile
+        GetZipItem(hz,-1,&ze);
+
+        int numitems = ze.index;
+
+        for(int zi=0; zi<numitems; zi++)
+        {
+            ZIPENTRY ze;
+
+            GetZipItem(hz, zi, &ze);            // fetch individual details
+
+            CString destString;
+            CString filePathFromZip = ze.name;
+            CString fileNameNoPath = filePathFromZip.Mid(filePathFromZip.ReverseFind('/')+1);
+            CString fileExt = fileNameNoPath.Mid(fileNameNoPath.ReverseFind('.')+1);
+
+            destString = TEXT("\\Temp\\");
+            destString += fileNameNoPath;
+
+            UnzipItem(hz, zi, destString);
+        }
+
+        CloseZip(hz);
+    }
+#else
     CFileTreeDlg fileDlg(this, TEXT("\\"), TEXT("m2dct|zip"));
     if(fileDlg.DoModal() == IDOK)
     {
@@ -187,6 +223,7 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
             RefreshThemeList();
         }
     }
+#endif
 }
 
 void CManilla2DConfigThemesDlg::RefreshThemeList()
