@@ -1091,8 +1091,7 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
                 }
 
                 DWORD dwAttributes =  GetFileAttributes(destString);
-                DeleteFile(destString);
-                //SetFileAttributes(destString, FILE_ATTRIBUTE_NORMAL);
+                SetFileAttributes(destString, FILE_ATTRIBUTE_NORMAL);
                 UnzipItem(hz, zi, destString);
                 SetFileAttributes(destString, dwAttributes);
 
