@@ -754,6 +754,8 @@ void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector
     CString progMsg;
     CManilla2DConfigProgressDlg* pProgDlg = NULL;
 
+    CString windowsDirPath = GetPathToWindowsDirectory();
+
     if(pPathVector != NULL)
     {
         if(g_bAllowPopupDialogs)
@@ -894,7 +896,7 @@ void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector
             pPathVector->push_back(GetPathToHTCHomeSettingsXmlFileActual());
 
             WIN32_FIND_DATA findData;
-            CString findString = GetPathToWindowsDirectory();
+            CString findString = windowsDirPath;
             findString += "\\*";
             HANDLE hFindHandle = FindFirstFile(findString, &findData);
 
@@ -909,7 +911,7 @@ void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector
                     if((currentFile.Find(TEXT("hh_")) != -1) ||
                         (currentFile.Find(TEXT("HH_")) != -1))
                     {
-                        CString currentFilePath = GetPathToWindowsDirectory();
+                        CString currentFilePath = windowsDirPath;
                         currentFilePath += "\\";
                         currentFilePath += currentFile;
 
@@ -1089,7 +1091,8 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
                 }
 
                 DWORD dwAttributes =  GetFileAttributes(destString);
-                SetFileAttributes(destString, FILE_ATTRIBUTE_NORMAL);
+                DeleteFile(destString);
+                //SetFileAttributes(destString, FILE_ATTRIBUTE_NORMAL);
                 UnzipItem(hz, zi, destString);
                 SetFileAttributes(destString, dwAttributes);
 
@@ -1097,6 +1100,12 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
                 {
                     SetNewTskTheme(destString);
                 }
+            }
+            else
+            {
+                TRACE(TEXT("Skipped "));
+                TRACE(fileNameNoPath);
+                TRACE(TEXT("\n"));
             }
         }
 
@@ -1929,6 +1938,8 @@ CString M2DC::GetPathOfM2DCThemePreviewFromName(CString themeName)
 
 void M2DC::SetNewTskTheme(CString pathToTskTheme)
 {
+    return;
+
     if(!FileExists(TEXT("\\Windows\\cusTSK.exe")))
     {
         return;
