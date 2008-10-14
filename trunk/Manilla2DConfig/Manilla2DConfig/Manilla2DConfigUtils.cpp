@@ -1939,6 +1939,7 @@ void M2DC::SetNewTskTheme(CString pathToTskTheme)
 {
     return;
 
+    /*
     if(!FileExists(TEXT("\\Windows\\cusTSK.exe")))
     {
         return;
@@ -2007,4 +2008,5 @@ void M2DC::SetNewTskTheme(CString pathToTskTheme)
             g_bRestoreTodayScreenNeeded = true;
         }
     }
+    */
 }
