@@ -85,15 +85,15 @@ BOOL CManilla2DConfigLauncherDlg::OnInitDialog()
     m_launcher6RowRadioButton.SetCheck(BST_UNCHECKED);
     m_launcher9RowRadioButton.SetCheck(BST_UNCHECKED);
 
-    if(m_numberOfRows == 3)
+    if((m_numberOfRows >= 0) && (m_numberOfRows <= 3))
     {
         m_launcher3RowRadioButton.SetCheck(BST_CHECKED);
     }
-    else if(m_numberOfRows == 6)
+    else if((m_numberOfRows > 3) && (m_numberOfRows <= 6))
     {
         m_launcher6RowRadioButton.SetCheck(BST_CHECKED);
     }
-    else if(m_numberOfRows == 9)
+    else if(m_numberOfRows > 6)
     {
         m_launcher9RowRadioButton.SetCheck(BST_CHECKED);
     }
