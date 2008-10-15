@@ -57,6 +57,8 @@ BOOL CManilla2DConfigThemesDlg::OnInitDialog()
 {
     CPropertyPage::OnInitDialog();
 
+    AfxGetApp()->BeginWaitCursor();
+
     m_cmdBar.Create(this);
     m_cmdBar.InsertMenuBar(IDR_M2DC_APPLY_CANCEL_MENU);
 
@@ -75,6 +77,8 @@ BOOL CManilla2DConfigThemesDlg::OnInitDialog()
     HBITMAP previewBitmap =
         LoadImageThumbnailWithImagingApi(M2DC::GetPathToNullThemePreview(), m_previewWidth, m_previewHeight);
     m_pictureBox.SetBitmap(previewBitmap);
+
+    AfxGetApp()->EndWaitCursor();
 
     return FALSE;
 }
@@ -133,9 +137,10 @@ BOOL CManilla2DConfigThemesDlg::OnSetActive()
 
     CPropertyPage::OnSetActive();
 
-    // I used to force users to backup their original theme files, now I no longer do that
-
+    
+    AfxGetApp()->BeginWaitCursor();
     RefreshThemeList();
+    AfxGetApp()->EndWaitCursor();
 
     return retVal;
 }
@@ -169,6 +174,7 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
     CFileTreeDlg fileDlg(this, TEXT("\\"), TEXT("m2dct|zip"));
     if(fileDlg.DoModal() == IDOK)
     {
+        AfxGetApp()->BeginWaitCursor();
         CString pathToNewTheme = fileDlg.GetFilePath();
 
         if(M2DC::FileExists(pathToNewTheme))
@@ -188,11 +194,14 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
 
             RefreshThemeList();
         }
+
+        AfxGetApp()->EndWaitCursor();
     }
 }
 
 void CManilla2DConfigThemesDlg::RefreshThemeList()
 {
+    AfxGetApp()->BeginWaitCursor();
     std::vector<CString> themeNames;
     M2DC::GetNamesOfAvailableM2DCThemes(&themeNames);
 
@@ -219,6 +228,8 @@ void CManilla2DConfigThemesDlg::RefreshThemeList()
     }
     m_themeChooserListBox.ReleaseDC(pDC);
     m_themeChooserListBox.SetHorizontalExtent(dx);
+    
+    AfxGetApp()->EndWaitCursor();
 }
 
 void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeDeleteBtn()
@@ -230,6 +241,8 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeDeleteBtn()
     {
         return;
     }
+
+    AfxGetApp()->EndWaitCursor();
 
     m_themeChooserListBox.GetText(index, selectedTheme);
 
@@ -270,6 +283,8 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeDeleteBtn()
             }
         }
     }
+    
+    AfxGetApp()->EndWaitCursor();
     
     RefreshThemeList();
 }
