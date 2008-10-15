@@ -32,7 +32,12 @@ public:
 	virtual ~CManilla2DConfigHomeDlg();
 
 // Dialog Data
-	enum { IDD = IDD_M2DC_HOME_DLG };
+    enum
+    {
+        IDD       = IDD_M2DC_HOME_DLG,
+        IDS_TAB   = IDS_M2DC_HOME_TAB_STR,
+        IDS_TITLE = IDS_M2DC_HOME_TITLE_STR
+    };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

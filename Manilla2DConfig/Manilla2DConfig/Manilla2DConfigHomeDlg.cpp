@@ -28,7 +28,7 @@
 //IMPLEMENT_DYNAMIC(CManilla2DConfigHomeDlg, CPropertyPage)
 
 CManilla2DConfigHomeDlg::CManilla2DConfigHomeDlg(CWnd* pParent /*=NULL*/)
-	: CPropertyPage(CManilla2DConfigHomeDlg::IDD, IDS_M2DC_HOME_STR)
+: CPropertyPage(CManilla2DConfigHomeDlg::IDD, CManilla2DConfigHomeDlg::IDS_TAB)
 {
 
 }
@@ -93,6 +93,9 @@ END_MESSAGE_MAP()
 
 void CManilla2DConfigHomeDlg::OnPaint()
 {
+    CString titleStr;
+    titleStr.LoadStringW(CManilla2DConfigHomeDlg::IDS_TITLE);
+
     CPaintDC dc(this);
 
     int nWidth = dc.GetDeviceCaps(HORZRES);
@@ -108,7 +111,7 @@ void CManilla2DConfigHomeDlg::OnPaint()
     newFont.CreateFontIndirect(&lf);
     CFont *pSave = dc.SelectObject(&newFont);
     dc.SetTextColor(RGB(0, 0, 156));
-    dc.DrawText(TEXT("Home Tab Settings"), CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
+    dc.DrawText(titleStr, CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
 
     // paint line
     CPen blackPen(PS_SOLID, 1, RGB(0,0,0));

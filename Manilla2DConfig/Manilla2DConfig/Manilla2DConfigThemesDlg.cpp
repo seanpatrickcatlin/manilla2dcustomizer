@@ -35,7 +35,7 @@ HBITMAP LoadImageThumbnailWithImagingApi(const CString &strFileName, int imgWid,
 //IMPLEMENT_DYNAMIC(CManilla2DConfigThemesDlg, CM2DCTabPage)
 
 CManilla2DConfigThemesDlg::CManilla2DConfigThemesDlg(CWnd* pParent /*=NULL*/)
-	: CPropertyPage(CManilla2DConfigThemesDlg::IDD, IDS_M2DC_THEMES_STR)
+: CPropertyPage(CManilla2DConfigThemesDlg::IDD, CManilla2DConfigThemesDlg::IDS_TAB)
 {
     m_previewWidth = 75;
     m_previewHeight = 100;
@@ -96,6 +96,9 @@ END_MESSAGE_MAP()
 
 void CManilla2DConfigThemesDlg::OnPaint()
 {
+    CString titleStr;
+    titleStr.LoadStringW(CManilla2DConfigThemesDlg::IDS_TITLE);
+
     CPaintDC dc(this);
 
     int nWidth = dc.GetDeviceCaps(HORZRES);
@@ -111,7 +114,7 @@ void CManilla2DConfigThemesDlg::OnPaint()
     newFont.CreateFontIndirect(&lf);
     CFont *pSave = dc.SelectObject(&newFont);
     dc.SetTextColor(RGB(0, 0, 156));
-    dc.DrawText(TEXT("Theme Settings"), CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
+    dc.DrawText(titleStr, CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
 
     // paint line
     CPen blackPen(PS_SOLID, 1, RGB(0,0,0));
