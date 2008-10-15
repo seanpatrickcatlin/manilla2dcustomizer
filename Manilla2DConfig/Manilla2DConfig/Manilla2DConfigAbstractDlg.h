@@ -19,6 +19,8 @@
 
 #include "Manilla2DConfigUtils.h"
 
+#define CE_DLGSCROLLBAR 64000
+
 // CManilla2DConfigAbstractDlg dialog
 
 class CManilla2DConfigAbstractDlg : public CPropertyPage
@@ -35,8 +37,24 @@ protected:
 
 public:
     BOOL OnInitDialog();
+    afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+    BOOL OnKillActive();
+    LRESULT OnSettingChange(WPARAM wParam, LPARAM lParam);
+
+    void OnSize(UINT nType, int cx, int cy);
 
 	DECLARE_MESSAGE_MAP()
+
+protected:
+    CScrollBar m_ctrlScrollBar;
+    CRect      m_DlgClientRect;
+    CRect      m_ScrollBarRect;
+    int        m_nScrollPos;
+    int        m_nCurHeight;
+    BOOL       m_bNeedScrollBar;
+    BOOL       m_bAutoScroll;
+
+    void initScrollBarSupport();    // Call this function from derived class to setup the scrollbar. 
 
 private:
     CCommandBar m_cmdBar;
