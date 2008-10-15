@@ -28,7 +28,7 @@
 //IMPLEMENT_DYNAMIC(CManilla2DConfigHomeDlg, CPropertyPage)
 
 CManilla2DConfigHomeDlg::CManilla2DConfigHomeDlg(CWnd* pParent /*=NULL*/)
-: CPropertyPage(CManilla2DConfigHomeDlg::IDD, CManilla2DConfigHomeDlg::IDS_TAB)
+: CManilla2DConfigAbstractDlg(pParent, CManilla2DConfigHomeDlg::IDD, CManilla2DConfigHomeDlg::IDS_TAB, CManilla2DConfigHomeDlg::IDS_TITLE)
 {
 
 }
@@ -52,10 +52,7 @@ void CManilla2DConfigHomeDlg::DoDataExchange(CDataExchange* pDX)
 
 BOOL CManilla2DConfigHomeDlg::OnInitDialog()
 {
-    CPropertyPage::OnInitDialog();
-
-    m_cmdBar.Create(this);
-    m_cmdBar.InsertMenuBar(IDR_M2DC_APPLY_CANCEL_MENU);
+    CManilla2DConfigAbstractDlg::OnInitDialog();
 
     M2DC::GetHomeWidgetSettings(M2DC::GetPathToHTCHomeSettingsXmlFileActual(), &m_homeSettings);
 
@@ -86,42 +83,9 @@ BOOL CManilla2DConfigHomeDlg::OnInitDialog()
     return FALSE;
 }
 
-BEGIN_MESSAGE_MAP(CManilla2DConfigHomeDlg, CPropertyPage)
-    ON_WM_PAINT()
+BEGIN_MESSAGE_MAP(CManilla2DConfigHomeDlg, CManilla2DConfigAbstractDlg)
     ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigHomeDlg::OnQuerySiblings)
 END_MESSAGE_MAP()
-
-void CManilla2DConfigHomeDlg::OnPaint()
-{
-    CString titleStr;
-    titleStr.LoadStringW(CManilla2DConfigHomeDlg::IDS_TITLE);
-
-    CPaintDC dc(this);
-
-    int nWidth = dc.GetDeviceCaps(HORZRES);
-    const int nHeaderHeight = 24;
-
-    // paint title
-    CFont *pCurrentFont = dc.GetCurrentFont();
-    LOGFONT lf;
-    pCurrentFont->GetLogFont(&lf);
-    lf.lfWeight = FW_BOLD;
-
-    CFont newFont;
-    newFont.CreateFontIndirect(&lf);
-    CFont *pSave = dc.SelectObject(&newFont);
-    dc.SetTextColor(RGB(0, 0, 156));
-    dc.DrawText(titleStr, CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
-
-    // paint line
-    CPen blackPen(PS_SOLID, 1, RGB(0,0,0));
-    CPen *pOldPen = dc.SelectObject(&blackPen);
-
-    dc.MoveTo(0, nHeaderHeight);
-    dc.LineTo(nWidth, nHeaderHeight);
-
-    dc.SelectObject(pOldPen); 
-}
 
 LRESULT CManilla2DConfigHomeDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
 {

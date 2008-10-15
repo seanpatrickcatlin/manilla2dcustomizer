@@ -17,12 +17,13 @@
 
 #pragma once
 
-#include "Manilla2DConfigUtils.h"
 #include "afxwin.h"
+#include "Manilla2DConfigUtils.h"
+#include "Manilla2DConfigAbstractDlg.h"
 
 // CManilla2DConfigRestoreDlg dialog
 
-class CManilla2DConfigThemesDlg : public CPropertyPage
+class CManilla2DConfigThemesDlg : public CManilla2DConfigAbstractDlg
 {
 	//DECLARE_DYNAMIC(CManilla2DConfigRestoreDlg)
 
@@ -43,8 +44,6 @@ protected:
 
     LRESULT OnQuerySiblings(WPARAM wParam, LPARAM lParam);
 
-    void OnPaint();
-
 public:
     BOOL OnInitDialog();
 
@@ -55,8 +54,6 @@ protected:
     void OnOK();
 
 private:
-    CCommandBar m_cmdBar;
-
     int m_previewWidth;
     int m_previewHeight;
 

@@ -17,9 +17,11 @@
 
 #pragma once
 
+#include "Manilla2DConfigAbstractDlg.h"
+
 // CManilla2DConfigLauncherDlg dialog
 
-class CManilla2DConfigLauncherDlg : public CPropertyPage
+class CManilla2DConfigLauncherDlg : public CManilla2DConfigAbstractDlg
 {
 public:
 	CManilla2DConfigLauncherDlg(CWnd* pParent = NULL);   // standard constructor
@@ -40,13 +42,9 @@ protected:
     virtual BOOL CManilla2DConfigLauncherDlg::OnInitDialog();
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-    void OnPaint();
-
 	DECLARE_MESSAGE_MAP()
 
 private:
-    CCommandBar m_cmdBar;
-
     int m_numberOfRows;
     int m_numberOfColumns;
 

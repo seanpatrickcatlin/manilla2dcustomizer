@@ -35,7 +35,7 @@ HBITMAP LoadImageThumbnailWithImagingApi(const CString &strFileName, int imgWid,
 //IMPLEMENT_DYNAMIC(CManilla2DConfigThemesDlg, CM2DCTabPage)
 
 CManilla2DConfigThemesDlg::CManilla2DConfigThemesDlg(CWnd* pParent /*=NULL*/)
-: CPropertyPage(CManilla2DConfigThemesDlg::IDD, CManilla2DConfigThemesDlg::IDS_TAB)
+: CManilla2DConfigAbstractDlg(pParent, CManilla2DConfigThemesDlg::IDD, CManilla2DConfigThemesDlg::IDS_TAB, CManilla2DConfigThemesDlg::IDS_TITLE)
 {
     m_previewWidth = 75;
     m_previewHeight = 100;
@@ -55,12 +55,9 @@ void CManilla2DConfigThemesDlg::DoDataExchange(CDataExchange* pDX)
 
 BOOL CManilla2DConfigThemesDlg::OnInitDialog()
 {
-    CPropertyPage::OnInitDialog();
+    CManilla2DConfigAbstractDlg::OnInitDialog();
 
     AfxGetApp()->BeginWaitCursor();
-
-    m_cmdBar.Create(this);
-    m_cmdBar.InsertMenuBar(IDR_M2DC_APPLY_CANCEL_MENU);
 
     CString imageFilePath = M2DC::GetPathToM2DCThemesDirectory();
     imageFilePath += "\\preview.jpg";
@@ -83,8 +80,7 @@ BOOL CManilla2DConfigThemesDlg::OnInitDialog()
     return FALSE;
 }
 
-BEGIN_MESSAGE_MAP(CManilla2DConfigThemesDlg, CPropertyPage)
-    ON_WM_PAINT()
+BEGIN_MESSAGE_MAP(CManilla2DConfigThemesDlg, CManilla2DConfigAbstractDlg)
     ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigThemesDlg::OnQuerySiblings)
     ON_BN_CLICKED(IDC_M2DC_THEME_APPLY_BTN, &CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeApplyBtn)
     ON_BN_CLICKED(IDC_M2DC_THEME_IMPORT_BTN, &CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn)
@@ -93,38 +89,6 @@ BEGIN_MESSAGE_MAP(CManilla2DConfigThemesDlg, CPropertyPage)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigThemesDlg message handlers
-
-void CManilla2DConfigThemesDlg::OnPaint()
-{
-    CString titleStr;
-    titleStr.LoadStringW(CManilla2DConfigThemesDlg::IDS_TITLE);
-
-    CPaintDC dc(this);
-
-    int nWidth = dc.GetDeviceCaps(HORZRES);
-    const int nHeaderHeight = 24;
-
-    // paint title
-    CFont *pCurrentFont = dc.GetCurrentFont();
-    LOGFONT lf;
-    pCurrentFont->GetLogFont(&lf);
-    lf.lfWeight = FW_BOLD;
-
-    CFont newFont;
-    newFont.CreateFontIndirect(&lf);
-    CFont *pSave = dc.SelectObject(&newFont);
-    dc.SetTextColor(RGB(0, 0, 156));
-    dc.DrawText(titleStr, CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
-
-    // paint line
-    CPen blackPen(PS_SOLID, 1, RGB(0,0,0));
-    CPen *pOldPen = dc.SelectObject(&blackPen);
-
-    dc.MoveTo(0, nHeaderHeight);
-    dc.LineTo(nWidth, nHeaderHeight);
-
-    dc.SelectObject(pOldPen); 
-}
 
 void CManilla2DConfigThemesDlg::OnOK()
 {
