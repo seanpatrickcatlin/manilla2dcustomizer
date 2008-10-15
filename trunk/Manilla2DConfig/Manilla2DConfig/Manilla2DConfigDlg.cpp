@@ -24,6 +24,7 @@
 #include "Manilla2DConfigDlg.h"
 #include "Manilla2DConfigHomeDlg.h"
 #include "Manilla2DConfigTabsDlg.h"
+#include "Manilla2DConfigAboutDlg.h"
 #include "Manilla2DConfigThemesDlg.h"
 #include "Manilla2DConfigRestoreDlg.h"
 #include "Manilla2DConfigLauncherDlg.h"
@@ -104,6 +105,12 @@ void CManilla2DConfigDlg::SetupPages()
     }
 
     newTabPage = new CManilla2DConfigRestoreDlg(this);
+    if(newTabPage != NULL)
+    {
+        m_mainTabVector.push_back(newTabPage);
+    }
+
+    newTabPage = new CManilla2DConfigAboutDlg(this);
     if(newTabPage != NULL)
     {
         m_mainTabVector.push_back(newTabPage);

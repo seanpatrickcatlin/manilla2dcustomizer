@@ -30,7 +30,12 @@ public:
 	virtual ~CManilla2DConfigRestoreDlg();
 
 // Dialog Data
-	enum { IDD = IDD_M2DC_RESTORE_DLG };
+    enum
+    {
+        IDD       = IDD_M2DC_RESTORE_DLG,
+        IDS_TAB   = IDS_M2DC_RESTORE_TAB_STR,
+        IDS_TITLE = IDS_M2DC_RESTORE_TITLE_STR
+    };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

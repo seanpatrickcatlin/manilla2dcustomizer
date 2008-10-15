@@ -29,7 +29,7 @@
 // CManilla2DConfigTabsDlg dialog
 
 CManilla2DConfigTabsDlg::CManilla2DConfigTabsDlg(CWnd* pParent /*=NULL*/)
-	: CPropertyPage(CManilla2DConfigTabsDlg::IDD, IDS_M2DC_TABS_STR)
+: CPropertyPage(CManilla2DConfigTabsDlg::IDD, CManilla2DConfigTabsDlg::IDS_TAB)
 {
     m_bPopulatingListControl = false;
 }
@@ -83,6 +83,9 @@ void CManilla2DConfigTabsDlg::OnOK()
 
 void CManilla2DConfigTabsDlg::OnPaint()
 {
+    CString titleStr;
+    titleStr.LoadStringW(CManilla2DConfigTabsDlg::IDS_TITLE);
+
     CPaintDC dc(this);
 
     int nWidth = dc.GetDeviceCaps(HORZRES);
@@ -98,7 +101,7 @@ void CManilla2DConfigTabsDlg::OnPaint()
     newFont.CreateFontIndirect(&lf);
     CFont *pSave = dc.SelectObject(&newFont);
     dc.SetTextColor(RGB(0, 0, 156));
-    dc.DrawText(TEXT("Tab Settings"), CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
+    dc.DrawText(titleStr, CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
 
     // paint line
     CPen blackPen(PS_SOLID, 1, RGB(0,0,0));

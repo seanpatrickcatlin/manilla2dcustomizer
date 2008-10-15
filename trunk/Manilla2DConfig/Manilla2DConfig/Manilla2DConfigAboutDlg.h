@@ -17,47 +17,38 @@
 
 #pragma once
 
-// CManilla2DConfigLauncherDlg dialog
+#include "Manilla2DConfigUtils.h"
 
-class CManilla2DConfigLauncherDlg : public CPropertyPage
+// CManilla2DConfigAboutDlg dialog
+
+class CManilla2DConfigAboutDlg : public CPropertyPage
 {
+	//DECLARE_DYNAMIC(CManilla2DConfigAboutDlg)
+
 public:
-	CManilla2DConfigLauncherDlg(CWnd* pParent = NULL);   // standard constructor
-	virtual ~CManilla2DConfigLauncherDlg();
+	CManilla2DConfigAboutDlg(CWnd* pParent = NULL);   // standard constructor
+	virtual ~CManilla2DConfigAboutDlg();
 
 // Dialog Data
-    enum
+	enum
     {
-        IDD       = IDD_M2DC_LAUNCHER_DLG,
-        IDS_TAB   = IDS_M2DC_LAUNCHER_TAB_STR,
-        IDS_TITLE = IDS_M2DC_LAUNCHER_TITLE_STR
+        IDD       = IDD_M2DC_ABOUT_DLG,
+        IDS_TAB   = IDS_M2DC_ABOUT_TAB_STR,
+        IDS_TITLE = IDS_M2DC_ABOUT_TITLE_STR
     };
 
-    virtual void OnOK();
-    LRESULT OnQuerySiblings(WPARAM wParam, LPARAM lParam);
-
 protected:
-    virtual BOOL CManilla2DConfigLauncherDlg::OnInitDialog();
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
+    LRESULT OnQuerySiblings(WPARAM wParam, LPARAM lParam);
+
     void OnPaint();
+
+public:
+    BOOL OnInitDialog();
 
 	DECLARE_MESSAGE_MAP()
 
 private:
     CCommandBar m_cmdBar;
-
-    int m_numberOfRows;
-    int m_numberOfColumns;
-
-    CButton m_launcher3ColumnRadioButton;
-    CButton m_launcher4ColumnRadioButton;
-    CButton m_launcher5ColumnRadioButton;
-
-    CButton m_launcher3RowRadioButton;
-    CButton m_launcher6RowRadioButton;
-    CButton m_launcher9RowRadioButton;
-
-    void ReadValuesFromXml();
-    void WriteValuesToXml();
 };

@@ -29,7 +29,7 @@
 //IMPLEMENT_DYNAMIC(CManilla2DConfigRestoreDlg, CM2DCTabPage)
 
 CManilla2DConfigRestoreDlg::CManilla2DConfigRestoreDlg(CWnd* pParent /*=NULL*/)
-	: CPropertyPage(CManilla2DConfigRestoreDlg::IDD, IDS_M2DC_RESTORE_STR)
+: CPropertyPage(CManilla2DConfigRestoreDlg::IDD, CManilla2DConfigRestoreDlg::IDS_TAB)
 {
 }
 
@@ -65,6 +65,9 @@ END_MESSAGE_MAP()
 
 void CManilla2DConfigRestoreDlg::OnPaint()
 {
+    CString titleStr;
+    titleStr.LoadStringW(CManilla2DConfigRestoreDlg::IDS_TITLE);
+
     CPaintDC dc(this);
 
     int nWidth = dc.GetDeviceCaps(HORZRES);
@@ -80,7 +83,7 @@ void CManilla2DConfigRestoreDlg::OnPaint()
     newFont.CreateFontIndirect(&lf);
     CFont *pSave = dc.SelectObject(&newFont);
     dc.SetTextColor(RGB(0, 0, 156));
-    dc.DrawText(TEXT("Restore Settings"), CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
+    dc.DrawText(titleStr, CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
 
     // paint line
     CPen blackPen(PS_SOLID, 1, RGB(0,0,0));

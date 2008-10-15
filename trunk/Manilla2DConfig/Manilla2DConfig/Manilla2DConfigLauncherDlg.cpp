@@ -26,7 +26,7 @@
 // CManilla2DConfigTabsDlg dialog
 
 CManilla2DConfigLauncherDlg::CManilla2DConfigLauncherDlg(CWnd* pParent /*=NULL*/)
-	: CPropertyPage(CManilla2DConfigLauncherDlg::IDD, IDS_M2DC_LAUNCHER_STR)
+: CPropertyPage(CManilla2DConfigLauncherDlg::IDD, CManilla2DConfigLauncherDlg::IDS_TAB)
 {
     ReadValuesFromXml();
 }
@@ -112,6 +112,9 @@ BOOL CManilla2DConfigLauncherDlg::OnInitDialog()
 
 void CManilla2DConfigLauncherDlg::OnPaint()
 {
+    CString titleStr;
+    titleStr.LoadStringW(CManilla2DConfigLauncherDlg::IDS_TITLE);
+
     CPaintDC dc(this);
 
     int nWidth = dc.GetDeviceCaps(HORZRES);
@@ -127,7 +130,7 @@ void CManilla2DConfigLauncherDlg::OnPaint()
     newFont.CreateFontIndirect(&lf);
     CFont *pSave = dc.SelectObject(&newFont);
     dc.SetTextColor(RGB(0, 0, 156));
-    dc.DrawText(TEXT("Launcher Settings"), CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
+    dc.DrawText(titleStr, CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
 
     // paint line
     CPen blackPen(PS_SOLID, 1, RGB(0,0,0));
