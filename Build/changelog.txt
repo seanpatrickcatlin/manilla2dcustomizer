@@ -1,5 +1,17 @@
 Manilla 2D Customizer changelog
 
+Oct-16-2008
+v0.12.1??
+- Fixed bug with launcher changing... used to be broken if the user didn't have 
+   3, 6, or 9 rows.  Now it will round to one of those numbers and allow users
+   to change launcher settings as before.
+- Added some more wait cursors (the pinwheel thing) to give user more feedback that
+   M2DC is not "frozen".
+- Attempted to support Windows Mobile 5... not sure if it worked or now, let me know
+   if yo uhave a windows mobile 5 device and try to install this.
+- fixed apptodate support, the xml was not pointing to the correct location
+- 
+
 Oct-07-2008
 v0.11.133
 - fixed bug where the m2dc theme backup did not restore via the restore button
