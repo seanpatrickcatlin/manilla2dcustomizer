@@ -401,6 +401,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Manilla2DConfigAbstractDlg.h.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Manilla2DConfigDlg.cpp"
 				>
 			</File>
@@ -708,6 +712,10 @@
 			</File>
 			<File
 				RelativePath=".\Manilla2DConfigAboutDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Manilla2DConfigAbstractDlg.h"
 				>
 			</File>
 			<File

@@ -29,7 +29,7 @@
 //IMPLEMENT_DYNAMIC(CManilla2DConfigRestoreDlg, CM2DCTabPage)
 
 CManilla2DConfigRestoreDlg::CManilla2DConfigRestoreDlg(CWnd* pParent /*=NULL*/)
-: CPropertyPage(CManilla2DConfigRestoreDlg::IDD, CManilla2DConfigRestoreDlg::IDS_TAB)
+: CManilla2DConfigAbstractDlg(pParent, CManilla2DConfigRestoreDlg::IDD, CManilla2DConfigRestoreDlg::IDS_TAB, CManilla2DConfigRestoreDlg::IDS_TITLE)
 {
 }
 
@@ -44,16 +44,12 @@ void CManilla2DConfigRestoreDlg::DoDataExchange(CDataExchange* pDX)
 
 BOOL CManilla2DConfigRestoreDlg::OnInitDialog()
 {
-    CPropertyPage::OnInitDialog();
-
-    m_cmdBar.Create(this);
-    m_cmdBar.InsertMenuBar(IDR_M2DC_APPLY_CANCEL_MENU);
+    CManilla2DConfigAbstractDlg::OnInitDialog();
 
     return FALSE;
 }
 
-BEGIN_MESSAGE_MAP(CManilla2DConfigRestoreDlg, CPropertyPage)
-    ON_WM_PAINT()
+BEGIN_MESSAGE_MAP(CManilla2DConfigRestoreDlg, CManilla2DConfigAbstractDlg)
     ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigRestoreDlg::OnQuerySiblings)
     ON_BN_CLICKED(IDC_M2DC_RESTORE_BACKUP_BTN, &CManilla2DConfigRestoreDlg::OnBnClickedBackupButton)
     ON_BN_CLICKED(IDC_M2DC_RESTORE_RESTORE_BTN, &CManilla2DConfigRestoreDlg::OnBnClickedRestoreButton)
@@ -62,38 +58,6 @@ BEGIN_MESSAGE_MAP(CManilla2DConfigRestoreDlg, CPropertyPage)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigRestoreDlg message handlers
-
-void CManilla2DConfigRestoreDlg::OnPaint()
-{
-    CString titleStr;
-    titleStr.LoadStringW(CManilla2DConfigRestoreDlg::IDS_TITLE);
-
-    CPaintDC dc(this);
-
-    int nWidth = dc.GetDeviceCaps(HORZRES);
-    const int nHeaderHeight = 24;
-
-    // paint title
-    CFont *pCurrentFont = dc.GetCurrentFont();
-    LOGFONT lf;
-    pCurrentFont->GetLogFont(&lf);
-    lf.lfWeight = FW_BOLD;
-
-    CFont newFont;
-    newFont.CreateFontIndirect(&lf);
-    CFont *pSave = dc.SelectObject(&newFont);
-    dc.SetTextColor(RGB(0, 0, 156));
-    dc.DrawText(titleStr, CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
-
-    // paint line
-    CPen blackPen(PS_SOLID, 1, RGB(0,0,0));
-    CPen *pOldPen = dc.SelectObject(&blackPen);
-
-    dc.MoveTo(0, nHeaderHeight);
-    dc.LineTo(nWidth, nHeaderHeight);
-
-    dc.SelectObject(pOldPen); 
-}
 
 LRESULT CManilla2DConfigRestoreDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
 {

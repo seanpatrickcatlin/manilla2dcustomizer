@@ -26,7 +26,7 @@
 // CManilla2DConfigTabsDlg dialog
 
 CManilla2DConfigLauncherDlg::CManilla2DConfigLauncherDlg(CWnd* pParent /*=NULL*/)
-: CPropertyPage(CManilla2DConfigLauncherDlg::IDD, CManilla2DConfigLauncherDlg::IDS_TAB)
+: CManilla2DConfigAbstractDlg(pParent, CManilla2DConfigLauncherDlg::IDD, CManilla2DConfigLauncherDlg::IDS_TAB, CManilla2DConfigLauncherDlg::IDS_TITLE)
 {
     ReadValuesFromXml();
 }
@@ -49,14 +49,13 @@ void CManilla2DConfigLauncherDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CManilla2DConfigLauncherDlg, CPropertyPage)
-    ON_WM_PAINT()
+BEGIN_MESSAGE_MAP(CManilla2DConfigLauncherDlg, CManilla2DConfigAbstractDlg)
     ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigLauncherDlg::OnQuerySiblings)
 END_MESSAGE_MAP()
 
 BOOL CManilla2DConfigLauncherDlg::OnInitDialog()
 {
-	CPropertyPage::OnInitDialog();
+	CManilla2DConfigAbstractDlg::OnInitDialog();
 
     m_launcher3ColumnRadioButton.SetCheck(BST_UNCHECKED);
     m_launcher4ColumnRadioButton.SetCheck(BST_UNCHECKED);
@@ -104,42 +103,7 @@ BOOL CManilla2DConfigLauncherDlg::OnInitDialog()
         m_launcher9RowRadioButton.EnableWindow(FALSE);
     }
 
-    m_cmdBar.Create(this);
-    m_cmdBar.InsertMenuBar(IDR_M2DC_APPLY_CANCEL_MENU);
-
 	return TRUE;  // return TRUE  unless you set the focus to a control
-}
-
-void CManilla2DConfigLauncherDlg::OnPaint()
-{
-    CString titleStr;
-    titleStr.LoadStringW(CManilla2DConfigLauncherDlg::IDS_TITLE);
-
-    CPaintDC dc(this);
-
-    int nWidth = dc.GetDeviceCaps(HORZRES);
-    const int nHeaderHeight = 24;
-
-    // paint title
-    CFont *pCurrentFont = dc.GetCurrentFont();
-    LOGFONT lf;
-    pCurrentFont->GetLogFont(&lf);
-    lf.lfWeight = FW_BOLD;
-
-    CFont newFont;
-    newFont.CreateFontIndirect(&lf);
-    CFont *pSave = dc.SelectObject(&newFont);
-    dc.SetTextColor(RGB(0, 0, 156));
-    dc.DrawText(titleStr, CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
-
-    // paint line
-    CPen blackPen(PS_SOLID, 1, RGB(0,0,0));
-    CPen *pOldPen = dc.SelectObject(&blackPen);
-
-    dc.MoveTo(0, nHeaderHeight);
-    dc.LineTo(nWidth, nHeaderHeight);
-
-    dc.SelectObject(pOldPen); 
 }
 
 LRESULT CManilla2DConfigLauncherDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)

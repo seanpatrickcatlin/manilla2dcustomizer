@@ -18,39 +18,26 @@
 #pragma once
 
 #include "Manilla2DConfigUtils.h"
-#include "Manilla2DConfigAbstractDlg.h"
 
-// CManilla2DConfigRestoreDlg dialog
+// CManilla2DConfigAbstractDlg dialog
 
-class CManilla2DConfigRestoreDlg : public CManilla2DConfigAbstractDlg
+class CManilla2DConfigAbstractDlg : public CPropertyPage
 {
-	//DECLARE_DYNAMIC(CManilla2DConfigRestoreDlg)
+	//DECLARE_DYNAMIC(CManilla2DConfigAbstractDlg)
 
 public:
-	CManilla2DConfigRestoreDlg(CWnd* pParent = NULL);   // standard constructor
-	virtual ~CManilla2DConfigRestoreDlg();
-
-// Dialog Data
-    enum
-    {
-        IDD       = IDD_M2DC_RESTORE_DLG,
-        IDS_TAB   = IDS_M2DC_RESTORE_TAB_STR,
-        IDS_TITLE = IDS_M2DC_RESTORE_TITLE_STR
-    };
+	CManilla2DConfigAbstractDlg(CWnd* pParent = NULL, UINT dlgID = -1, UINT tabStrID = -1, UINT titleStrID = -1);   // standard constructor
+	virtual ~CManilla2DConfigAbstractDlg();
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-    LRESULT OnQuerySiblings(WPARAM wParam, LPARAM lParam);
+    CString m_titleStr;
+    void OnPaint();
 
 public:
     BOOL OnInitDialog();
 
 	DECLARE_MESSAGE_MAP()
 
-public:
-    afx_msg void OnBnClickedRestoreButton();
-    afx_msg void OnBnClickedBackupButton();
-    afx_msg void OnBnClickedM2dcRestoreBackupThemeBtn();
-    afx_msg void OnBnClickedM2dcRestoreRestoreThemeBtn();
+private:
+    CCommandBar m_cmdBar;
 };

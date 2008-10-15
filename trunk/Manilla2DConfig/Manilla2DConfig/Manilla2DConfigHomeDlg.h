@@ -17,13 +17,15 @@
 
 #pragma once
 
-#include "Manilla2DConfigUtils.h"
 #include "afxwin.h"
+#include "Manilla2DConfigUtils.h"
+#include "Manilla2DConfigAbstractDlg.h"
+
 
 
 // CManilla2DConfigHomeDlg dialog
 
-class CManilla2DConfigHomeDlg : public CPropertyPage
+class CManilla2DConfigHomeDlg : public CManilla2DConfigAbstractDlg
 {
 	//DECLARE_DYNAMIC(CManilla2DConfigHomeDlg)
 
@@ -44,8 +46,6 @@ protected:
 
     LRESULT OnQuerySiblings(WPARAM wParam, LPARAM lParam);
 
-    void OnPaint();
-
 public:
     BOOL OnInitDialog();
     void OnOK();
@@ -53,8 +53,6 @@ public:
 	DECLARE_MESSAGE_MAP()
 
 private:
-    CCommandBar m_cmdBar;
-
     HomeWidgetSettings m_homeSettings;
 
 public:

@@ -18,10 +18,11 @@
 #pragma once
 
 #include "Manilla2DConfigUtils.h"
+#include "Manilla2DConfigAbstractDlg.h"
 
 // CManilla2DConfigTabsDlg dialog
 
-class CManilla2DConfigTabsDlg : public CPropertyPage
+class CManilla2DConfigTabsDlg : public CManilla2DConfigAbstractDlg
 {
 public:
 	CManilla2DConfigTabsDlg(CWnd* pParent = NULL);   // standard constructor
@@ -50,11 +51,7 @@ protected:
     afx_msg void OnNMClickMainListControl(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnLvnItemchangedMainListControl(NMHDR *pNMHDR, LRESULT *pResult);
 
-    void OnPaint();
-
 private:
-    CCommandBar m_cmdBar;
-
 	bool m_bPopulatingListControl;
 
     NameAndEnabledState_vector_t m_newWidgetVector;

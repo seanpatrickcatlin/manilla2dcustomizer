@@ -18,10 +18,11 @@
 #pragma once
 
 #include "Manilla2DConfigUtils.h"
+#include "Manilla2DConfigAbstractDlg.h"
 
 // CManilla2DConfigAboutDlg dialog
 
-class CManilla2DConfigAboutDlg : public CPropertyPage
+class CManilla2DConfigAboutDlg : public CManilla2DConfigAbstractDlg
 {
 	//DECLARE_DYNAMIC(CManilla2DConfigAboutDlg)
 
@@ -42,13 +43,8 @@ protected:
 
     LRESULT OnQuerySiblings(WPARAM wParam, LPARAM lParam);
 
-    void OnPaint();
-
 public:
     BOOL OnInitDialog();
 
 	DECLARE_MESSAGE_MAP()
-
-private:
-    CCommandBar m_cmdBar;
 };
