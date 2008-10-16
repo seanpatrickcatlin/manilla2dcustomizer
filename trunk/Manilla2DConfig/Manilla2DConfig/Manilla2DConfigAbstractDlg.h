@@ -37,25 +37,26 @@ protected:
 
 public:
     BOOL OnInitDialog();
-    afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
     BOOL OnKillActive();
-    LRESULT OnSettingChange(WPARAM wParam, LPARAM lParam);
-
+    
     void OnSize(UINT nType, int cx, int cy);
+    void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 
 	DECLARE_MESSAGE_MAP()
 
 protected:
     CScrollBar m_ctrlScrollBar;
-    CRect      m_DlgClientRect;
-    CRect      m_ScrollBarRect;
-    int        m_nScrollPos;
-    int        m_nCurHeight;
-    BOOL       m_bNeedScrollBar;
-    BOOL       m_bAutoScroll;
+    CRect      m_boundingRect;
+    CRect      m_scrollBarRect;
+    BOOL       m_bScrollBarHasBeenInitialized;
 
+    int        m_nScrollPos;
+    
     void initScrollBarSupport();    // Call this function from derived class to setup the scrollbar. 
+
+    CRect GetDlgControlBounds();
 
 private:
     CCommandBar m_cmdBar;
+    UINT m_dlgId;
 };
