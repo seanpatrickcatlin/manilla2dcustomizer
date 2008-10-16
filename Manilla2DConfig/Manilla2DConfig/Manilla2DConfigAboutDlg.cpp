@@ -45,6 +45,12 @@ BOOL CManilla2DConfigAboutDlg::OnInitDialog()
 {
     CManilla2DConfigAbstractDlg::OnInitDialog();
 
+    CRect dlgRect;
+    GetClientRect(&dlgRect);
+    CString debugMsg;
+    debugMsg.Format(TEXT("CManilla2DConfigAboutDlg::OnInitDialog (%d, %d)\n"), dlgRect.Width(), dlgRect.Height());
+    TRACE(debugMsg);
+
     return FALSE;
 }
 
