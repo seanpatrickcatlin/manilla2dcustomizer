@@ -152,6 +152,13 @@ IDD_M2DC_ABOUT_DLG DIALOG  0, 0, 156, 156
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg"
 BEGIN
+    ICON            IDR_M2DC_ICO,IDC_M2DC_ABOUT_PIC,4,20,20,20
+    LTEXT           "Manilla 2D Customizer by Mpenguin14",IDC_M2DC_ABOUT_TITLE,30,20,122,8
+    LTEXT           "Version",IDC_M2DC_ABOUT_VERSION,30,30,89,8
+    CTEXT           "Thanks to the following users @ xda for M2D",IDC_M2DC_ABOUT_THANKS_TITLE,4,40,148,8
+    CTEXT           "UDK, VetVito, Noonski, herg62123",IDC_M2DC_ABOUT_THANKS_USERS,4,50,148,8
+    LISTBOX         IDC_M2DC_ABOUT_DONATORS_LIST,4,75,148,73,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_HSCROLL | WS_GROUP
+    CTEXT           "*** Thanks to all the donators ***",IDC_STATIC,4,65,148,8
 END
 
 
