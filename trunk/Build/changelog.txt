@@ -11,6 +11,7 @@ v0.12.1??
    if yo uhave a windows mobile 5 device and try to install this.
 - fixed apptodate support, the xml was not pointing to the correct location
 - Added Support for a scrollable UI... so now this should work on non qvga devices, and also work in landscape mode, and react appropriately when the SIP panel appears
+- Added an about dialog, donate $1 or more to get your name added to the dnoator list
 
 Oct-07-2008
 v0.11.133

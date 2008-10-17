@@ -19,6 +19,7 @@
 
 #include "Manilla2DConfigUtils.h"
 #include "Manilla2DConfigAbstractDlg.h"
+#include "afxwin.h"
 
 // CManilla2DConfigAboutDlg dialog
 
@@ -47,4 +48,6 @@ public:
     BOOL OnInitDialog();
 
 	DECLARE_MESSAGE_MAP()
+    CStatic m_versionStringStaticText;
+    CListBox m_donatorsListBox;
 };

@@ -19,6 +19,7 @@
 //
 
 #include "stdafx.h"
+#include "version.h"
 #include "Manilla2DConfig.h"
 #include "Manilla2DConfigAboutDlg.h"
 
@@ -38,19 +39,48 @@ CManilla2DConfigAboutDlg::~CManilla2DConfigAboutDlg()
 
 void CManilla2DConfigAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CPropertyPage::DoDataExchange(pDX);
+    CPropertyPage::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_M2DC_ABOUT_VERSION, m_versionStringStaticText);
+    DDX_Control(pDX, IDC_M2DC_ABOUT_DONATORS_LIST, m_donatorsListBox);
 }
 
 BOOL CManilla2DConfigAboutDlg::OnInitDialog()
 {
     CManilla2DConfigAbstractDlg::OnInitDialog();
 
-    CRect dlgRect;
-    GetClientRect(&dlgRect);
-    CString debugMsg;
-    debugMsg.Format(TEXT("CManilla2DConfigAboutDlg::OnInitDialog (%d, %d)\n"), dlgRect.Width(), dlgRect.Height());
-    TRACE(debugMsg);
+    CString versionString;
+    versionString.Format(TEXT("Version %d.%d.%d"), PRODUCT_VERSION_MAJOR, PRODUCT_VERSION_MINOR, PRODUCT_VERSION_QFE);
+    
+    m_versionStringStaticText.SetWindowTextW(versionString);
 
+    m_donatorsListBox.ResetContent();
+    m_donatorsListBox.AddString(TEXT("My wife and daughter - Love and support"));
+    m_donatorsListBox.AddString(TEXT("Myself - Countless hours of programming"));
+    m_donatorsListBox.AddString(TEXT("TWolf - Program Icon"));
+    m_donatorsListBox.AddString(TEXT("MobileMatt - Theme files for development"));
+    m_donatorsListBox.AddString(TEXT("..."));
+    m_donatorsListBox.AddString(TEXT("..."));
+    m_donatorsListBox.AddString(TEXT("<your name here for a donation of $1 or more>"));
+
+
+    // Find the longest string in the list box.
+    CString str;
+    CSize sz;
+    int dx=0;
+    CDC* pDC = m_donatorsListBox.GetDC();
+    for(int i=0; i < m_donatorsListBox.GetCount(); i++)
+    {
+        m_donatorsListBox.GetText( i, str );
+        sz = pDC->GetTextExtent(str);
+
+        if (sz.cx > dx)
+        {
+            dx = sz.cx;
+        }
+    }
+    m_donatorsListBox.ReleaseDC(pDC);
+    m_donatorsListBox.SetHorizontalExtent(dx);
+    
     return FALSE;
 }
 
