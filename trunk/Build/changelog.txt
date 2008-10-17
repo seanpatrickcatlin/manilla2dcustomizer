@@ -1,7 +1,7 @@
 Manilla 2D Customizer changelog
 
 Oct-16-2008
-v0.12.1??
+v0.12.148
 - Fixed bug with launcher changing... used to be broken if the user didn't have 
    3, 6, or 9 rows.  Now it will round to one of those numbers and allow users
    to change launcher settings as before.
