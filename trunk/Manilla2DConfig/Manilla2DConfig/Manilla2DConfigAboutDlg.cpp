@@ -57,9 +57,9 @@ BOOL CManilla2DConfigAboutDlg::OnInitDialog()
     m_donatorsListBox.AddString(TEXT("My wife and daughter - Love and support"));
     m_donatorsListBox.AddString(TEXT("Myself - Countless hours of programming"));
     m_donatorsListBox.AddString(TEXT("TWolf - Program Icon"));
-    m_donatorsListBox.AddString(TEXT("mchapman007 (aka MobileMatt) - Theme files for development"));
+    m_donatorsListBox.AddString(TEXT("MobileMatt (aka mchapman007) - Theme files for development"));
     m_donatorsListBox.AddString(TEXT("..."));
-    m_donatorsListBox.AddString(TEXT("mchapman007 (aka MobileMatt) - $$$"));
+    m_donatorsListBox.AddString(TEXT("MobileMatt (aka mchapman007) - $$$"));
     m_donatorsListBox.AddString(TEXT("kwill - $$$"));
     m_donatorsListBox.AddString(TEXT("LoriInWa - $$$"));
     m_donatorsListBox.AddString(TEXT("Mattster_spv - $$$"));
