@@ -1,5 +1,10 @@
 Manilla 2D Customizer changelog
 
+Oct-19-2008
+v0.13.154
+- a few small bugfixes
+- updated about page with usernames of contributors
+
 Oct-16-2008
 v0.12.148
 - Fixed bug with launcher changing... used to be broken if the user didn't have 
@@ -8,9 +13,10 @@ v0.12.148
 - Added some more wait cursors (the pinwheel thing) to give user more feedback that
    M2DC is not "frozen".
 - Attempted to support Windows Mobile 5... not sure if it worked or now, let me know
-   if yo uhave a windows mobile 5 device and try to install this.
+   if yo \u have a windows mobile 5 device and try to install this.
 - fixed apptodate support, the xml was not pointing to the correct location
-- Added Support for a scrollable UI... so now this should work on non qvga devices, and also work in landscape mode, and react appropriately when the SIP panel appears
+- Added Support for a scrollable UI... so now this should work on non qvga devices,
+   and also work in landscape mode, and react appropriately when the SIP panel appears
 - Added an about dialog, donate $1 or more to get your name added to the dnoator list
 
 Oct-07-2008
@@ -33,7 +39,7 @@ v0.10.130
    instead of copying the theme M2DC now keeps track of all of the
    themes that you have added and displays to you the themes files
    that exist on the system.
-   So now you can keep all o fyour themes on your SD card with no problems.
+   So now you can keep all of your themes on your SD card with no problems.
 - no longer removes the original theme file during add theme
 - added more prompts for theme deletion
 
