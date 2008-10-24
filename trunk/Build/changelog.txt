@@ -1,5 +1,16 @@
 Manilla 2D Customizer changelog
 
+Oct-24-2008
+v0.14.1??
+- Changed the underlying way the theme manager deals with XLM changes, previously
+    the theme manager would only apply "RECT" and "POS" values, now the theme
+    manager will use the actual file from the new theme, and then just update
+    the themes xml file with the correct paths for the existing Manilla 2D images.
+- updated theme readme with my thoghtss and recommendations on themes and more
+    detials about how the theme manager process works
+- List of available themes is now auto sorted alphabetically
+- Updated about page with usernames of contributors
+
 Oct-19-2008
 v0.13.154
 - a few small bugfixes
@@ -17,7 +28,7 @@ v0.12.148
 - fixed apptodate support, the xml was not pointing to the correct location
 - Added Support for a scrollable UI... so now this should work on non qvga devices,
    and also work in landscape mode, and react appropriately when the SIP panel appears
-- Added an about dialog, donate $1 or more to get your name added to the dnoator list
+- Added an about dialog, donate $1 or more to get your name added to the donator list
 
 Oct-07-2008
 v0.11.133
