@@ -86,22 +86,10 @@ namespace M2DC
 
     CString GetWin32ErrorString(DWORD err);
 
-    CString GetFileBaseName(CString filePath);
-    bool DirExists(CString pathToDir);
-    bool FileExists(CString pathToFile);
-    bool IsDirEmpty(CString dirPath);
-    void RecursivelyDeleteDirectory(CString sDirPath);
-
     const char* GetConstCharStarFromCString(CString str);
-
-    CString GetPathToRunningBinary();
-    CString GetDirectoryOfFile(CString fullFilePath);
-
-    CString GetPathToWindowsDirectory();
 
     CString GetPathToM2DCInstallDirectory();
     CString GetPathToM2DCThemesDirectory();
-    CString GetPathToM2DCOldActiveThemeDirectory();
 
     CString GetPathToThemeBackupFile();
     CString GetPathToHTCHomeSettingsXmlFileActual();
@@ -116,6 +104,8 @@ namespace M2DC
     void EndMakingChanges();
 
     void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool includeNonXmlFiles);
+    void GetVectorOfThemeFilesFromHTCHomeSettingsXml(std::vector<CString>* pPathVector, CString xmlFilePath);
+    void UpdateHTCHomeSettingsXmlWithActualFilePaths(std::vector<CString>* pPathVector, CString xmlFIlePath);
 
     void SetInstallDirectory(CString installDirectory);
 
@@ -128,7 +118,6 @@ namespace M2DC
     void GetVectorOfWidgetPropertyRectPosElements(CString xmlFilePath, CString nodeName, std::vector<TiXmlElement>* pElementVector);
 
     CString GetPathToNullThemePreview();
-    CString GetPathToTemporaryThemeFile();
     CString GetPathToM2DCThemeListXml();
     
     void GetNamesOfAvailableM2DCThemes(std::vector<CString>* pThemeNameVector);

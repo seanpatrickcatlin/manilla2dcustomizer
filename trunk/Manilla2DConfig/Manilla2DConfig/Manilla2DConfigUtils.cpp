@@ -19,6 +19,8 @@
 #include "Manilla2DConfigUtils.h"
 #include "Manilla2DConfigProgressDlg.h"
 
+#include "WinCeFileUtils.h"
+
 #include "zip.h"
 #include "unzip.h"
 
@@ -85,7 +87,7 @@ CString M2DC::GetPathToHTCHomeSettingsXmlFileActiveTheme()
 
     TRACE(debugStr);
 
-    if(!FileExists(retVal))
+    if(!WinCeFileUtils::FileExists(retVal))
     {
         retVal = GetPathToHTCHomeSettingsXmlFileBackup();
     }
@@ -114,7 +116,7 @@ CString M2DC::GetPathToHTCHomeSettingsXmlFileWorking()
 
 CString M2DC::GetPathToHTCHomeSettingsXmlFileActual()
 {
-	CString retVal = GetPathToWindowsDirectory();
+    CString retVal = WinCeFileUtils::GetPathToWindowsDirectory();
     retVal += "\\HTCHomeSettings.xml";
 
     CString debugStr = TEXT("GetPathToHTCHomeSettingsXmlFileActual ");
@@ -154,60 +156,6 @@ CString M2DC::GetPathToThemeBackupFile()
     return retVal;
 }
 
-CString M2DC::GetDirectoryOfFile(CString fullFilePath)
-{
-	CString retVal = fullFilePath;
-
-	int pos = retVal.ReverseFind('\\');
-
-	if((pos > 0) && (pos < retVal.GetLength()))
-	{
-		retVal = retVal.Mid(0, pos);
-	}
-
-	TRACE(TEXT("GetDirectoryOfFile "));
-	TRACE(fullFilePath);
-	TRACE(TEXT(", "));
-	TRACE(retVal);
-	TRACE(TEXT("\n"));
-
-	return retVal;
-}
-
-CString M2DC::GetPathToTemporaryThemeFile()
-{
-	CString retVal("\\Temp");
-
-	TCHAR winDirStr[MAX_PATH];
-	if(SHGetSpecialFolderPath(NULL, winDirStr, CSIDL_WINDOWS, 0) == TRUE)
-	{
-		retVal = winDirStr;
-	}
-
-	TRACE(TEXT("GetPathToWindowsDirectory "));
-	TRACE(retVal);
-	TRACE(TEXT("\n"));
-
-	return retVal;
-}
-
-CString M2DC::GetPathToWindowsDirectory()
-{
-	CString retVal("\\Windows");
-
-	TCHAR winDirStr[MAX_PATH];
-	if(SHGetSpecialFolderPath(NULL, winDirStr, CSIDL_WINDOWS, 0) == TRUE)
-	{
-		retVal = winDirStr;
-	}
-
-	TRACE(TEXT("GetPathToWindowsDirectory "));
-	TRACE(retVal);
-	TRACE(TEXT("\n"));
-
-	return retVal;
-}
-
 CString M2DC::GetPathToM2DCInstallDirectory()
 {
     CString retVal;
@@ -218,7 +166,7 @@ CString M2DC::GetPathToM2DCInstallDirectory()
     }
     else
     {
-	    retVal = GetDirectoryOfFile(GetPathToRunningBinary());
+        retVal = WinCeFileUtils::GetFileDirNoNameNoExt(WinCeFileUtils::GetPathToRunningBinary());
     }
 
 	TRACE(TEXT("GetPathToApplicationDirectory "));
@@ -238,7 +186,7 @@ CString M2DC::GetPathToM2DCThemesDirectory()
 	TRACE(retVal);
 	TRACE(TEXT("\n"));
 
-    if(!M2DC::FileExists(retVal))
+    if(!WinCeFileUtils::FileExists(retVal))
     {
         CreateDirectory(retVal, NULL);
     }
@@ -246,102 +194,6 @@ CString M2DC::GetPathToM2DCThemesDirectory()
 	return retVal;
 }
 
-bool M2DC::IsDirEmpty(CString dirPath)
-{
-    bool retVal = true;
-
-    CString searchString = dirPath;
-    searchString += "\\*";
-
-    WIN32_FIND_DATA findData;
-    HANDLE hFindHandle = FindFirstFile(searchString, &findData);
-
-    if(hFindHandle != INVALID_HANDLE_VALUE)
-    {
-        BOOL keepSearching = TRUE;
-
-        while(keepSearching == TRUE)
-        {
-            if((lstrcmp(findData.cFileName, TEXT(".")) != 0) && (lstrcmp(findData.cFileName, TEXT("..")) != 0))
-            {
-                retVal = false;
-                break;
-            }
-
-            keepSearching = FindNextFile(hFindHandle, &findData);
-        }
-    }
-
-    FindClose(hFindHandle);
-
-    return retVal;
-}
-
-CString M2DC::GetPathToM2DCOldActiveThemeDirectory()
-{
-    CString retVal = GetPathToM2DCInstallDirectory();
-    retVal += "\\";
-    retVal += "ActiveTheme";
-
-    TRACE(TEXT("GetPathToM2DCOldActiveThemeDirectory "));
-	TRACE(retVal);
-	TRACE(TEXT("\n"));
-
-	return retVal;
-}
-
-CString M2DC::GetPathToRunningBinary()
-{
-	CString retVal("\\");
-
-	TCHAR binaryPath[MAX_PATH];
-	if(GetModuleFileName(NULL, binaryPath, MAX_PATH) > 0)
-	{
-		retVal = binaryPath;
-	}
-
-	TRACE(TEXT("GetPathToRunningBinary "));
-	TRACE(retVal);
-	TRACE(TEXT("\n"));
-
-	return retVal;
-}
-
-bool M2DC::FileExists(CString pathToFile)
-{
-    bool retVal = false;
-
-    WIN32_FIND_DATA emptyStruct;
-
-    HANDLE fileHndl = FindFirstFile(pathToFile, &emptyStruct);
-    if(fileHndl != INVALID_HANDLE_VALUE)
-    {
-        FindClose(fileHndl);
-        retVal = true;
-    }
-
-    return retVal;
-}
-
-bool M2DC::DirExists(CString pathToDir)
-{
-    bool retVal = false;
-
-    WIN32_FIND_DATA emptyStruct;
-
-    HANDLE fileHndl = FindFirstFile(pathToDir, &emptyStruct);
-    if(fileHndl != INVALID_HANDLE_VALUE)
-    {
-        if(emptyStruct.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-        {
-            retVal = true;
-        }
-
-        FindClose(fileHndl);
-    }
-
-    return retVal;
-}
 
 void M2DC::RefreshTodayScreen()
 {
@@ -351,7 +203,7 @@ void M2DC::RefreshTodayScreen()
 
 void M2DC::BackupHTCHomeSettingsXml(bool overwritePreviousBackup)
 {
-    bool fileExists = FileExists(GetPathToHTCHomeSettingsXmlFileBackup());
+    bool fileExists = WinCeFileUtils::FileExists(GetPathToHTCHomeSettingsXmlFileBackup());
 
     if(overwritePreviousBackup || !fileExists)
     {
@@ -372,7 +224,7 @@ void M2DC::BackupActiveTheme(bool overwritePreviousBackup)
 {
     AfxGetApp()->BeginWaitCursor();
 
-    bool fileExists = FileExists(GetPathToThemeBackupFile());
+    bool fileExists = WinCeFileUtils::FileExists(GetPathToThemeBackupFile());
 
     if(overwritePreviousBackup || !fileExists)
     {
@@ -478,7 +330,7 @@ void M2DC::RestoreHTCHomeSettingsXmlFromBackup()
 {
     AfxGetApp()->BeginWaitCursor();
 
-    if(FileExists(M2DC::GetPathToHTCHomeSettingsXmlFileBackup()))
+    if(WinCeFileUtils::FileExists(M2DC::GetPathToHTCHomeSettingsXmlFileBackup()))
     {
         CopyFile(M2DC::GetPathToHTCHomeSettingsXmlFileBackup(), M2DC::GetPathToHTCHomeSettingsXmlFileWorking(), FALSE);
     }
@@ -681,71 +533,328 @@ void M2DC::EndMakingChanges()
     }
 }
 
-void M2DC::RecursivelyDeleteDirectory(CString sDirPath)
+
+
+void M2DC::UpdateHTCHomeSettingsXmlWithActualFilePaths(std::vector<CString>* pPathVector, CString xmlFilePath)
 {
-    // Declare variables
-    WIN32_FIND_DATA wfd;
-    HANDLE hFile;
-    DWORD dwFileAttr;
-    CString sFile;
-
-    CString sPathFile;
-
-    if(sDirPath[sDirPath.GetLength()-1] != '\\')
+    if(pPathVector == NULL)
     {
-        sDirPath += '\\';
+        return;
     }
 
-    CString sSpec = sDirPath;
-    sSpec += "*.*";
+    TiXmlDocument doc(GetConstCharStarFromCString(xmlFilePath));
+    bool loadOkay = doc.LoadFile();
 
-    // Find the first file
-    hFile = FindFirstFile(sSpec, &wfd);
-
-    if(hFile != INVALID_HANDLE_VALUE)
+    if(loadOkay)
     {
-        do
+        for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome"); 
+            htcHomeNode != NULL;
+            htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
         {
-            sFile = wfd.cFileName;
-            sPathFile = sDirPath + sFile;
-            // Get the file attributes
-            dwFileAttr = GetFileAttributes(sPathFile);
-
-            // See if file is read-only : if so unset read-only
-            if (dwFileAttr & FILE_ATTRIBUTE_READONLY)
+            for(TiXmlNode* imageListNode = htcHomeNode->FirstChild("ImageList");
+                imageListNode != NULL;
+                imageListNode = imageListNode->NextSibling("ImageList"))
             {
-                dwFileAttr &= ~FILE_ATTRIBUTE_READONLY;
-                SetFileAttributes(sPathFile, dwFileAttr);
-            }
+                TiXmlElement* imageListElement = imageListNode->ToElement();
 
-            // See if the file is a directory
-            if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-            {
-                // Make sure it isn't current or parent directory
-                if (sFile != "." && sFile != "..")
+                if(imageListElement != NULL)
                 {
-                    sPathFile += "\\";
+                    CString basePath;
+                    basePath = imageListElement->Attribute("path");
 
-                    // Recursively delete all files in this folder
-                    RecursivelyDeleteDirectory(sPathFile);
+                    if(basePath.GetLength() <= 0)
+                    {
+                        basePath = TEXT("\\Windows");
+                    }
 
-                    // Remove the directory
-                    RemoveDirectory(sPathFile);
+                    if(basePath[basePath.GetLength()-1] == '\\')
+                    {
+                        basePath = basePath.Mid(0, basePath.GetLength()-2);
+                    }
+
+                    for(TiXmlElement* imageListItemElement = imageListElement->FirstChildElement("Image");
+                        imageListItemElement != NULL;
+                        imageListItemElement = imageListItemElement->NextSiblingElement("Image"))
+                    {
+                        CString currentFilePath(imageListItemElement->Attribute("name"));
+
+                        if((currentFilePath.Find(TEXT("hh_")) != -1) ||
+                            (currentFilePath.Find(TEXT("HH_")) != -1))
+                        {
+                            if(currentFilePath[0] != '\\')
+                            {
+                                currentFilePath = '\\' + currentFilePath;
+                            }
+
+                            currentFilePath = basePath + currentFilePath;
+
+                            CString currentFileName = WinCeFileUtils::GetFileNameNoDirWithExt(currentFilePath);
+
+                            for(size_t i=0; i<pPathVector->size(); i++)
+                            {
+                                CString oldFilePath = pPathVector->at(i);
+                                CString oldFileName = WinCeFileUtils::GetFileNameNoDirWithExt(oldFilePath);
+
+                                if(oldFileName.CompareNoCase(currentFileName) == 0)
+                                {
+                                    if(oldFilePath.CompareNoCase(currentFilePath) != 0)
+                                    {
+                                        // the files are the same, but the path in this xml does
+                                        // not point to the proper place, FIX IT
+
+                                        CString newFileXmlString = oldFilePath;
+
+                                        if(oldFilePath.Find(basePath) == 0)
+                                        {
+                                            newFileXmlString = oldFilePath.Mid(basePath.GetLength());
+                                        }
+                                        else
+                                        {
+                                            // time to add some leading dots... ".."
+                                            CString tempBasePath = basePath;
+
+                                            while(tempBasePath.GetLength() > 0)
+                                            {
+                                                tempBasePath = tempBasePath.Mid(0, tempBasePath.ReverseFind('\\'));
+
+                                                newFileXmlString = TEXT("\\..") + newFileXmlString;
+                                            }
+                                        }
+
+                                        imageListItemElement->SetAttribute("name", GetConstCharStarFromCString(newFileXmlString));
+                                    }
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
             }
-            else
+
+            for(TiXmlNode* widgetPropertyNode = htcHomeNode->FirstChild("WidgetProperty");
+                widgetPropertyNode != NULL;
+                widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
             {
-                // Delete the file
-                DeleteFile(sPathFile);
+                for(TiXmlNode* widgetPropertyChildNode = widgetPropertyNode->FirstChild();
+                    widgetPropertyChildNode != NULL;
+                    widgetPropertyChildNode = widgetPropertyChildNode->NextSibling())
+                {
+                    TiXmlElement* widgetPropertyChildElement = widgetPropertyChildNode->ToElement();
+
+                    if(widgetPropertyChildElement != NULL)
+                    {
+                        CString currentwidgetProperty;
+
+                        currentwidgetProperty = widgetPropertyChildElement->Value();
+
+                        CString baseDir;
+
+                        baseDir.Empty();
+
+                        if((currentwidgetProperty.Find(TEXT("PhotoWidget")) != -1) ||
+                            (currentwidgetProperty.Find(TEXT("LauncherWidget")) != -1) ||
+                            (currentwidgetProperty.Find(TEXT("OperatorWidget")) != -1) ||
+                            (currentwidgetProperty.Find(TEXT("LocationWidget")) != -1))
+                        {
+                            baseDir = TEXT("\\Windows\\");
+                        }
+
+                        for(TiXmlElement* widgetPropertyChildPropertyElement = widgetPropertyChildNode->FirstChildElement();
+                            widgetPropertyChildPropertyElement != NULL;
+                            widgetPropertyChildPropertyElement = widgetPropertyChildPropertyElement->NextSiblingElement())
+                        {
+                            CString currentFilePath(widgetPropertyChildPropertyElement->Attribute("value"));
+
+                            if((currentFilePath.Find(TEXT("hh_")) != -1) ||
+                                (currentFilePath.Find(TEXT("HH_")) != -1))
+                            {
+                                currentFilePath = baseDir + currentFilePath;
+
+                                CString currentFileName = WinCeFileUtils::GetFileNameNoDirWithExt(currentFilePath);
+
+                                for(size_t i=0; i<pPathVector->size(); i++)
+                                {
+                                    CString oldFilePath = pPathVector->at(i);
+                                    CString oldFileName = WinCeFileUtils::GetFileNameNoDirWithExt(oldFilePath);
+
+                                    if(oldFileName.CompareNoCase(currentFileName) == 0)
+                                    {
+                                        if(oldFilePath.CompareNoCase(currentFilePath) != 0)
+                                        {
+                                            // the files are the same, but the path in this xml does
+                                            // not point to the proper place, FIX IT
+
+                                            CString newFileXmlString = oldFilePath;
+
+                                            if(oldFilePath.Find(baseDir) == 0)
+                                            {
+                                                newFileXmlString = oldFilePath.Mid(baseDir.GetLength());
+                                            }
+                                            else
+                                            {
+                                                // time to add some leading dots... ".."
+                                                CString tempBasePath = baseDir;
+
+                                                while(tempBasePath.GetLength() > 0)
+                                                {
+                                                    tempBasePath = tempBasePath.Mid(0, tempBasePath.ReverseFind('\\'));
+
+                                                    newFileXmlString = TEXT("\\..") + newFileXmlString;
+                                                }
+                                            }
+
+                                            widgetPropertyChildPropertyElement->SetAttribute("value", GetConstCharStarFromCString(newFileXmlString));
+                                        }
+
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-        while(FindNextFile(hFile, &wfd));
+
+        doc.SaveFile();
+    }
+}
+
+void M2DC::GetVectorOfThemeFilesFromHTCHomeSettingsXml(std::vector<CString>* pPathVector, CString xmlFilePath)
+{
+    if(pPathVector == NULL)
+    {
+        return;
     }
 
-    // Close handle to file
-    FindClose(hFile);
+    pPathVector->clear();
 
-    RemoveDirectory(sDirPath);
+    TiXmlDocument doc(GetConstCharStarFromCString(xmlFilePath));
+    bool loadOkay = doc.LoadFile();
+
+    if(loadOkay)
+    {
+        for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome"); 
+            htcHomeNode != NULL;
+            htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
+        {
+            for(TiXmlNode* imageListNode = htcHomeNode->FirstChild("ImageList");
+                imageListNode != NULL;
+                imageListNode = imageListNode->NextSibling("ImageList"))
+            {
+                TiXmlElement* imageListElement = imageListNode->ToElement();
+
+                if(imageListElement != NULL)
+                {
+                    CString basePath;
+                    basePath = imageListElement->Attribute("path");
+
+                    if(basePath.GetLength() <= 0)
+                    {
+                        basePath = TEXT("\\Windows");
+                    }
+
+                    if(basePath[basePath.GetLength()-1] == '\\')
+                    {
+                        basePath = basePath.Mid(0, basePath.GetLength()-2);
+                    }
+
+                    for(TiXmlElement* imageListItemElement = imageListElement->FirstChildElement("Image");
+                        imageListItemElement != NULL;
+                        imageListItemElement = imageListItemElement->NextSiblingElement("Image"))
+                    {
+                        CString currentFilePath(imageListItemElement->Attribute("name"));
+
+                        if((currentFilePath.Find(TEXT("hh_")) != -1) ||
+                            (currentFilePath.Find(TEXT("HH_")) != -1))
+                        {
+                            if(currentFilePath[0] != '\\')
+                            {
+                                currentFilePath = '\\' + currentFilePath;
+                            }
+
+                            currentFilePath = basePath + currentFilePath;
+
+                            TRACE(TEXT("Adding File: "));
+                            TRACE(currentFilePath);
+                            TRACE(TEXT("\n"));
+
+                            /*
+                            if(pProgDlg != NULL)
+                            {
+                                progMsg = TEXT("Building M2D file list\nStep 1 of 3\n");
+                                progMsg += currentFilePath;
+                                pProgDlg->UpdateStatus(progMsg, (progMax/4)*1);
+                            }
+                            */
+
+                            pPathVector->push_back(currentFilePath);
+                        }
+                    }
+                }
+            }
+
+            for(TiXmlNode* widgetPropertyNode = htcHomeNode->FirstChild("WidgetProperty");
+                widgetPropertyNode != NULL;
+                widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
+            {
+                for(TiXmlNode* widgetPropertyChildNode = widgetPropertyNode->FirstChild();
+                    widgetPropertyChildNode != NULL;
+                    widgetPropertyChildNode = widgetPropertyChildNode->NextSibling())
+                {
+                    TiXmlElement* widgetPropertyChildElement = widgetPropertyChildNode->ToElement();
+
+                    if(widgetPropertyChildElement != NULL)
+                    {
+                        CString currentwidgetProperty;
+
+                        currentwidgetProperty = widgetPropertyChildElement->Value();
+
+                        CString baseDir;
+
+                        baseDir.Empty();
+
+                        if((currentwidgetProperty.Find(TEXT("PhotoWidget")) != -1) ||
+                            (currentwidgetProperty.Find(TEXT("LauncherWidget")) != -1) ||
+                            (currentwidgetProperty.Find(TEXT("OperatorWidget")) != -1) ||
+                            (currentwidgetProperty.Find(TEXT("LocationWidget")) != -1))
+                        {
+                            baseDir = TEXT("\\Windows\\");
+                        }
+
+                        for(TiXmlElement* widgetPropertyChildPropertyElement = widgetPropertyChildNode->FirstChildElement();
+                            widgetPropertyChildPropertyElement != NULL;
+                            widgetPropertyChildPropertyElement = widgetPropertyChildPropertyElement->NextSiblingElement())
+                        {
+                            CString currentFilePath(widgetPropertyChildPropertyElement->Attribute("value"));
+
+                            if((currentFilePath.Find(TEXT("hh_")) != -1) ||
+                                (currentFilePath.Find(TEXT("HH_")) != -1))
+                            {
+                                currentFilePath = baseDir + currentFilePath;
+
+                                TRACE(TEXT("Adding File: "));
+                                TRACE(currentFilePath);
+                                TRACE(TEXT("\n"));
+
+                                /*
+                                if(pProgDlg != NULL)
+                                {
+                                    progMsg = TEXT("Building M2D file list\nStep 2 of 3\n");
+                                    progMsg += currentFilePath;
+                                    pProgDlg->UpdateStatus(progMsg, (progMax/4)*2);
+                                }
+                                */
+
+                                pPathVector->push_back(currentFilePath);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool includeNonXmlFiles)
@@ -754,7 +863,7 @@ void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector
     CString progMsg;
     CManilla2DConfigProgressDlg* pProgDlg = NULL;
 
-    CString windowsDirPath = GetPathToWindowsDirectory();
+    CString windowsDirPath = WinCeFileUtils::GetPathToWindowsDirectory();
 
     if(pPathVector != NULL)
     {
@@ -769,127 +878,7 @@ void M2DC::GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector
             pProgDlg->BeginTrackingProgress(progMsg, 0, progMax);
         }
 
-        TiXmlDocument doc(GetConstCharStarFromCString(GetPathToHTCHomeSettingsXmlFileActual()));
-        bool loadOkay = doc.LoadFile();
-        
-        if(loadOkay)
-        {
-            for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome"); 
-                htcHomeNode != NULL;
-                htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
-            {
-                for(TiXmlNode* imageListNode = htcHomeNode->FirstChild("ImageList");
-                    imageListNode != NULL;
-                    imageListNode = imageListNode->NextSibling("ImageList"))
-                {
-                    TiXmlElement* imageListElement = imageListNode->ToElement();
-
-                    if(imageListElement != NULL)
-                    {
-                        CString basePath;
-                        basePath = imageListElement->Attribute("path");
-
-                        if(basePath.GetLength() <= 0)
-                        {
-                            basePath = TEXT("\\Windows");
-                        }
-
-                        if(basePath[basePath.GetLength()-1] == '\\')
-                        {
-                            basePath = basePath.Mid(0, basePath.GetLength()-2);
-                        }
-
-                        for(TiXmlElement* imageListItemElement = imageListElement->FirstChildElement("Image");
-                            imageListItemElement != NULL;
-                            imageListItemElement = imageListItemElement->NextSiblingElement("Image"))
-                        {
-                            CString currentFilePath(imageListItemElement->Attribute("name"));
-
-                            if((currentFilePath.Find(TEXT("hh_")) != -1) ||
-                                (currentFilePath.Find(TEXT("HH_")) != -1))
-                            {
-                                if(currentFilePath[0] != '\\')
-                                {
-                                    currentFilePath = '\\' + currentFilePath;
-                                }
-
-                                currentFilePath = basePath + currentFilePath;
-
-                                TRACE(TEXT("Adding File: "));
-                                TRACE(currentFilePath);
-                                TRACE(TEXT("\n"));
-
-                                if(pProgDlg != NULL)
-                                {
-                                    progMsg = TEXT("Building M2D file list\nStep 1 of 3\n");
-                                    progMsg += currentFilePath;
-                                    pProgDlg->UpdateStatus(progMsg, (progMax/4)*1);
-                                }
-
-                                pPathVector->push_back(currentFilePath);
-                            }
-                        }
-                    }
-                }
-
-                for(TiXmlNode* widgetPropertyNode = htcHomeNode->FirstChild("WidgetProperty");
-                    widgetPropertyNode != NULL;
-                    widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
-                {
-                    for(TiXmlNode* widgetPropertyChildNode = widgetPropertyNode->FirstChild();
-                        widgetPropertyChildNode != NULL;
-                        widgetPropertyChildNode = widgetPropertyChildNode->NextSibling())
-                    {
-                        TiXmlElement* widgetPropertyChildElement = widgetPropertyChildNode->ToElement();
-
-                        if(widgetPropertyChildElement != NULL)
-                        {
-                            CString currentwidgetProperty;
-
-                            currentwidgetProperty = widgetPropertyChildElement->Value();
-
-                            CString baseDir;
-
-                            baseDir.Empty();
-
-                            if((currentwidgetProperty.Find(TEXT("PhotoWidget")) != -1) ||
-                                (currentwidgetProperty.Find(TEXT("LauncherWidget")) != -1) ||
-                                (currentwidgetProperty.Find(TEXT("OperatorWidget")) != -1) ||
-                                (currentwidgetProperty.Find(TEXT("LocationWidget")) != -1))
-                            {
-                                baseDir = TEXT("\\Windows\\");
-                            }
-
-                            for(TiXmlElement* widgetPropertyChildPropertyElement = widgetPropertyChildNode->FirstChildElement();
-                                widgetPropertyChildPropertyElement != NULL;
-                                widgetPropertyChildPropertyElement = widgetPropertyChildPropertyElement->NextSiblingElement())
-                            {
-                                CString currentFilePath(widgetPropertyChildPropertyElement->Attribute("value"));
-
-                                if((currentFilePath.Find(TEXT("hh_")) != -1) ||
-                                    (currentFilePath.Find(TEXT("HH_")) != -1))
-                                {
-                                    currentFilePath = baseDir + currentFilePath;
-
-                                    TRACE(TEXT("Adding File: "));
-                                    TRACE(currentFilePath);
-                                    TRACE(TEXT("\n"));
-
-                                    if(pProgDlg != NULL)
-                                    {
-                                        progMsg = TEXT("Building M2D file list\nStep 2 of 3\n");
-                                        progMsg += currentFilePath;
-                                        pProgDlg->UpdateStatus(progMsg, (progMax/4)*2);
-                                    }
-
-                                    pPathVector->push_back(currentFilePath);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        GetVectorOfThemeFilesFromHTCHomeSettingsXml(pPathVector, GetPathToHTCHomeSettingsXmlFileActual());
 
         if(includeNonXmlFiles)
         {
@@ -1003,7 +992,7 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
 
     // unzip the files to their appropriate destinations according to the
     // paths from the current XML file
-    if(FileExists(themePath))
+    if(WinCeFileUtils::FileExists(themePath))
     {
         if(!FileIsValidM2DCTheme(themePath))
         {
@@ -1022,15 +1011,39 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
         BeginMakingChanges();
         AfxGetApp()->BeginWaitCursor();
 
-        std::vector<CString> pathsToThemeFiles;
-
-        GetVectorOfThemeFilesCurrentlyInUse(&pathsToThemeFiles, true);
+        std::vector<CString> originalThemeFilePathsList;
+        GetVectorOfThemeFilesCurrentlyInUse(&originalThemeFilePathsList, true);
 
         HZIP hz = OpenZip(themePath, 0);
         ZIPENTRY ze;
-
         // -1 gives overall information about the zipfile
         GetZipItem(hz,-1,&ze);
+
+        int numitems = ze.index;
+
+        // rip through the theme file and extract the HtcHomeSettings.xml file is possible
+        for(int zi=0; zi<numitems; zi++)
+        {
+            ZIPENTRY ze;
+
+            GetZipItem(hz, zi, &ze);            // fetch individual details
+
+            CString destString;
+            CString filePathFromZip = ze.name;
+            CString fileNameNoPath = filePathFromZip.Mid(filePathFromZip.ReverseFind('/')+1);
+
+            if(fileNameNoPath.CompareNoCase(TEXT("HTCHomeSettings.xml")) == 0)
+            {
+                destString = M2DC::GetPathToHTCHomeSettingsXmlFileWorking();
+                DWORD dwAttributes =  GetFileAttributes(destString);
+                SetFileAttributes(destString, FILE_ATTRIBUTE_NORMAL);
+                UnzipItem(hz, zi, destString);
+                SetFileAttributes(destString, dwAttributes);
+            }
+        }
+
+        std::vector<CString> newThemeFilePathsList;
+        GetVectorOfThemeFilesFromHTCHomeSettingsXml(&newThemeFilePathsList, GetPathToHTCHomeSettingsXmlFileWorking());
 
         CString progMsg;
         CManilla2DConfigProgressDlg* pProgDlg = NULL;
@@ -1039,8 +1052,6 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
         {
             pProgDlg = new CManilla2DConfigProgressDlg(AfxGetApp()->GetMainWnd());
         }
-
-        int numitems = ze.index;
 
         if(pProgDlg != NULL)
         {
@@ -1060,24 +1071,46 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
             CString fileNameNoPath = filePathFromZip.Mid(filePathFromZip.ReverseFind('/')+1);
             CString fileExt = fileNameNoPath.Mid(fileNameNoPath.ReverseFind('.')+1);
 
-            if(fileNameNoPath.Compare(TEXT("HTCHomeSettings.xml")) == 0)
+            if(fileNameNoPath.CompareNoCase(TEXT("HTCHomeSettings.xml")) == 0)
             {
                 destString = GetPathToHTCHomeSettingsXmlFileActiveTheme();
             }
 
             if(fileExt.CompareNoCase(TEXT("tsk")) == 0)
             {
-                destString = M2DC::GetPathToWindowsDirectory();
+                destString = WinCeFileUtils::GetPathToWindowsDirectory();
                 destString += "\\";
                 destString += fileNameNoPath;
             }
 
-            for(size_t i=0; ((i<pathsToThemeFiles.size()) && (destString.GetLength() <= 0)); i++)
+            for(size_t i=0; ((i<originalThemeFilePathsList.size()) && (destString.GetLength() <= 0)); i++)
             {
-                CString currentThemeFile = pathsToThemeFiles[i];
-                if(currentThemeFile.Find(fileNameNoPath) != -1)
+                CString currentThemeFile = originalThemeFilePathsList[i];
+                CString currentThemeFileNoPath = WinCeFileUtils::GetFileNameNoDirWithExt(currentThemeFile);
+                if(currentThemeFileNoPath.CompareNoCase(fileNameNoPath) == 0)
                 {
                     destString = currentThemeFile;
+                }
+            }
+
+            for(size_t i=0; ((i<newThemeFilePathsList.size()) && (destString.GetLength() <= 0)); i++)
+            {
+                CString currentThemeFile = newThemeFilePathsList[i];
+                CString currentThemeFileNoPath = WinCeFileUtils::GetFileNameNoDirWithExt(currentThemeFile);
+                if(currentThemeFileNoPath.CompareNoCase(fileNameNoPath) == 0)
+                {
+                    destString = currentThemeFile;
+                }
+            }
+
+            if(destString.GetLength() <= 0)
+            {
+                if(((fileNameNoPath[0] == 'H') || (fileNameNoPath[0] == 'h')) &&
+                    ((fileNameNoPath[1] == 'H') || (fileNameNoPath[1] == 'h')) &&
+                    (fileNameNoPath[2] == '_'))
+                {
+                    destString = WinCeFileUtils::GetPathToWindowsDirectory() + '\\';
+                    destString += fileNameNoPath;
                 }
             }
 
@@ -1090,7 +1123,7 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
                     pProgDlg->UpdateStatus(progMsg, zi);
                 }
 
-                DWORD dwAttributes =  GetFileAttributes(destString);
+                DWORD dwAttributes = GetFileAttributes(destString);
                 SetFileAttributes(destString, FILE_ATTRIBUTE_NORMAL);
                 UnzipItem(hz, zi, destString);
                 SetFileAttributes(destString, dwAttributes);
@@ -1117,12 +1150,16 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
 
         CloseZip(hz);
 
+        UpdateHTCHomeSettingsXmlWithActualFilePaths(&originalThemeFilePathsList, GetPathToHTCHomeSettingsXmlFileWorking());
+
+        /*
         // Read specific values from the HTCHomeSettings.xml file in the ActiveThemeDirectory
         // write the values to the working xml file
         HTCHomeSettingsStruct xmlSettings;
 
         ReadValuesFromXml(GetPathToHTCHomeSettingsXmlFileActiveTheme(), &xmlSettings);
         WriteValuesToXml(GetPathToHTCHomeSettingsXmlFileWorking(), &xmlSettings);
+        */
 
         AfxGetApp()->EndWaitCursor();
         EndMakingChanges();
@@ -1131,15 +1168,7 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
     return retVal;
 }
 
-CString M2DC::GetFileBaseName(CString filePath)
-{
-    CString retVal = filePath;
 
-    retVal = retVal.Mid(retVal.ReverseFind('\\')+1);
-    retVal = retVal.Mid(0, retVal.Find('.'));
-
-    return retVal;
-}
 
 void M2DC::GetNamesOfAvailableM2DCThemes(std::vector<CString>* pThemeNameVector)
 {
@@ -1206,7 +1235,7 @@ void M2DC::GetNamesOfAvailableM2DCThemes(std::vector<CString>* pThemeNameVector)
                     currentThemeName = themeElement->Attribute("name");
                     currentThemePath = themeElement->Attribute("path");
 
-                    if(FileExists(currentThemePath))
+                    if(WinCeFileUtils::FileExists(currentThemePath))
                     {
                         pThemeNameVector->push_back(currentThemeName);
                     }
@@ -1222,7 +1251,7 @@ void M2DC::GetNamesOfAvailableM2DCThemes(std::vector<CString>* pThemeNameVector)
 
 void M2DC::ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
 {
-    if(FileExists(xmlFilePath) && (xmlSettings != NULL))
+    if(WinCeFileUtils::FileExists(xmlFilePath) && (xmlSettings != NULL))
     {
         TiXmlDocument doc(GetConstCharStarFromCString(xmlFilePath));
         bool loadOkay = doc.LoadFile();
@@ -1329,7 +1358,7 @@ void M2DC::ReadValuesFromXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSett
 
 void M2DC::WriteValuesToXml(CString xmlFilePath, HTCHomeSettingsStruct* xmlSettings)
 {
-    if(FileExists(xmlFilePath) && (xmlSettings != NULL))
+    if(WinCeFileUtils::FileExists(xmlFilePath) && (xmlSettings != NULL))
     {
         CString vectorNameAttribute;
         CString vectorValueAttribute;
@@ -1479,7 +1508,7 @@ bool M2DC::FileIsValidM2DCTheme(CString filePath)
 
 void M2DC::GetHomeWidgetSettings(CString pathToXmlFile, HomeWidgetSettings* pHomeWidgetSettings)
 {
-    if(FileExists(pathToXmlFile) && (pHomeWidgetSettings != NULL))
+    if(WinCeFileUtils::FileExists(pathToXmlFile) && (pHomeWidgetSettings != NULL))
     {
         pHomeWidgetSettings->bAnalogClockEnabled = true;
         pHomeWidgetSettings->bDigitalClockEnabled = true;
@@ -1548,9 +1577,11 @@ void M2DC::GetHomeWidgetSettings(CString pathToXmlFile, HomeWidgetSettings* pHom
     }
 }
 
+
+
 void M2DC::SetHomeWidgetSettings(CString pathToXmlFile, HomeWidgetSettings* pHomeWidgetSettings)
 {
-    if(FileExists(pathToXmlFile) && (pHomeWidgetSettings != NULL))
+    if(WinCeFileUtils::FileExists(pathToXmlFile) && (pHomeWidgetSettings != NULL))
     {
         // prepare a vector of elements from the current theme file home elements
         std::vector<TiXmlElement> themeHomeWidgetPropertyElements;
@@ -1663,7 +1694,7 @@ void M2DC::SetHomeWidgetSettings(CString pathToXmlFile, HomeWidgetSettings* pHom
 
 void M2DC::GetVectorOfWidgetPropertyRectPosElements(CString xmlFilePath, CString nodeName, std::vector<TiXmlElement>* pElementVector)
 {
-    if(FileExists(xmlFilePath) && (pElementVector != NULL))
+    if(WinCeFileUtils::FileExists(xmlFilePath) && (pElementVector != NULL))
     {
         TiXmlDocument doc(GetConstCharStarFromCString(xmlFilePath));
         bool loadOkay = doc.LoadFile();
@@ -1724,9 +1755,9 @@ void M2DC::AddToM2DCThemeList(CString pathToTheme)
     CString currentThemeName;
     CString currentThemePath;
 
-    CString themeBaseName = GetFileBaseName(pathToTheme);
+    CString themeBaseName = WinCeFileUtils::GetFileNameNoDirNoExt(pathToTheme);
 
-    if(!FileExists(M2DC::GetPathToM2DCThemeListXml()))
+    if(!WinCeFileUtils::FileExists(M2DC::GetPathToM2DCThemeListXml()))
     {
         TiXmlDocument newdoc;
         TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "", "");

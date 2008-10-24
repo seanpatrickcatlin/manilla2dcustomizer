@@ -20,6 +20,7 @@
 
 #include "stdafx.h"
 #include "FileTreeDlg.h"
+#include "WinCeFileUtils.h"
 #include "Manilla2DConfig.h"
 #include "Manilla2DConfigDlg.h"
 #include "Manilla2DConfigUtils.h"
@@ -144,7 +145,7 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
         AfxGetApp()->BeginWaitCursor();
         CString pathToNewTheme = fileDlg.GetFilePath();
 
-        if(M2DC::FileExists(pathToNewTheme))
+        if(WinCeFileUtils::FileExists(pathToNewTheme))
         {
             if(!M2DC::FileIsValidM2DCTheme(pathToNewTheme))
             {
@@ -154,6 +155,7 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
 
                 AfxMessageBox(msg);
 
+                AfxGetApp()->EndWaitCursor();
                 return;
             }
 
@@ -215,7 +217,7 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeDeleteBtn()
 
     CString pathToTheme = M2DC::GetPathOfM2DCThemeFromName(selectedTheme);
 
-    if(M2DC::FileExists(pathToTheme))
+    if(WinCeFileUtils::FileExists(pathToTheme))
     {
         CString msg;
         if(pathToTheme.Find(M2DC::GetPathToM2DCThemesDirectory())  == -1)
