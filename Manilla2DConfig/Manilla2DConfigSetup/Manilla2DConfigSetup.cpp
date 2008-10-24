@@ -54,6 +54,7 @@
 //
 
 #include "..\Manilla2DConfig\Manilla2DConfigUtils.h"
+#include "..\Manilla2DConfig\WinCeFileUtils.h"
 
 // CManilla2DConfigSetupApp
 
@@ -124,7 +125,7 @@ codeUNINSTALL_INIT Uninstall_Init(HWND hwndParent, LPCTSTR pszInstallDir)
         M2DC::SetInstallDirectory(pszInstallDir);
         M2DC::RestoreActiveThemeFromBackup();
         M2DC::RestoreHTCHomeSettingsXmlFromBackup();
-        M2DC::RecursivelyDeleteDirectory(pszInstallDir);
+        WinCeFileUtils::RecursivelyDeleteDirectory(pszInstallDir);
     }
 
     return codeUNINSTALL_INIT_CONTINUE;

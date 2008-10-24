@@ -472,6 +472,26 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\WinCeFileUtils.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
 			<Filter
 				Name="TinyXML"
 				>
@@ -772,6 +792,10 @@
 			</File>
 			<File
 				RelativePath=".\version.h"
+				>
+			</File>
+			<File
+				RelativePath=".\WinCeFileUtils.h"
 				>
 			</File>
 			<File
