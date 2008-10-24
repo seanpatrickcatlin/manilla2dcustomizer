@@ -956,6 +956,7 @@ void M2DC::BackupAndDisableTodayScreen()
         BackupTodayScreenItemsRegHive();
         DisableAllTodayScreenItems();
         RefreshTodayScreen();
+        Sleep(5000);
         AfxGetApp()->EndWaitCursor();
 
         g_bRestoreTodayScreenNeeded = true;
