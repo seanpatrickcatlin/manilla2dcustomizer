@@ -6,13 +6,13 @@ v0.14.166
     the theme manager would only apply "RECT" and "POS" values, now the theme
     manager will use the actual file from the new theme, and then just update
     the themes xml file with the correct paths for the existing Manilla 2D images.
-- updated theme readme with my thoghtss and recommendations on themes and more
-    detials about how the theme manager process works
+- updated theme readme with my thoghts and recommendations on themes and more
+    details about how the theme manager process works
 - List of available themes is now auto sorted alphabetically
 - Updated about page with usernames of contributors
 - added an artificial 5 seconds wait after disabling M2D, this is to give
     Manilla2D.exe time to unload itself and release any image files it might
-    still have a hanlde on
+    still have a handle on
 
 Oct-19-2008
 v0.13.154
