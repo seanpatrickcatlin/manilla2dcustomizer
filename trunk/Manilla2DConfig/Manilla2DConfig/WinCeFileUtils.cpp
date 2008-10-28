@@ -209,7 +209,7 @@ CString WinCeFileUtils::GetFileNameNoDirWithExt(CString filePath)
     return retVal;
 }
 
-CString GetFileExtNoDirNoName(CString filePath)
+CString WinCeFileUtils::GetFileExtNoDirNoName(CString filePath)
 {
     CString retVal = filePath;
 
