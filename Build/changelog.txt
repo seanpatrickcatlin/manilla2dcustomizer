@@ -1,7 +1,7 @@
 Manilla 2D Customizer changelog
 
 Oct-28-2008
-v0.15.170
+v0.15.171
 - Added softkey dialog
     -- Only allows to set the name and command, not the command parameters
     -- The command must be an exe file
