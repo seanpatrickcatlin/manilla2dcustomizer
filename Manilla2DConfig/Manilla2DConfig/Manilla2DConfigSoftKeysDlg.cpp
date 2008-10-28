@@ -46,6 +46,8 @@ void CManilla2DConfigSoftKeysDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_M2DC_SK1_CMD_EDIT, m_sk1CmdEdit);
     DDX_Control(pDX, IDC_M2DC_SK2_NAME_EDIT, m_sk2NameEdit);
     DDX_Control(pDX, IDC_M2DC_SK2_CMD_EDIT, m_sk2CmdEdit);
+    DDX_Control(pDX, IDC_M2DC_SK1_CMD_BTN, m_sk1CmdBtn);
+    DDX_Control(pDX, IDC_M2DC_SK2_CMD_BTN, m_sk2CmdBtn);
 }
 
 BOOL CManilla2DConfigSoftKeysDlg::OnInitDialog()
@@ -57,10 +59,14 @@ BOOL CManilla2DConfigSoftKeysDlg::OnInitDialog()
     GetSoftKeySettings(1, &skName, &skCmd, &skCmdParams);
     m_sk1NameEdit.SetWindowTextW(skName);
     m_sk1CmdEdit.SetWindowTextW(skCmd);
+    m_sk1CmdEdit.SetReadOnly(TRUE);
 
     GetSoftKeySettings(2, &skName, &skCmd, &skCmdParams);
     m_sk2NameEdit.SetWindowTextW(skName);
     m_sk2CmdEdit.SetWindowTextW(skCmd);
+    m_sk2CmdEdit.SetReadOnly(TRUE);
+
+    m_sk1CmdBtn.SetFocus();
 
     return FALSE;
 }

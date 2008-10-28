@@ -62,4 +62,7 @@ private:
     void SetSoftKeySettings(int skNum, CString skName, CString skCmd, CString skCmdParams);
 
     DECLARE_MESSAGE_MAP()
+public:
+    CButton m_sk1CmdBtn;
+    CButton m_sk2CmdBtn;
 };
