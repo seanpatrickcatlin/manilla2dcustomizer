@@ -425,6 +425,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Manilla2DConfigSoftKeysDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Manilla2DConfigTabsDlg.cpp"
 				>
 			</File>
@@ -756,6 +760,10 @@
 			</File>
 			<File
 				RelativePath=".\Manilla2DConfigRestoreDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Manilla2DConfigSoftKeysDlg.h"
 				>
 			</File>
 			<File
