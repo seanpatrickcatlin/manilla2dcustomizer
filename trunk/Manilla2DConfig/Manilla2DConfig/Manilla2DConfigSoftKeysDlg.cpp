@@ -19,6 +19,7 @@
 //
 
 #include "stdafx.h"
+#include <atlbase.h>
 #include "FileTreeDlg.h"
 #include "WinCeFileUtils.h"
 #include "Manilla2DConfig.h"
@@ -57,16 +58,22 @@ BOOL CManilla2DConfigSoftKeysDlg::OnInitDialog()
     CString skName, skCmd, skCmdParams;
     
     GetSoftKeySettings(1, &skName, &skCmd, &skCmdParams);
+
     m_sk1NameEdit.SetWindowTextW(skName);
+    m_sk1NameEdit.SetSel(-1);
+
     m_sk1CmdEdit.SetWindowTextW(skCmd);
     m_sk1CmdEdit.SetReadOnly(TRUE);
+    m_sk1CmdEdit.SetSel(-1);
 
     GetSoftKeySettings(2, &skName, &skCmd, &skCmdParams);
+
     m_sk2NameEdit.SetWindowTextW(skName);
+    m_sk2NameEdit.SetSel(-1);
+
     m_sk2CmdEdit.SetWindowTextW(skCmd);
     m_sk2CmdEdit.SetReadOnly(TRUE);
-
-    m_sk1CmdBtn.SetFocus();
+    m_sk2CmdEdit.SetSel(-1);
 
     return FALSE;
 }
@@ -138,38 +145,39 @@ void CManilla2DConfigSoftKeysDlg::GetSoftKeySettings(int skNum, CString *skName,
         return;
     }
 
-    *skName = TEXT("");
-    *skCmd = TEXT("");
-    *skCmdParams = TEXT("");
+    skName->Format(TEXT(""));
+    skCmd->Format(TEXT(""));
+    skCmdParams->Format(TEXT(""));
 
-    HKEY mainHKey;
-    CString keyName = TEXT("\\Software\\HTC\\Manila2D\\Home");
-    DWORD regVarTypeString = REG_SZ;
-    TCHAR valueName[MAX_PATH];
+    CRegKey regKey;
+    regKey.Create(HKEY_LOCAL_MACHINE, TEXT("\\Software\\HTC\\Manila2D\\Home"));
+
+    CString valueName;
     TCHAR valueBuffer[MAX_PATH];
     DWORD valueBufferSize = MAX_PATH;
 
-    if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, keyName, 0, 0, &mainHKey) == ERROR_SUCCESS)
+    valueName.Format(TEXT("SK%d"), skNum);
+    int ret = regKey.QueryStringValue(valueName, valueBuffer, &valueBufferSize);
+
+    if(ret == ERROR_SUCCESS)
     {
-        swprintf(valueName, TEXT("SK%d"), skNum);
-        if(RegQueryValueEx(mainHKey, valueName, NULL, &regVarTypeString, (LPBYTE)valueBuffer, &valueBufferSize) == ERROR_SUCCESS)
-        {
-            *skName = valueBuffer;
-        }
+        skName->Format(TEXT("%s"), valueBuffer);
+    }
 
-        swprintf(valueName, TEXT("SK%dCmd"), skNum);
-        if(RegQueryValueEx(mainHKey, valueName, NULL, &regVarTypeString, (LPBYTE)valueBuffer, &valueBufferSize) == ERROR_SUCCESS)
-        {
-            *skCmd = valueBuffer;
-        }
+    valueName.Format(TEXT("SK%dCmd"), skNum);
+    ret = regKey.QueryStringValue(valueName, valueBuffer, &valueBufferSize);
 
-        swprintf(valueName, TEXT("SK%dCmdParam"), skNum);
-        if(RegQueryValueEx(mainHKey, valueName, NULL, &regVarTypeString, (LPBYTE)valueBuffer, &valueBufferSize) == ERROR_SUCCESS)
-        {
-            *skCmdParams = valueBuffer;
-        }
+    if(ret == ERROR_SUCCESS)
+    {
+        skCmd->Format(TEXT("%s"), valueBuffer);
+    }
 
-        RegCloseKey(mainHKey);
+    valueName.Format(TEXT("SK%dCmdParam"), skNum);
+    ret = regKey.QueryStringValue(valueName, valueBuffer, &valueBufferSize);
+
+    if(ret == ERROR_SUCCESS)
+    {
+        skCmdParams->Format(TEXT("%s"), valueBuffer);
     }
 }
 

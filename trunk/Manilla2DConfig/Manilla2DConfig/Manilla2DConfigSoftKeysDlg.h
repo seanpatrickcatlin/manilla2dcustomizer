@@ -66,3 +66,4 @@ public:
     CButton m_sk1CmdBtn;
     CButton m_sk2CmdBtn;
 };
+
