@@ -85,6 +85,8 @@ LRESULT CManilla2DConfigHomeRegDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam
 
 void CManilla2DConfigHomeRegDlg::OnOK()
 {
+    M2DC::BeginMakingChanges();
+
     SetHideNetworkName(m_hideNetworkNameCheckBox.GetCheck() == BST_CHECKED);
     
     CString customerName;
@@ -123,35 +125,85 @@ bool CManilla2DConfigHomeRegDlg::GetHideNetworkName()
 {
     bool retVal = false;
 
+    CRegKey regKey;
+    regKey.Create(HKEY_LOCAL_MACHINE, TEXT("\\Software\\HTC\\Manila2D\\Home"));
+
+    DWORD value = 0;
+
+    int ret = regKey.QueryDWORDValue(TEXT("HideNetworkName"), value);
+
+    if(ret == ERROR_SUCCESS)
+    {
+        retVal = (value != 0);
+    }
 
     return retVal;
 }
 
 void CManilla2DConfigHomeRegDlg::SetHideNetworkName(bool doHide)
 {
+    DWORD value = 0;
 
+    if(doHide)
+    {
+        value = 1;
+    }
+
+    CRegKey regKey;
+    regKey.Create(HKEY_LOCAL_MACHINE, TEXT("\\Software\\HTC\\Manila2D\\Home"));
+    regKey.SetDWORDValue(TEXT("HideNetworkName"), value);
 }
 
 CString CManilla2DConfigHomeRegDlg::GetCustomerIcon()
 {
     CString retVal = TEXT("");
 
+    CRegKey regKey;
+    regKey.Create(HKEY_LOCAL_MACHINE, TEXT("\\Software\\HTC\\Manila2D\\Home"));
+
+    TCHAR valueBuffer[MAX_PATH];
+    DWORD valueBufferSize = MAX_PATH;
+
+    int ret = regKey.QueryStringValue(TEXT("CustomerIcon"), valueBuffer, &valueBufferSize);
+
+    if(ret == ERROR_SUCCESS)
+    {
+        retVal.Format(TEXT("%s"), valueBuffer);
+    }
+
     return retVal;
 }
 
 void CManilla2DConfigHomeRegDlg::SetCustomerIcon(CString iconPath)
 {
-
+    CRegKey regKey;
+    regKey.Create(HKEY_LOCAL_MACHINE, TEXT("\\Software\\HTC\\Manila2D\\Home"));
+    regKey.SetStringValue(TEXT("CustomerIcon"), iconPath);
 }
 
 CString CManilla2DConfigHomeRegDlg::GetCustomerName()
 {
     CString retVal = TEXT("");
 
+    CRegKey regKey;
+    regKey.Create(HKEY_LOCAL_MACHINE, TEXT("\\Software\\HTC\\Manila2D\\Home"));
+
+    TCHAR valueBuffer[MAX_PATH];
+    DWORD valueBufferSize = MAX_PATH;
+
+    int ret = regKey.QueryStringValue(TEXT("CustomerName"), valueBuffer, &valueBufferSize);
+
+    if(ret == ERROR_SUCCESS)
+    {
+        retVal.Format(TEXT("%s"), valueBuffer);
+    }
+
     return retVal;
 }
 
 void CManilla2DConfigHomeRegDlg::SetCustomerName(CString customerName)
 {
-
+    CRegKey regKey;
+    regKey.Create(HKEY_LOCAL_MACHINE, TEXT("\\Software\\HTC\\Manila2D\\Home"));
+    regKey.SetStringValue(TEXT("CustomerName"), customerName);
 }
