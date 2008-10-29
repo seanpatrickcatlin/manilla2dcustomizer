@@ -22,6 +22,7 @@
 #include "Manilla2DConfig.h"
 #include "Manilla2DConfigUtils.h"
 #include "FileTreeDlg.h"
+#include "WinCeFileUtils.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

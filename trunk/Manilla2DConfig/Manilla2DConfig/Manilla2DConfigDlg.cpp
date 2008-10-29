@@ -26,6 +26,7 @@
 #include "Manilla2DConfigTabsDlg.h"
 #include "Manilla2DConfigAboutDlg.h"
 #include "Manilla2DConfigThemesDlg.h"
+#include "Manilla2DConfigHomeRegDlg.h"
 #include "Manilla2DConfigRestoreDlg.h"
 #include "Manilla2DConfigSoftKeysDlg.h"
 #include "Manilla2DConfigLauncherDlg.h"
@@ -81,47 +82,14 @@ void CManilla2DConfigDlg::SetupPages()
     m_hIcon = AfxGetApp()->LoadIcon(IDR_M2DC_ICO);
 
     // here is where we add new tabpages, the rest should be done automatically
-    CPropertyPage* newTabPage = new CManilla2DConfigTabsDlg(this); 
-    if(newTabPage != NULL)
-    {
-        m_mainTabVector.push_back(newTabPage);
-    }
-
-    newTabPage = new CManilla2DConfigHomeDlg(this);
-    if(newTabPage != NULL)
-    {
-        m_mainTabVector.push_back(newTabPage);
-    }
-
-    newTabPage = new CManilla2DConfigSoftKeysDlg(this);
-    if(newTabPage != NULL)
-    {
-        m_mainTabVector.push_back(newTabPage);
-    }
-
-    newTabPage = new CManilla2DConfigLauncherDlg(this);
-    if(newTabPage != NULL)
-    {
-        m_mainTabVector.push_back(newTabPage);
-    }
-
-    newTabPage = new CManilla2DConfigThemesDlg(this);
-    if(newTabPage != NULL)
-    {
-        m_mainTabVector.push_back(newTabPage);
-    }
-
-    newTabPage = new CManilla2DConfigRestoreDlg(this);
-    if(newTabPage != NULL)
-    {
-        m_mainTabVector.push_back(newTabPage);
-    }
-
-    newTabPage = new CManilla2DConfigAboutDlg(this);
-    if(newTabPage != NULL)
-    {
-        m_mainTabVector.push_back(newTabPage);
-    }
+    AddNewTabPage(new CManilla2DConfigTabsDlg(this));
+    AddNewTabPage(new CManilla2DConfigHomeDlg(this));
+    AddNewTabPage(new CManilla2DConfigHomeRegDlg(this));
+    AddNewTabPage(new CManilla2DConfigSoftKeysDlg(this));
+    AddNewTabPage(new CManilla2DConfigLauncherDlg(this));
+    AddNewTabPage(new CManilla2DConfigThemesDlg(this));
+    AddNewTabPage(new CManilla2DConfigRestoreDlg(this));
+    AddNewTabPage(new CManilla2DConfigAboutDlg(this));
 
     for(size_t i=0; i<m_mainTabVector.size(); i++)
     {
@@ -131,5 +99,13 @@ void CManilla2DConfigDlg::SetupPages()
         {
             AddPage(currentTabPage);
         }
+    }
+}
+
+void CManilla2DConfigDlg::AddNewTabPage(CPropertyPage* newTabPage)
+{
+    if(newTabPage != NULL)
+    {
+        m_mainTabVector.push_back(newTabPage);
     }
 }
