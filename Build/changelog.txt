@@ -1,7 +1,7 @@
 Manilla 2D Customizer changelog
 
 Oct-29-2008
-v0.17.181
+v0.17.182
 - added new Home registry tab
 -- adds option to set a custom name, custom icon, and hide the network name
 
