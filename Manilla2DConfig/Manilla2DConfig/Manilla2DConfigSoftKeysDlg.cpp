@@ -157,6 +157,7 @@ void CManilla2DConfigSoftKeysDlg::OnBnClickedM2dcSk1CmdBtn()
             ((WinCeFileUtils::GetFileExtNoDirNoName(pathToCmd).CompareNoCase(TEXT("exe")) == 0) ||
             (WinCeFileUtils::GetFileExtNoDirNoName(pathToCmd).CompareNoCase(TEXT("lnk")) == 0)))
         {
+            m_sk1NameEdit.SetWindowTextW(WinCeFileUtils::GetFileNameNoDirNoExt(pathToCmd));
             m_sk1CmdEdit.SetWindowTextW(pathToCmd);
         }
     }
@@ -173,6 +174,7 @@ void CManilla2DConfigSoftKeysDlg::OnBnClickedM2dcSk2CmdBtn()
             ((WinCeFileUtils::GetFileExtNoDirNoName(pathToCmd).CompareNoCase(TEXT("exe")) == 0) ||
             (WinCeFileUtils::GetFileExtNoDirNoName(pathToCmd).CompareNoCase(TEXT("lnk")) == 0)))
         {
+            m_sk2NameEdit.SetWindowTextW(WinCeFileUtils::GetFileNameNoDirNoExt(pathToCmd));
             m_sk2CmdEdit.SetWindowTextW(pathToCmd);
         }
     }
