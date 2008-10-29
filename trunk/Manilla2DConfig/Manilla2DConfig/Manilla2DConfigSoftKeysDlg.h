@@ -65,5 +65,7 @@ private:
 public:
     CButton m_sk1CmdBtn;
     CButton m_sk2CmdBtn;
+    CButton m_skDefaultsButton;
+    afx_msg void OnBnClickedM2dcSkdefaultsBtn();
 };
 

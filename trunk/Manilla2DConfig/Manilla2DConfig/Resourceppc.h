@@ -72,6 +72,8 @@
 #define IDC_BUTTON2                     1044
 #define IDC_M2DC_SK2_CMD_BTN            1044
 #define IDC_M2DC_SK2_NAME_EDIT          1045
+#define IDC_BUTTON1                     1046
+#define IDC_M2DC_SKDEFAULTS_BTN         1046
 #define ID_RESTORE_DEFAULTS             32771
 #define IDT_M2DC_PROGRESS_TIMER         32772
 
@@ -81,7 +83,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        145
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1046
+#define _APS_NEXT_CONTROL_VALUE         1047
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif

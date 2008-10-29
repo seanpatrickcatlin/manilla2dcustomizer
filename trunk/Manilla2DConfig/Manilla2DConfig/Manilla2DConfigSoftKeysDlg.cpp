@@ -49,6 +49,7 @@ void CManilla2DConfigSoftKeysDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_M2DC_SK2_CMD_EDIT, m_sk2CmdEdit);
     DDX_Control(pDX, IDC_M2DC_SK1_CMD_BTN, m_sk1CmdBtn);
     DDX_Control(pDX, IDC_M2DC_SK2_CMD_BTN, m_sk2CmdBtn);
+    DDX_Control(pDX, IDC_BUTTON1, m_skDefaultsButton);
 }
 
 BOOL CManilla2DConfigSoftKeysDlg::OnInitDialog()
@@ -62,18 +63,40 @@ BOOL CManilla2DConfigSoftKeysDlg::OnInitDialog()
     m_sk1NameEdit.SetWindowTextW(skName);
     m_sk1NameEdit.SetSel(-1);
 
-    m_sk1CmdEdit.SetWindowTextW(skCmd);
+    m_sk1CmdEdit.Clear();        
     m_sk1CmdEdit.SetReadOnly(TRUE);
     m_sk1CmdEdit.SetSel(-1);
+
+    if((WinCeFileUtils::GetFileExtNoDirNoName(skCmdParams).CompareNoCase(TEXT("lnk")) == 0) &&
+        WinCeFileUtils::FileExists(skCmdParams))
+    {
+        m_sk1CmdEdit.SetWindowTextW(skCmdParams);
+    }
+    else if((WinCeFileUtils::GetFileExtNoDirNoName(skCmd).CompareNoCase(TEXT("exe")) == 0) &&
+        WinCeFileUtils::FileExists(skCmd))
+    {
+        m_sk1CmdEdit.SetWindowTextW(skCmd);
+    }
 
     GetSoftKeySettings(2, &skName, &skCmd, &skCmdParams);
 
     m_sk2NameEdit.SetWindowTextW(skName);
     m_sk2NameEdit.SetSel(-1);
 
-    m_sk2CmdEdit.SetWindowTextW(skCmd);
+    m_sk2CmdEdit.Clear();        
     m_sk2CmdEdit.SetReadOnly(TRUE);
     m_sk2CmdEdit.SetSel(-1);
+
+    if((WinCeFileUtils::GetFileExtNoDirNoName(skCmdParams).CompareNoCase(TEXT("lnk")) == 0) &&
+        WinCeFileUtils::FileExists(skCmdParams))
+    {
+        m_sk2CmdEdit.SetWindowTextW(skCmdParams);
+    }
+    else if((WinCeFileUtils::GetFileExtNoDirNoName(skCmd).CompareNoCase(TEXT("exe")) == 0) &&
+        WinCeFileUtils::FileExists(skCmd))
+    {
+        m_sk2CmdEdit.SetWindowTextW(skCmd);
+    }
 
     return FALSE;
 }
@@ -82,6 +105,7 @@ BEGIN_MESSAGE_MAP(CManilla2DConfigSoftKeysDlg, CManilla2DConfigAbstractDlg)
     ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigSoftKeysDlg::OnQuerySiblings)
     ON_BN_CLICKED(IDC_M2DC_SK1_CMD_BTN, &CManilla2DConfigSoftKeysDlg::OnBnClickedM2dcSk1CmdBtn)
     ON_BN_CLICKED(IDC_M2DC_SK2_CMD_BTN, &CManilla2DConfigSoftKeysDlg::OnBnClickedM2dcSk2CmdBtn)
+    ON_BN_CLICKED(IDC_M2DC_SKDEFAULTS_BTN, &CManilla2DConfigSoftKeysDlg::OnBnClickedM2dcSkdefaultsBtn)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigSoftKeysDlg message handlers
@@ -98,11 +122,27 @@ void CManilla2DConfigSoftKeysDlg::OnOK()
     m_sk1NameEdit.GetWindowTextW(skName);
     m_sk1CmdEdit.GetWindowTextW(skCmd);
     skCmdParams = "";
+
+    if(WinCeFileUtils::GetFileExtNoDirNoName(skCmd).CompareNoCase(TEXT("lnk")) == 0)
+    {
+        skCmdParams = skCmd;
+        skCmd = WinCeFileUtils::GetFileDirNoNameNoExt(WinCeFileUtils::GetPathToRunningBinary());
+        skCmd += TEXT("\\OpenShortcut.exe");
+    }
+    
     SetSoftKeySettings(1, skName, skCmd, skCmdParams);
 
     m_sk2NameEdit.GetWindowTextW(skName);
     m_sk2CmdEdit.GetWindowTextW(skCmd);
     skCmdParams = "";
+
+    if(WinCeFileUtils::GetFileExtNoDirNoName(skCmd).CompareNoCase(TEXT("lnk")) == 0)
+    {
+        skCmdParams = skCmd;
+        skCmd = WinCeFileUtils::GetFileDirNoNameNoExt(WinCeFileUtils::GetPathToRunningBinary());
+        skCmd += TEXT("\\OpenShortcut.exe");
+    }
+
     SetSoftKeySettings(2, skName, skCmd, skCmdParams);
 
     CManilla2DConfigAbstractDlg::OnOK();
@@ -110,13 +150,14 @@ void CManilla2DConfigSoftKeysDlg::OnOK()
 
 void CManilla2DConfigSoftKeysDlg::OnBnClickedM2dcSk1CmdBtn()
 {
-    CFileTreeDlg fileDlg(this, TEXT("\\"), TEXT("exe"));
+    CFileTreeDlg fileDlg(this, TEXT("\\"), TEXT("exe|lnk"));
     if(fileDlg.DoModal() == IDOK)
     {
         CString pathToCmd = fileDlg.GetFilePath();
 
         if(WinCeFileUtils::FileExists(pathToCmd) &&
-            (WinCeFileUtils::GetFileExtNoDirNoName(pathToCmd).CompareNoCase(TEXT("exe")) == 0))
+            ((WinCeFileUtils::GetFileExtNoDirNoName(pathToCmd).CompareNoCase(TEXT("exe")) == 0) ||
+            (WinCeFileUtils::GetFileExtNoDirNoName(pathToCmd).CompareNoCase(TEXT("lnk")) == 0)))
         {
             m_sk1CmdEdit.SetWindowTextW(pathToCmd);
         }
@@ -125,13 +166,14 @@ void CManilla2DConfigSoftKeysDlg::OnBnClickedM2dcSk1CmdBtn()
 
 void CManilla2DConfigSoftKeysDlg::OnBnClickedM2dcSk2CmdBtn()
 {
-    CFileTreeDlg fileDlg(this, TEXT("\\"), TEXT("exe"));
+    CFileTreeDlg fileDlg(this, TEXT("\\"), TEXT("exe|lnk"));
     if(fileDlg.DoModal() == IDOK)
     {
         CString pathToCmd = fileDlg.GetFilePath();
 
         if(WinCeFileUtils::FileExists(pathToCmd) &&
-            (WinCeFileUtils::GetFileExtNoDirNoName(pathToCmd).CompareNoCase(TEXT("exe")) == 0))
+            ((WinCeFileUtils::GetFileExtNoDirNoName(pathToCmd).CompareNoCase(TEXT("exe")) == 0) ||
+            (WinCeFileUtils::GetFileExtNoDirNoName(pathToCmd).CompareNoCase(TEXT("lnk")) == 0)))
         {
             m_sk2CmdEdit.SetWindowTextW(pathToCmd);
         }
@@ -213,4 +255,13 @@ void CManilla2DConfigSoftKeysDlg::SetSoftKeySettings(int skNum, CString skName, 
 
         RegCloseKey(mainHKey);
     }
+}
+
+void CManilla2DConfigSoftKeysDlg::OnBnClickedM2dcSkdefaultsBtn()
+{
+    m_sk1NameEdit.SetWindowTextW(TEXT(""));
+    m_sk1CmdEdit.SetWindowTextW(TEXT(""));
+
+    m_sk2NameEdit.SetWindowTextW(TEXT(""));
+    m_sk2CmdEdit.SetWindowTextW(TEXT(""));
 }

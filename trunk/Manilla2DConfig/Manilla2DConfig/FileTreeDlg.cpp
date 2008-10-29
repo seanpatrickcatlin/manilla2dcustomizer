@@ -174,7 +174,7 @@ static int CALLBACK DirThenFileAplhaCB(LPARAM lParam1, LPARAM lParam2, LPARAM lP
 
             if((img1A == folderImage) && (img2A == folderImage))
             {
-                retVal = itemStr1.Compare(itemStr2);
+                retVal = itemStr1.CompareNoCase(itemStr2);
             }
             else if(img1A == folderImage)
             {
@@ -186,7 +186,7 @@ static int CALLBACK DirThenFileAplhaCB(LPARAM lParam1, LPARAM lParam2, LPARAM lP
             }
             else
             {
-                retVal = itemStr1.Compare(itemStr2);
+                retVal = itemStr1.CompareNoCase(itemStr2);
             }   
         }
     }

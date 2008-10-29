@@ -32,6 +32,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_48C6F0CFE123423CB460ADFFA37CF05A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4C7EE819157D42F5B1B70E2CFB48982C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -269,6 +275,32 @@
         }
         "ProjectOutput"
         {
+            "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_48C6F0CFE123423CB460ADFFA37CF05A"
+            {
+            "SourcePath" = "8:..\\OpenShortcut\\Windows Mobile 6 Professional SDK (ARMV4I)\\Debug\\OpenShortcut.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_1161747F795C4374BE5C432A21F2C1DD"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:0"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{0129F064-2DEB-4600-AC08-C2689D359589}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_549138ADD0C24C3A9338275E2CEB6150"
             {
             "SourcePath" = "8:..\\Manilla2DConfig\\Windows Mobile 6 Professional SDK (ARMV4I)\\Debug\\Manilla2DConfig.exe"
