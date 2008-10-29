@@ -46,4 +46,6 @@ public:
 
 private:
     vector<CPropertyPage*> m_mainTabVector;
+
+    void AddNewTabPage(CPropertyPage* newTabPage);
 };

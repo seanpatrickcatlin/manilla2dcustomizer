@@ -49,7 +49,7 @@ void CManilla2DConfigSoftKeysDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_M2DC_SK2_CMD_EDIT, m_sk2CmdEdit);
     DDX_Control(pDX, IDC_M2DC_SK1_CMD_BTN, m_sk1CmdBtn);
     DDX_Control(pDX, IDC_M2DC_SK2_CMD_BTN, m_sk2CmdBtn);
-    DDX_Control(pDX, IDC_BUTTON1, m_skDefaultsButton);
+    DDX_Control(pDX, IDC_M2DC_SK_DEFAULTS_BTN, m_skDefaultsButton);
 }
 
 BOOL CManilla2DConfigSoftKeysDlg::OnInitDialog()
@@ -63,8 +63,7 @@ BOOL CManilla2DConfigSoftKeysDlg::OnInitDialog()
     m_sk1NameEdit.SetWindowTextW(skName);
     m_sk1NameEdit.SetSel(-1);
 
-    m_sk1CmdEdit.Clear();        
-    m_sk1CmdEdit.SetReadOnly(TRUE);
+    m_sk1CmdEdit.Clear();
     m_sk1CmdEdit.SetSel(-1);
 
     if((WinCeFileUtils::GetFileExtNoDirNoName(skCmdParams).CompareNoCase(TEXT("lnk")) == 0) &&
@@ -83,8 +82,7 @@ BOOL CManilla2DConfigSoftKeysDlg::OnInitDialog()
     m_sk2NameEdit.SetWindowTextW(skName);
     m_sk2NameEdit.SetSel(-1);
 
-    m_sk2CmdEdit.Clear();        
-    m_sk2CmdEdit.SetReadOnly(TRUE);
+    m_sk2CmdEdit.Clear();
     m_sk2CmdEdit.SetSel(-1);
 
     if((WinCeFileUtils::GetFileExtNoDirNoName(skCmdParams).CompareNoCase(TEXT("lnk")) == 0) &&
@@ -105,7 +103,7 @@ BEGIN_MESSAGE_MAP(CManilla2DConfigSoftKeysDlg, CManilla2DConfigAbstractDlg)
     ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigSoftKeysDlg::OnQuerySiblings)
     ON_BN_CLICKED(IDC_M2DC_SK1_CMD_BTN, &CManilla2DConfigSoftKeysDlg::OnBnClickedM2dcSk1CmdBtn)
     ON_BN_CLICKED(IDC_M2DC_SK2_CMD_BTN, &CManilla2DConfigSoftKeysDlg::OnBnClickedM2dcSk2CmdBtn)
-    ON_BN_CLICKED(IDC_M2DC_SKDEFAULTS_BTN, &CManilla2DConfigSoftKeysDlg::OnBnClickedM2dcSkdefaultsBtn)
+    ON_BN_CLICKED(IDC_M2DC_SK_DEFAULTS_BTN, &CManilla2DConfigSoftKeysDlg::OnBnClickedM2dcSkdefaultsBtn)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigSoftKeysDlg message handlers
