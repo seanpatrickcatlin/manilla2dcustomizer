@@ -1,5 +1,10 @@
 Manilla 2D Customizer changelog
 
+Oct-29-2008
+v0.17.181
+- added new Home registry tab
+-- adds option to set a custom name, custom icon, and hide the network name
+
 Oct-28-2008
 v0.16.178
 - SOftkey dialog can now accept shortcut fifles (lnk files)
