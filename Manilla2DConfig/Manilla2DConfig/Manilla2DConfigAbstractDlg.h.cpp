@@ -28,10 +28,12 @@
 
 //IMPLEMENT_DYNAMIC(CManilla2DConfigAbstractDlg, CM2DCTabPage)
 
-CManilla2DConfigAbstractDlg::CManilla2DConfigAbstractDlg(CWnd* pParent /*= NULL*/, UINT dlgID, UINT tabStrID, UINT titleStrID)
+CManilla2DConfigAbstractDlg::CManilla2DConfigAbstractDlg(CWnd* pParent /*= NULL*/, UINT dlgID, UINT tabStrID, UINT titleStrID,  bool useOkCancelMenu)
 : CPropertyPage(dlgID, tabStrID)
 {
     m_dlgId = dlgID;
+
+    m_useOkCancelMenu = useOkCancelMenu;
 
     m_titleStr.LoadStringW(titleStrID);
 
@@ -54,7 +56,15 @@ BOOL CManilla2DConfigAbstractDlg::OnInitDialog()
     TRACE(TEXT("CManilla2DConfigAbstractDlg OnInitDialog\n"));
 
     m_cmdBar.Create(this);
-    m_cmdBar.InsertMenuBar(IDR_M2DC_APPLY_CANCEL_MENU);
+
+    if(m_useOkCancelMenu)
+    {
+        m_cmdBar.InsertMenuBar(IDR_OK_CANCEL_MENU);
+    }
+    else
+    {
+        m_cmdBar.InsertMenuBar(IDR_APPLY_CANCEL_MENU);
+    }
 
     initScrollBarSupport();
 
