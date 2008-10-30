@@ -8,7 +8,7 @@ namespace WinCeFileUtils
     CString GetPathToWindowsDirectory();
 
     bool IsDirEmpty(CString dirPath);
-    bool DirExists(CString pathToDir);
+    bool IsDir(CString pathToDir);
     bool FileExists(CString pathToFile);
 
     void RecursivelyDeleteDirectory(CString sDirPath);
