@@ -83,10 +83,10 @@ void CManilla2DConfigDlg::SetupPages()
 
     // here is where we add new tabpages, the rest should be done automatically
     AddNewTabPage(new CManilla2DConfigThemesDlg(this));
+    AddNewTabPage(new CManilla2DConfigSoftKeysDlg(this));
+    AddNewTabPage(new CManilla2DConfigHomeRegDlg(this));
     AddNewTabPage(new CManilla2DConfigTabsDlg(this));
     AddNewTabPage(new CManilla2DConfigHomeDlg(this));
-    AddNewTabPage(new CManilla2DConfigHomeRegDlg(this));
-    AddNewTabPage(new CManilla2DConfigSoftKeysDlg(this));
     AddNewTabPage(new CManilla2DConfigLauncherDlg(this));
     AddNewTabPage(new CManilla2DConfigRestoreDlg(this));
     AddNewTabPage(new CManilla2DConfigAboutDlg(this));
