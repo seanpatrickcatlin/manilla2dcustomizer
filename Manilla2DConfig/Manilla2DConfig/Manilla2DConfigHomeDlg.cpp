@@ -77,7 +77,7 @@ BOOL CManilla2DConfigHomeDlg::OnInitDialog()
     check = m_homeSettings.bLine2Enabled ? BST_CHECKED : BST_UNCHECKED;
     m_enableLine2CheckBox.SetCheck(check);
 
-    check = m_homeSettings.bLine2Enabled ? BST_CHECKED : BST_UNCHECKED;
+    check = m_homeSettings.bLine3Enabled ? BST_CHECKED : BST_UNCHECKED;
     m_enableLine3CheckBox.SetCheck(check);
 
     return FALSE;

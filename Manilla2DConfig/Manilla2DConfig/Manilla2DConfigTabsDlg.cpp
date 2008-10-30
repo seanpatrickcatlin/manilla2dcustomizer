@@ -61,7 +61,10 @@ BOOL CManilla2DConfigTabsDlg::OnInitDialog()
 	
     m_mainListControl.SetExtendedStyle(m_mainListControl.GetExtendedStyle()|LVS_EX_CHECKBOXES);
 
-    PopulateWidgetVectorsFromCurrentHTCHomeSettingsXmlFile();
+    m_currentWidgetVector.clear();
+    M2DC::ReadTabValuesFromXml(&m_currentWidgetVector);
+    m_newWidgetVector = m_currentWidgetVector;
+
     UpdateListControlFromNewWidgetVector();
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
@@ -72,7 +75,7 @@ void CManilla2DConfigTabsDlg::OnOK()
     if(M2DC::CompareNameAndEnabledStateVectors(&m_newWidgetVector, &m_currentWidgetVector))
     {
         M2DC::BeginMakingChanges();
-        WriteHTCHomeSettingsXmlFileFromNewWidgetVector();
+        M2DC::WriteTabValuesToXml(&m_newWidgetVector);
     }
 }
 
@@ -225,128 +228,4 @@ void CManilla2DConfigTabsDlg::UpdateListControlFromNewWidgetVector()
     OnNMClickMainListControl(NULL, NULL);
     m_mainListControl.SetFocus();
     m_bPopulatingListControl = false;
-}
-
-void CManilla2DConfigTabsDlg::PopulateWidgetVectorsFromCurrentHTCHomeSettingsXmlFile()
-{
-    TiXmlDocument doc(M2DC::GetConstCharStarFromCString(M2DC::GetPathToHTCHomeSettingsXmlFileActual()));
-    bool loadOkay = doc.LoadFile();
-
-    if(loadOkay)
-    {
-        for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome");
-            htcHomeNode != NULL;
-            htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
-        {
-            for(TiXmlNode* tabsNode = htcHomeNode->FirstChild("Tabs");
-                tabsNode != NULL;
-                tabsNode = tabsNode->NextSibling("Tabs"))
-            {
-                for(TiXmlElement* tabsNodeChildElement = tabsNode->FirstChildElement();
-                    tabsNodeChildElement != NULL;
-                    tabsNodeChildElement = tabsNodeChildElement->NextSiblingElement())
-                {
-                    NameAndEnabledStateItem newTabEntry;
-                    newTabEntry.name = tabsNodeChildElement->Value();
-
-                    int enabled;
-                    tabsNodeChildElement->QueryIntAttribute("enable", &enabled);
-                    newTabEntry.enabled = (enabled == 0 ? FALSE : TRUE);
-
-                    m_currentWidgetVector.push_back(newTabEntry);
-                }
-            }
-        }
-    }
-
-    m_newWidgetVector = m_currentWidgetVector;
-}
-
-void CManilla2DConfigTabsDlg::WriteHTCHomeSettingsXmlFileFromNewWidgetVector()
-{
-    TiXmlDocument doc(M2DC::GetConstCharStarFromCString(M2DC::GetPathToHTCHomeSettingsXmlFileWorking()));
-    bool loadOkay = doc.LoadFile();
-
-    if(loadOkay)
-    {
-        TiXmlNode* firstHtcHomeNode = doc.FirstChild("HTCHome");
-
-        if(firstHtcHomeNode != NULL)
-        {
-            for(TiXmlNode* nextHtcHomeNode = firstHtcHomeNode->NextSibling("HTCHome");
-                nextHtcHomeNode != NULL;
-                nextHtcHomeNode = nextHtcHomeNode->NextSibling("HTCHome"))
-            {
-                // copy any child nodes to the first htchome node
-                for(TiXmlNode* nextHtcHomeNodeChild = nextHtcHomeNode->FirstChild();
-                    nextHtcHomeNodeChild != NULL;
-                    nextHtcHomeNodeChild = nextHtcHomeNodeChild->NextSibling())
-                {
-                    firstHtcHomeNode->InsertEndChild(*nextHtcHomeNodeChild);
-                }
-
-                // remove this secondary htchomenode
-                doc.RemoveChild(nextHtcHomeNode);
-            }
-
-            TiXmlNode* firstTabsNode = firstHtcHomeNode->FirstChild("Tabs");
-            
-            if(firstTabsNode != NULL)
-            {
-                for(TiXmlNode* nextTabsNode = firstTabsNode->NextSibling("Tabs");
-                    nextTabsNode != NULL;
-                    nextTabsNode = nextTabsNode->NextSibling("Tabs"))
-                {
-                    for(TiXmlNode* nextTabsNodeChild = nextTabsNode->FirstChild();
-                        nextTabsNodeChild != NULL;
-                        nextTabsNodeChild = nextTabsNodeChild->NextSibling())
-                    {
-                        firstTabsNode->InsertEndChild(*nextTabsNodeChild);
-                    }
-
-                    firstHtcHomeNode->RemoveChild(nextTabsNode);
-                }
-
-                // now we are guaranteed to be in the only tabs node that exists
-                vector<TiXmlElement> elementList;
-
-                // go through, set the attribute for enabled, copy the element to the vector, remove the element
-                for(TiXmlElement* tabsNodeChildElement = firstTabsNode->FirstChildElement();
-                    tabsNodeChildElement != NULL;
-                    tabsNodeChildElement = tabsNodeChildElement->NextSiblingElement())
-                {
-                    CString elementName(tabsNodeChildElement->Value());
-
-                    for(size_t i=0; i<m_newWidgetVector.size(); i++)
-                    {
-                        if(elementName == m_newWidgetVector[i].name)
-                        {
-                            tabsNodeChildElement->SetAttribute("enable", m_newWidgetVector[i].enabled);
-                            elementList.push_back(*tabsNodeChildElement);
-                            firstTabsNode->RemoveChild(tabsNodeChildElement);
-                            break;
-                        }
-                    }
-                }
-
-                for(size_t i=0; i<m_newWidgetVector.size(); i++)
-                {
-                    for(size_t j=0; j<elementList.size(); j++)
-                    {
-                        CString elementName(elementList[j].Value());
-
-                        if(elementName == m_newWidgetVector[i].name)
-                        {
-                            firstTabsNode->InsertEndChild(elementList[j]);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        doc.SaveFile();
-    }
-
-    m_currentWidgetVector = m_newWidgetVector;
 }
