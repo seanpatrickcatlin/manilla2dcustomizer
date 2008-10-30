@@ -57,7 +57,7 @@ int GetSysIlIndex(LPCTSTR szFileName)
 }
 
 CFileTreeDlg::CFileTreeDlg(CWnd* pParent, CString initialDirectory, CString fileExtension)
-	: CDialog(CFileTreeDlg::IDD, pParent)
+: CManilla2DConfigAbstractDlg(pParent, CFileTreeDlg::IDD, CFileTreeDlg::IDS_TAB, CFileTreeDlg::IDS_TITLE, true)
 {
     m_selectedFilePath = "";
     m_initialDirectory = initialDirectory;
@@ -77,8 +77,7 @@ void CFileTreeDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_FILE_TREE_CONTROL, m_fileTreeControl);
 }
 
-BEGIN_MESSAGE_MAP(CFileTreeDlg, CDialog)
-    ON_WM_PAINT()
+BEGIN_MESSAGE_MAP(CFileTreeDlg, CManilla2DConfigAbstractDlg)
     ON_NOTIFY(TVN_ITEMEXPANDING, IDC_FILE_TREE_CONTROL, &CFileTreeDlg::OnTvnItemexpandingFileTreeControl)
     ON_NOTIFY(NM_DBLCLK, IDC_FILE_TREE_CONTROL, &CFileTreeDlg::OnNMDblclkFileTreeControl)
 END_MESSAGE_MAP()
@@ -88,10 +87,7 @@ END_MESSAGE_MAP()
 
 BOOL CFileTreeDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
-	
-    m_cmdBar.Create(this);
-    m_cmdBar.InsertMenuBar(IDR_FILE_TREE_DLG_OKCANCEL_MENU);
+	CManilla2DConfigAbstractDlg::OnInitDialog();
 
     m_fileTreeControl.SetImageList(&m_systemImageList, TVSIL_NORMAL);
 
@@ -99,35 +95,6 @@ BOOL CFileTreeDlg::OnInitDialog()
     SetTreeSelection(m_initialDirectory);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
-}
-
-void CFileTreeDlg::OnPaint()
-{
-    CPaintDC dc(this);
-
-    int nWidth = dc.GetDeviceCaps(HORZRES);
-    const int nHeaderHeight = 24;
-
-    // paint title
-    CFont *pCurrentFont = dc.GetCurrentFont();
-    LOGFONT lf;
-    pCurrentFont->GetLogFont(&lf);
-    lf.lfWeight = FW_BOLD;
-
-    CFont newFont;
-    newFont.CreateFontIndirect(&lf);
-    CFont *pSave = dc.SelectObject(&newFont);
-    dc.SetTextColor(RGB(0, 0, 156));
-    dc.DrawText(TEXT("Choose a file"), CRect(8, 0, nWidth, nHeaderHeight), DT_VCENTER | DT_SINGLELINE); dc.SelectObject(pSave);
-
-    // paint line
-    CPen blackPen(PS_SOLID, 1, RGB(0,0,0));
-    CPen *pOldPen = dc.SelectObject(&blackPen);
-
-    dc.MoveTo(0, nHeaderHeight);
-    dc.LineTo(nWidth, nHeaderHeight);
-
-    dc.SelectObject(pOldPen); 
 }
 
 void CFileTreeDlg::OnOK()
@@ -313,7 +280,7 @@ void CFileTreeDlg::AddDirectoryToFileSystemTree(HTREEITEM parentItem, CString di
 
                     FileTreeItemData* ftid = new FileTreeItemData();
                     ftid->hItem = newItem;
-                    ftid->isDir = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
+                    ftid->isDir = ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
 
                     TVITEM tvi;
                     tvi.mask = TVIF_PARAM;

@@ -23,9 +23,10 @@
 #include <vector>
 
 #include "Manilla2DConfig.h"
+#include "Manilla2DConfigAbstractDlg.h"
 
 // CFileTreeDlg dialog
-class CFileTreeDlg : public CDialog
+class CFileTreeDlg : public CManilla2DConfigAbstractDlg
 {
 // Construction
 public:
@@ -33,14 +34,18 @@ public:
     ~CFileTreeDlg();
 
 // Dialog Data
-	enum { IDD = IDD_FILE_TREE_DLG };
+	enum
+    {
+        IDD = IDD_FILE_TREE_DLG,
+        IDS_TAB   = -1,
+        IDS_TITLE = IDS_FILE_TREE_TITLE_STR
+    };
 
     CString GetFilePath() { return m_selectedFilePath; };
 
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
-    void OnPaint();
     void OnOK();
     void OnCancel();
 
@@ -60,8 +65,6 @@ private:
     void PopulateFileTree();
     void SetTreeSelection(CString targetDirectory);
     CString GetTreeSelection();
-
-    CCommandBar m_cmdBar;
 
     CString m_targetFileExtension;
     CString m_selectedFilePath;

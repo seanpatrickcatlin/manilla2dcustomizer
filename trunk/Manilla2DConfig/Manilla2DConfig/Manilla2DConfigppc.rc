@@ -311,6 +311,8 @@ BEGIN
     IDS_M2DC_SOFTKEYS_TITLE_STR "Softkey Settings"
     IDS_M2DC_HOMEREG_TAB_STR "Home Reg"
     IDS_M2DC_HOMEREG_TITLE_STR "Home Tab Registry Settings"
+    IDS_FILE_TREE_TITLE_STR "Choose a file"
+    IDS_COLOR_PICKER_TITLE_STR "Coose a color"
 END
 
 #endif    // English (U.S.) resources

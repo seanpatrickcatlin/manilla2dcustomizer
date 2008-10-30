@@ -28,10 +28,11 @@ class CManilla2DConfigAbstractDlg : public CPropertyPage
 	//DECLARE_DYNAMIC(CManilla2DConfigAbstractDlg)
 
 public:
-	CManilla2DConfigAbstractDlg(CWnd* pParent = NULL, UINT dlgID = -1, UINT tabStrID = -1, UINT titleStrID = -1);   // standard constructor
+	CManilla2DConfigAbstractDlg(CWnd* pParent = NULL, UINT dlgID = -1, UINT tabStrID = -1, UINT titleStrID = -1, bool useOkCancelMenu = false);   // standard constructor
 	virtual ~CManilla2DConfigAbstractDlg();
 
 protected:
+    bool m_useOkCancelMenu;
     CString m_titleStr;
     void OnPaint();
 
