@@ -60,9 +60,6 @@ BOOL CManilla2DConfigThemesDlg::OnInitDialog()
 
     AfxGetApp()->BeginWaitCursor();
 
-    CString imageFilePath = M2DC::GetPathToM2DCThemesDirectory();
-    imageFilePath += "\\preview.jpg";
-
     RECT buttonRect;
     m_removeButton.GetWindowRect(&buttonRect);
 
@@ -105,9 +102,10 @@ BOOL CManilla2DConfigThemesDlg::OnSetActive()
 
     CPropertyPage::OnSetActive();
 
-    
     AfxGetApp()->BeginWaitCursor();
     RefreshThemeList();
+    m_themeChooserListBox.SetSel(0, TRUE);
+    OnLbnSelchangeM2dcThemeListbox();
     AfxGetApp()->EndWaitCursor();
 
     return retVal;
@@ -304,6 +302,7 @@ void CManilla2DConfigThemesDlg::OnLbnSelchangeM2dcThemeListbox()
 
     if((index < 0) || (index >= m_themeChooserListBox.GetCount()))
     {
+        AfxGetApp()->EndWaitCursor();
         return;
     }
 
