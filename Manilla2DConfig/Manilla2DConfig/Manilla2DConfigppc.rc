@@ -192,6 +192,13 @@ BEGIN
     PUSHBUTTON      "Set Defaults",IDC_M2DC_HOMEREG_DEFAULTS_BTN,53,134,50,14
 END
 
+IDD_M2DC_FONTS_DLG DIALOG  0, 0, 156, 156
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg"
+BEGIN
+    PUSHBUTTON      "",IDC_FONT_COLOR_BTN,47,54,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -280,6 +287,14 @@ BEGIN
         TOPMARGIN, 20
         BOTTOMMARGIN, 148
     END
+
+    IDD_M2DC_FONTS_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 152
+        TOPMARGIN, 20
+        BOTTOMMARGIN, 148
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -313,6 +328,8 @@ BEGIN
     IDS_M2DC_HOMEREG_TITLE_STR "Home Tab Registry Settings"
     IDS_FILE_TREE_TITLE_STR "Choose a file"
     IDS_COLOR_PICKER_TITLE_STR "Coose a color"
+    IDS_M2DC_FONTS_TAB_STR  "Fonts"
+    IDS_M2DC_FONTS_TITLE_STR "Manilla 2D Font Settings"
 END
 
 #endif    // English (U.S.) resources
