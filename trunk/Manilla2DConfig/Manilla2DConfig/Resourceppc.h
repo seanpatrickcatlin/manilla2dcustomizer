@@ -12,6 +12,7 @@
 #define IDD_M2DC_ABOUT_DLG              108
 #define IDD_M2DC_SOFTKEYS_DLG           109
 #define IDD_M2DC_HOMEREG_DLG            110
+#define IDD_M2DC_FONTS_DLG              111
 #define IDR_M2DC_ICO                    128
 #define IDR_APPLY_CANCEL_MENU           129
 #define IDR_OK_CANCEL_MENU              130
@@ -33,6 +34,8 @@
 #define IDS_M2DC_HOMEREG_TITLE_STR      146
 #define IDS_FILE_TREE_TITLE_STR         147
 #define IDS_COLOR_PICKER_TITLE_STR      148
+#define IDS_M2DC_FONTS_TAB_STR          149
+#define IDS_M2DC_FONTS_TITLE_STR        150
 #define IDC_M2DC_TABS_UP_BTN            1001
 #define IDC_M2DC_TABS_DOWN_BTN          1002
 #define IDC_M2DC_TABS_MAIN_LC           1003
@@ -82,6 +85,8 @@
 #define IDC_M2DC_CUSTOMERICON_BTN       1049
 #define IDC_M2DC_HIDENETWORKNAME_CHECK  1050
 #define IDC_M2DC_HOMEREG_DEFAULTS_BTN   1052
+#define IDC_BUTTON1                     1053
+#define IDC_FONT_COLOR_BTN              1053
 #define ID_RESTORE_DEFAULTS             32771
 #define IDT_M2DC_PROGRESS_TIMER         32772
 
@@ -89,9 +94,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        147
+#define _APS_NEXT_RESOURCE_VALUE        151
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1053
-#define _APS_NEXT_SYMED_VALUE           111
+#define _APS_NEXT_CONTROL_VALUE         1054
+#define _APS_NEXT_SYMED_VALUE           112
 #endif
 #endif

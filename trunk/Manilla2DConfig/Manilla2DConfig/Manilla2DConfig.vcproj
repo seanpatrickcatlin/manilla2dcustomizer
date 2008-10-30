@@ -401,11 +401,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Manilla2DConfigAbstractDlg.h.cpp"
+				RelativePath=".\Manilla2DConfigAbstractDlg.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\Manilla2DConfigDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Manilla2DConfigFontsDlg.cpp"
 				>
 			</File>
 			<File
@@ -442,6 +446,10 @@
 			</File>
 			<File
 				RelativePath=".\Manilla2DConfigUtils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SolidColorButton.cpp"
 				>
 			</File>
 			<File
@@ -751,6 +759,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Manilla2DConfigFontsDlg.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Manilla2DConfigHomeDlg.h"
 				>
 			</File>
@@ -788,6 +800,10 @@
 			</File>
 			<File
 				RelativePath=".\Resourceppc.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SolidColorButton.h"
 				>
 			</File>
 			<File

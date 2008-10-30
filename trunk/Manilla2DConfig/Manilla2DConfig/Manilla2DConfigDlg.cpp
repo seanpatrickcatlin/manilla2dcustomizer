@@ -24,6 +24,7 @@
 #include "Manilla2DConfigDlg.h"
 #include "Manilla2DConfigHomeDlg.h"
 #include "Manilla2DConfigTabsDlg.h"
+#include "Manilla2DConfigFontsDlg.h"
 #include "Manilla2DConfigAboutDlg.h"
 #include "Manilla2DConfigThemesDlg.h"
 #include "Manilla2DConfigHomeRegDlg.h"
@@ -83,6 +84,11 @@ void CManilla2DConfigDlg::SetupPages()
 
     // here is where we add new tabpages, the rest should be done automatically
     AddNewTabPage(new CManilla2DConfigThemesDlg(this));
+
+#ifdef DEBUG
+    AddNewTabPage(new CManilla2DConfigFontsDlg(this));
+#endif
+
     AddNewTabPage(new CManilla2DConfigSoftKeysDlg(this));
     AddNewTabPage(new CManilla2DConfigHomeRegDlg(this));
     AddNewTabPage(new CManilla2DConfigTabsDlg(this));
