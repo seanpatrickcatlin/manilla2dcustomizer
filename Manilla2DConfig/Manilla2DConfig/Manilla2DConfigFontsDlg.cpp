@@ -52,6 +52,7 @@ BOOL CManilla2DConfigFontsDlg::OnInitDialog()
 
 BEGIN_MESSAGE_MAP(CManilla2DConfigFontsDlg, CManilla2DConfigAbstractDlg)
     ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigFontsDlg::OnQuerySiblings)
+    ON_BN_CLICKED(IDC_FONT_COLOR_BTN, &CManilla2DConfigFontsDlg::OnBnClickedFontColorBtn)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigFontsDlg message handlers
@@ -59,4 +60,10 @@ END_MESSAGE_MAP()
 LRESULT CManilla2DConfigFontsDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
 {
     return 0;
+}
+
+void CManilla2DConfigFontsDlg::OnBnClickedFontColorBtn()
+{
+    
+    m_fontColorBtn.SetColorValues(255,0,0);
 }

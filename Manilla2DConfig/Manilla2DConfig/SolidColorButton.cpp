@@ -21,7 +21,7 @@
 CSolidColorButton::CSolidColorButton()
 : CButton()
 {
-    m_red = m_green = m_blue = 0;
+    m_red = m_green = m_blue = 192;
 }
 
 
@@ -77,32 +77,23 @@ void CSolidColorButton::SetColorValues(int red, int green, int blue)
     {
         m_blue = blue;
     }
+
+
 }
 
 BEGIN_MESSAGE_MAP(CSolidColorButton, CButton)
-    
+    ON_WM_PAINT()
 END_MESSAGE_MAP()
 
-void CSolidColorButton::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) 
+void CSolidColorButton::OnPaint() 
 {
-    CDC* pDC   = CDC::FromHandle(lpDrawItemStruct->hDC);
-    CRect rect = lpDrawItemStruct->rcItem;
-    UINT state = lpDrawItemStruct->itemState;
+    CPaintDC* pDC = new CPaintDC(this);
 
-    CString strText;
-    GetWindowText(strText);
+    CRect rect(0, 0, pDC->GetDeviceCaps(HORZRES), pDC->GetDeviceCaps(VERTRES));
 
-    // draw the control edges (DrawFrameControl is handy!)
+    rect.DeflateRect(CSize(GetSystemMetrics(SM_CXEDGE), GetSystemMetrics(SM_CYEDGE)));
 
-    if (state & ODS_SELECTED)
-        pDC->DrawFrameControl(rect, DFC_BUTTON, DFCS_BUTTONPUSH | DFCS_PUSHED);
-    else
-        pDC->DrawFrameControl(rect, DFC_BUTTON, DFCS_BUTTONPUSH);
-
-    // Deflate the drawing rect by the size of the button's edges
-
-    rect.DeflateRect( CSize(GetSystemMetrics(SM_CXEDGE), GetSystemMetrics(SM_CYEDGE)));
-
-    // Fill the interior color if necessary
     pDC->FillSolidRect(rect, RGB(m_red, m_green, m_blue)); // yellow
+
+    delete pDC;
 }
