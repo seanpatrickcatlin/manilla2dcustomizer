@@ -1012,11 +1012,18 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
         BeginMakingChanges();
         AfxGetApp()->BeginWaitCursor();
 
+        // backup launcher settings
         int launcherColumns = 0;
         int launcherRows = 0;
 
         M2DC::ReadLauncherValuesFromXml(launcherColumns, launcherRows);
 
+        // backup tab settings
+        NameAndEnabledState_vector_t tabWidgetVector;
+        tabWidgetVector.clear();
+        M2DC::ReadTabValuesFromXml(&tabWidgetVector);
+
+        // 
         std::vector<CString> originalThemeFilePathsList;
         GetVectorOfThemeFilesCurrentlyInUse(&originalThemeFilePathsList, true);
 
@@ -1167,7 +1174,11 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
         WriteValuesToXml(GetPathToHTCHomeSettingsXmlFileWorking(), &xmlSettings);
         */
 
+        // restore launcher settings
         M2DC::WriteLauncherValuesToXml(launcherColumns, launcherRows);
+
+        // restore tab settings
+        M2DC::WriteTabValuesToXml(&tabWidgetVector);
 
         AfxGetApp()->EndWaitCursor();
         EndMakingChanges();
@@ -2104,6 +2115,127 @@ void M2DC::WriteLauncherValuesToXml(int numberOfColumns, int numberOfRows)
                         else if(currentPropertyName.compare(launcherYIntervalStr) == 0)
                         {
                             launcherWidgetChildElement->SetAttribute("value", yIntStr.c_str());
+                        }
+                    }
+                }
+            }
+        }
+
+        doc.SaveFile();
+    }
+}
+
+void M2DC::ReadTabValuesFromXml(NameAndEnabledState_vector_t* tabValues)
+{
+    TiXmlDocument doc(M2DC::GetConstCharStarFromCString(M2DC::GetPathToHTCHomeSettingsXmlFileActual()));
+    bool loadOkay = doc.LoadFile();
+
+    if(loadOkay)
+    {
+        for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome");
+            htcHomeNode != NULL;
+            htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
+        {
+            for(TiXmlNode* tabsNode = htcHomeNode->FirstChild("Tabs");
+                tabsNode != NULL;
+                tabsNode = tabsNode->NextSibling("Tabs"))
+            {
+                for(TiXmlElement* tabsNodeChildElement = tabsNode->FirstChildElement();
+                    tabsNodeChildElement != NULL;
+                    tabsNodeChildElement = tabsNodeChildElement->NextSiblingElement())
+                {
+                    NameAndEnabledStateItem newTabEntry;
+                    newTabEntry.name = tabsNodeChildElement->Value();
+
+                    int enabled;
+                    tabsNodeChildElement->QueryIntAttribute("enable", &enabled);
+                    newTabEntry.enabled = (enabled == 0 ? FALSE : TRUE);
+
+                    tabValues->push_back(newTabEntry);
+                }
+            }
+        }
+    }
+}
+
+void M2DC::WriteTabValuesToXml(NameAndEnabledState_vector_t* tabValues)
+{
+
+    TiXmlDocument doc(M2DC::GetConstCharStarFromCString(M2DC::GetPathToHTCHomeSettingsXmlFileWorking()));
+    bool loadOkay = doc.LoadFile();
+
+    if(loadOkay)
+    {
+        TiXmlNode* firstHtcHomeNode = doc.FirstChild("HTCHome");
+
+        if(firstHtcHomeNode != NULL)
+        {
+            for(TiXmlNode* nextHtcHomeNode = firstHtcHomeNode->NextSibling("HTCHome");
+                nextHtcHomeNode != NULL;
+                nextHtcHomeNode = nextHtcHomeNode->NextSibling("HTCHome"))
+            {
+                // copy any child nodes to the first htchome node
+                for(TiXmlNode* nextHtcHomeNodeChild = nextHtcHomeNode->FirstChild();
+                    nextHtcHomeNodeChild != NULL;
+                    nextHtcHomeNodeChild = nextHtcHomeNodeChild->NextSibling())
+                {
+                    firstHtcHomeNode->InsertEndChild(*nextHtcHomeNodeChild);
+                }
+
+                // remove this secondary htchomenode
+                doc.RemoveChild(nextHtcHomeNode);
+            }
+
+            TiXmlNode* firstTabsNode = firstHtcHomeNode->FirstChild("Tabs");
+            
+            if(firstTabsNode != NULL)
+            {
+                for(TiXmlNode* nextTabsNode = firstTabsNode->NextSibling("Tabs");
+                    nextTabsNode != NULL;
+                    nextTabsNode = nextTabsNode->NextSibling("Tabs"))
+                {
+                    for(TiXmlNode* nextTabsNodeChild = nextTabsNode->FirstChild();
+                        nextTabsNodeChild != NULL;
+                        nextTabsNodeChild = nextTabsNodeChild->NextSibling())
+                    {
+                        firstTabsNode->InsertEndChild(*nextTabsNodeChild);
+                    }
+
+                    firstHtcHomeNode->RemoveChild(nextTabsNode);
+                }
+
+                // now we are guaranteed to be in the only tabs node that exists
+                vector<TiXmlElement> elementList;
+
+                // go through, set the attribute for enabled, copy the element to the vector, remove the element
+                for(TiXmlElement* tabsNodeChildElement = firstTabsNode->FirstChildElement();
+                    tabsNodeChildElement != NULL;
+                    tabsNodeChildElement = tabsNodeChildElement->NextSiblingElement())
+                {
+                    CString elementName(tabsNodeChildElement->Value());
+
+                    for(size_t i=0; i<tabValues->size(); i++)
+                    {
+                        if(elementName == (*tabValues)[i].name)
+                        {
+                            tabsNodeChildElement->SetAttribute("enable", (*tabValues)[i].enabled);
+                            elementList.push_back(*tabsNodeChildElement);
+                            firstTabsNode->RemoveChild(tabsNodeChildElement);
+                            break;
+                        }
+                    }
+                }
+
+                for(size_t i=0; i<tabValues->size(); i++)
+                {
+                    for(size_t j=0; j<elementList.size(); j++)
+                    {
+                        CString elementName(elementList[j].Value());
+
+                        if(elementName == (*tabValues)[i].name)
+                        {
+                            firstTabsNode->InsertEndChild(elementList[j]);
+                            break;
                         }
                     }
                 }

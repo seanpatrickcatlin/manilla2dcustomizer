@@ -8,6 +8,8 @@ v0.18.???
 - updated donator list
 - launcher are saved before applying a new theme and restored when the theme is fully applied
 - file dialog now compares extension string without regards to case
+- save and restore tab enable/disable states
+- fix bug when home XML line 3 would be checked inappropriately
 
 Oct-29-2008
 v0.17.183

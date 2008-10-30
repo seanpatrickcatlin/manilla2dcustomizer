@@ -63,7 +63,4 @@ private:
 
     int GetSelectedItemIndex();
     void UpdateListControlFromNewWidgetVector();
-
-    void PopulateWidgetVectorsFromCurrentHTCHomeSettingsXmlFile();
-	void WriteHTCHomeSettingsXmlFileFromNewWidgetVector();
 };

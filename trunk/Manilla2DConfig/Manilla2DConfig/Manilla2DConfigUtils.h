@@ -134,5 +134,8 @@ namespace M2DC
     void ReadLauncherValuesFromXml(int &numberOfColumns, int &numberOfRows);
     void WriteLauncherValuesToXml(int numberOfColumns, int numberOfRows);
 
+    void ReadTabValuesFromXml(NameAndEnabledState_vector_t* tabValues);
+    void WriteTabValuesToXml(NameAndEnabledState_vector_t* tabValues);
+
     void SetNewTskTheme(CString pathToTskTheme);
 };
