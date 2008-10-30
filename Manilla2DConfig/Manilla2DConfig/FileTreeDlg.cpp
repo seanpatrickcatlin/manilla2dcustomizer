@@ -301,7 +301,7 @@ void CFileTreeDlg::AddDirectoryToFileSystemTree(HTREEITEM parentItem, CString di
 
                 for(size_t i=0; (i<validExtensions.size()) && (!addItem); i++)
                 {
-                    addItem = (fileExtension == validExtensions[i]);
+                    addItem = (fileExtension.CompareNoCase(validExtensions[i]) == 0);
                 }
 
                 if(addItem)

@@ -55,7 +55,4 @@ private:
     CButton m_launcher3RowRadioButton;
     CButton m_launcher6RowRadioButton;
     CButton m_launcher9RowRadioButton;
-
-    void ReadValuesFromXml();
-    void WriteValuesToXml();
 };

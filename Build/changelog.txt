@@ -6,6 +6,8 @@ v0.18.???
 - When adding a file to the shortcut the base name (no exe or lnk) is set as the softkey name
 - file dialog now sorts directory and files alphabetically, listing directories first
 - updated donator list
+- launcher are saved before applying a new theme and restored when the theme is fully applied
+- file dialog now compares extension string without regards to case
 
 Oct-29-2008
 v0.17.183

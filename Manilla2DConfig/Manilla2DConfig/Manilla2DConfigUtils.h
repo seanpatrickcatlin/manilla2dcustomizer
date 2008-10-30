@@ -131,5 +131,8 @@ namespace M2DC
     void AddToM2DCThemeList(CString pathToTheme);
     void RemoveFromM2DCThemeList(CString themeName);
 
+    void ReadLauncherValuesFromXml(int &numberOfColumns, int &numberOfRows);
+    void WriteLauncherValuesToXml(int numberOfColumns, int numberOfRows);
+
     void SetNewTskTheme(CString pathToTskTheme);
 };
