@@ -52,4 +52,5 @@ public:
 
 public:
     CSolidColorButton m_fontColorBtn;
+    afx_msg void OnBnClickedFontColorBtn();
 };

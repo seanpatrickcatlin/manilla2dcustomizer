@@ -32,7 +32,7 @@ private:
     int m_blue;
 
 public:
-    void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
+    void OnPaint();
 
     void GetColorValues(int &red, int &green, int &blue);
     void SetColorValues(int red, int green, int blue);

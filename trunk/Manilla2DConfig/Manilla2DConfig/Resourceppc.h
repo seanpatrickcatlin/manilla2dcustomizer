@@ -84,9 +84,17 @@
 #define IDC_M2DC_CUSTOMERICON_EDIT      1048
 #define IDC_M2DC_CUSTOMERICON_BTN       1049
 #define IDC_M2DC_HIDENETWORKNAME_CHECK  1050
-#define IDC_M2DC_HOMEREG_DEFAULTS_BTN   1052
-#define IDC_BUTTON1                     1053
-#define IDC_FONT_COLOR_BTN              1053
+#define IDC_M2DC_HOMEREG_DEFAULTS_BTN   1051
+#define IDC_FONT_COLOR_BTN              1052
+#define IDC_FONT_PURPOSE_COMBO          1053
+#define IDC_FONT_FACE_COMBO             1054
+#define IDC_FONT_SIZE_COMBO             1055
+#define IDC_FONT_BOLD_CHECK             1056
+#define IDC_FONT_ITALIC_CHECK           1057
+#define IDC_FONT_ALIGN_COMBO            1058
+#define IDC_FONT_DEFAULT_CHECK          1059
+#define IDC_FONT_RESET_ALL_COMBO        1060
+#define IDC_FONT_PREVIEW_EDIT           1061
 #define ID_RESTORE_DEFAULTS             32771
 #define IDT_M2DC_PROGRESS_TIMER         32772
 
@@ -96,7 +104,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        151
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1054
+#define _APS_NEXT_CONTROL_VALUE         1062
 #define _APS_NEXT_SYMED_VALUE           112
 #endif
 #endif
