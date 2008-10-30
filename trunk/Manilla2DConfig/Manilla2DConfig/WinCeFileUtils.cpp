@@ -102,7 +102,7 @@ bool WinCeFileUtils::FileExists(CString pathToFile)
     return retVal;
 }
 
-bool WinCeFileUtils::DirExists(CString pathToDir)
+bool WinCeFileUtils::IsDir(CString pathToDir)
 {
     bool retVal = false;
 

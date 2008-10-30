@@ -24,6 +24,12 @@
 #include "FileTreeDlg.h"
 #include "WinCeFileUtils.h"
 
+struct FileTreeItemData
+{
+    HTREEITEM hItem;
+    bool isDir;
+};
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -160,35 +166,42 @@ static int CALLBACK DirThenFileAplhaCB(LPARAM lParam1, LPARAM lParam2, LPARAM lP
     if(pTreeCtrl != NULL)
     {
         int img1A, img1B, img2A, img2B;
-        HTREEITEM hItem1 = (HTREEITEM)lParam1;
-        HTREEITEM hItem2 = (HTREEITEM)lParam2;
 
-        if((hItem1 != NULL) && (hItem2 != NULL))
+        FileTreeItemData* ftidItem1 = (FileTreeItemData*)lParam1;
+        FileTreeItemData* ftidItem2 = (FileTreeItemData*)lParam2;
+
+        if((ftidItem1 != NULL) && (ftidItem2 != NULL))
         {
-            pTreeCtrl->GetItemImage(hItem1, img1A, img1B);
-            pTreeCtrl->GetItemImage(hItem2, img2A, img2B);
+            HTREEITEM hItem1 = ftidItem1->hItem;
+            HTREEITEM hItem2 = ftidItem2->hItem;
 
-            int folderImage = GetSysIlIndex(TEXT("\\"));
-            
-            CString itemStr1 = pTreeCtrl->GetItemText(hItem1);
-            CString itemStr2 = pTreeCtrl->GetItemText(hItem2);
+            if((hItem1 != NULL) && (hItem2 != NULL))
+            {
+                pTreeCtrl->GetItemImage(hItem1, img1A, img1B);
+                pTreeCtrl->GetItemImage(hItem2, img2A, img2B);
 
-            if((img1A == folderImage) && (img2A == folderImage))
-            {
-                retVal = itemStr1.CompareNoCase(itemStr2);
+                int folderImage = GetSysIlIndex(TEXT("\\"));
+
+                CString itemStr1 = pTreeCtrl->GetItemText(hItem1);
+                CString itemStr2 = pTreeCtrl->GetItemText(hItem2);
+
+                if(ftidItem1->isDir && ftidItem2->isDir)
+                {
+                    retVal = itemStr1.CompareNoCase(itemStr2);
+                }
+                else if(ftidItem1->isDir)
+                {
+                    retVal = -1;
+                }
+                else if(ftidItem2->isDir)
+                {
+                    retVal = 1;
+                }
+                else
+                {
+                    retVal = itemStr1.CompareNoCase(itemStr2);
+                }   
             }
-            else if(img1A == folderImage)
-            {
-                retVal = -1;
-            }
-            else if(img2A == folderImage)
-            {
-                retVal = 1;
-            }
-            else
-            {
-                retVal = itemStr1.CompareNoCase(itemStr2);
-            }   
         }
     }
 
@@ -298,9 +311,13 @@ void CFileTreeDlg::AddDirectoryToFileSystemTree(HTREEITEM parentItem, CString di
                     HTREEITEM newItem = m_fileTreeControl.InsertItem(
                         findData.cFileName, imageIndex, imageIndex, parentItem, TVI_LAST);
 
+                    FileTreeItemData* ftid = new FileTreeItemData();
+                    ftid->hItem = newItem;
+                    ftid->isDir = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
+
                     TVITEM tvi;
                     tvi.mask = TVIF_PARAM;
-                    tvi.lParam = (LPARAM)newItem;
+                    tvi.lParam = (LPARAM)ftid;
                     tvi.hItem = newItem;
                     m_fileTreeControl.SetItem(&tvi);
 
