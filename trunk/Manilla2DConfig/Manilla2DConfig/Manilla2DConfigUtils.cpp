@@ -1012,6 +1012,11 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
         BeginMakingChanges();
         AfxGetApp()->BeginWaitCursor();
 
+        int launcherColumns = 0;
+        int launcherRows = 0;
+
+        M2DC::ReadLauncherValuesFromXml(launcherColumns, launcherRows);
+
         std::vector<CString> originalThemeFilePathsList;
         GetVectorOfThemeFilesCurrentlyInUse(&originalThemeFilePathsList, true);
 
@@ -1161,6 +1166,8 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
         ReadValuesFromXml(GetPathToHTCHomeSettingsXmlFileActiveTheme(), &xmlSettings);
         WriteValuesToXml(GetPathToHTCHomeSettingsXmlFileWorking(), &xmlSettings);
         */
+
+        M2DC::WriteLauncherValuesToXml(launcherColumns, launcherRows);
 
         AfxGetApp()->EndWaitCursor();
         EndMakingChanges();
@@ -1965,6 +1972,146 @@ CString M2DC::GetPathOfM2DCThemePreviewFromName(CString themeName)
     }
 
     return retVal;
+}
+
+
+
+void M2DC::ReadLauncherValuesFromXml(int &numberOfColumns, int &numberOfRows)
+{
+    numberOfRows = 0;
+    numberOfColumns = 0;
+    
+    std::string launcherRowStr = "IDLAUNCHERWG_ROW";
+    std::string launcherColStr = "IDLAUNCHERWG_COLUMN";
+
+    TiXmlDocument doc(M2DC::GetConstCharStarFromCString(M2DC::GetPathToHTCHomeSettingsXmlFileActual()));
+    bool loadOkay = doc.LoadFile();
+
+    if(loadOkay)
+    {
+        for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome");
+            htcHomeNode != NULL;
+            htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
+        {
+            for(TiXmlNode* widgetPropertyNode = htcHomeNode->FirstChild("WidgetProperty");
+                widgetPropertyNode != NULL;
+                widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
+            {
+                for(TiXmlNode* launcherWidgetNode = widgetPropertyNode->FirstChild("LauncherWidget");
+                    launcherWidgetNode != NULL;
+                    launcherWidgetNode = launcherWidgetNode->NextSibling("LauncherWidget"))
+                {
+                    for(TiXmlElement* launcherWidgetChildElement = launcherWidgetNode->FirstChildElement();
+                        launcherWidgetChildElement != NULL;
+                        launcherWidgetChildElement = launcherWidgetChildElement->NextSiblingElement())
+                    {
+                        std::string currentPropertyName = launcherWidgetChildElement->Attribute("name");
+
+                        if(currentPropertyName.compare(launcherColStr) == 0)
+                        {
+                            launcherWidgetChildElement->QueryIntAttribute("value", &numberOfColumns);
+                        }
+                        else if(currentPropertyName.compare(launcherRowStr) == 0)
+                        {
+                            launcherWidgetChildElement->QueryIntAttribute("value", &numberOfRows);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void M2DC::WriteLauncherValuesToXml(int numberOfColumns, int numberOfRows)
+{
+    if((numberOfColumns < 3) || (numberOfColumns > 5))
+    {
+        AfxMessageBox(TEXT("ERROR numcol != 3, 4, or 5"));
+        return;
+    }
+
+    if((numberOfRows%3 != 0) || (numberOfColumns < 3) || (numberOfColumns > 9))
+    {
+        AfxMessageBox(TEXT("ERROR numrow != 3, 6, or 9"));
+        return;
+    }
+
+    std::string launcherRowStr = "IDLAUNCHERWG_ROW";
+    std::string launcherColStr = "IDLAUNCHERWG_COLUMN";
+    std::string launcherStartPointStr = "IDLAUNCHERWG_START_POINT";
+    std::string launcherYIntervalStr = "IDLAUNCHERWG_Y_INTERVAL";
+
+    char intVal[2];
+    intVal[0] = '0' + numberOfRows;
+    intVal[1] = '\0';
+    std::string rowStr = intVal;
+
+    intVal[0] = '0' + numberOfColumns;
+    intVal[1] = '\0';
+    std::string colStr = intVal;
+
+    std::string startPoint = "20, 2";
+    if(numberOfColumns == 4)
+    {
+        startPoint = "5, 2";
+    }
+    else if(numberOfColumns == 5)
+    {
+        startPoint = "0, 0";
+    }
+
+    std::string yIntStr = "2";
+    if(numberOfColumns == 5)
+    {
+        yIntStr = "0";
+    }
+
+    TiXmlDocument doc(M2DC::GetConstCharStarFromCString(M2DC::GetPathToHTCHomeSettingsXmlFileWorking()));
+    bool loadOkay = doc.LoadFile();
+
+    if(loadOkay)
+    {
+        for(TiXmlNode* htcHomeNode = doc.FirstChild("HTCHome");
+            htcHomeNode != NULL;
+            htcHomeNode = htcHomeNode->NextSibling("HTCHome"))
+        {
+            for(TiXmlNode* widgetPropertyNode = htcHomeNode->FirstChild("WidgetProperty");
+                widgetPropertyNode != NULL;
+                widgetPropertyNode = widgetPropertyNode->NextSibling("WidgetProperty"))
+            {
+                for(TiXmlNode* launcherWidgetNode = widgetPropertyNode->FirstChild("LauncherWidget");
+                    launcherWidgetNode != NULL;
+                    launcherWidgetNode = launcherWidgetNode->NextSibling("LauncherWidget"))
+                {
+                    for(TiXmlElement* launcherWidgetChildElement = launcherWidgetNode->FirstChildElement();
+                        launcherWidgetChildElement != NULL;
+                        launcherWidgetChildElement = launcherWidgetChildElement->NextSiblingElement())
+                    {
+                        std::string currentPropertyName = launcherWidgetChildElement->Attribute("name");
+
+                        if(currentPropertyName.compare(launcherColStr) == 0)
+                        {
+                            launcherWidgetChildElement->SetAttribute("value", colStr.c_str());
+                        }
+                        else if(currentPropertyName.compare(launcherStartPointStr) == 0)
+                        {
+                            launcherWidgetChildElement->SetAttribute("value", startPoint.c_str());
+                        }
+                        else if(currentPropertyName.compare(launcherRowStr) == 0)
+                        {
+                            launcherWidgetChildElement->SetAttribute("value", rowStr.c_str());
+                        }
+                        else if(currentPropertyName.compare(launcherYIntervalStr) == 0)
+                        {
+                            launcherWidgetChildElement->SetAttribute("value", yIntStr.c_str());
+                        }
+                    }
+                }
+            }
+        }
+
+        doc.SaveFile();
+    }
 }
 
 void M2DC::SetNewTskTheme(CString pathToTskTheme)
