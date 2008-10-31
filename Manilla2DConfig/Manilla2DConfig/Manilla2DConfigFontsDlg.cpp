@@ -68,27 +68,81 @@ BOOL CManilla2DConfigFontsDlg::OnInitDialog()
     Manilla2DFontObject fontObj;
 
     fontObj.purpose = _T("Home Tab Title Text");
-    fontObj.registryKey = _T("SOFTWARE\\HTC\\Manila2D\\FONT\\WIDGET\\0");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\0");
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
 
     fontObj.purpose = _T("Scrolling Tab Text");
-    fontObj.registryKey = _T("SOFTWARE\\HTC\\Manila2D\\FONT\\WIDGET\\1");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\1");
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
 
     fontObj.purpose = _T("Title Text");
-    fontObj.registryKey = _T("SOFTWARE\\HTC\\Manila2D\\FONT\\WIDGET\\2");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\2");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Unread Count Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\3");
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
 
     fontObj.purpose = _T("Missed Calls Text");
-    fontObj.registryKey = _T("SOFTWARE\\HTC\\Manila2D\\FONT\\WIDGET\\HOME\\BUTTON\\0");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\HOME\\BUTTON\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Home Tab Appointment Time");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\HOME\\DATE\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Home Tabe Appointment Description");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\HOME\\DATE\\1");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Music Tab Song Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\MUSIC\\INFO\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Music Tab Artist Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\MUSIC\\INFO\\1");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Music Tab Time Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\MUSIC\\INFO\\2");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Photo Tab Count Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\PHOTO\\INDICATOR\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Weather Tab High Temperature Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\WEATHER\\FORECAST\\HIGHTEMPRATURE\\LargeView");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Weather Tab Four Day Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\WEATHER\\FORECAST\\DAY\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Weather Tab Current Temperature");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\WEATHER\\CURRENTTMP\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Weather Tab Location Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\WEATHER\\LOCATION\\0");
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
 
     InitializeFontControls();
-
     
     // TODO - Implement the preview feature, until then hide it
     m_fontPreviewEdit.ShowWindow(FALSE);
@@ -198,7 +252,6 @@ void CManilla2DConfigFontsDlg::OnOK()
 void CManilla2DConfigFontsDlg::EnableFontControls(BOOL bEnable/* = 1*/)
 {
     m_fontColorBtn.EnableWindow(bEnable);
-    m_fontPurposeCombo.EnableWindow(bEnable);
     m_fontFaceCombo.EnableWindow(bEnable);
     m_fontSizeCombo.EnableWindow(bEnable);
     m_fontBoldCheck.EnableWindow(bEnable);

@@ -15,7 +15,7 @@
     along with Manilla2DCustomizer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// FileTreeDlg.h : header file
+// ColorPickerDlg.h : header file
 //
 
 #pragma once
@@ -76,4 +76,6 @@ private:
 public:
     void SetColorValues(int red, int green, int blue);
     void GetColorValues(int &red, int &green, int &blue);
+    CComboBox m_colorBasicCombo;
+    afx_msg void OnCbnSelchangeColorBasicCombo();
 };

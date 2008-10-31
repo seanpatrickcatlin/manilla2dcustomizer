@@ -1,7 +1,8 @@
 Manilla 2D Customizer changelog
 
-Oct-30-2008
+Oct-31-2008
 v0.18.???
+- Added font picker tab... this is highly experimental and may be buggy, please provide feedback
 - re-ordered the tabs, now the tabs that you are more likely to use multiple times are shown first
 - When adding a file to the shortcut the base name (no exe or lnk) is set as the softkey name
 - file dialog now sorts directory and files alphabetically, listing directories first
