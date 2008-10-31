@@ -22,6 +22,7 @@
 #include "Manilla2DConfig.h"
 #include "Manilla2DConfigUtils.h"
 #include "Manilla2DConfigFontsDlg.h"
+#include "ColorPickerDlg.h"
 
 
 // CManilla2DConfigFontsDlg dialog
@@ -88,6 +89,10 @@ BOOL CManilla2DConfigFontsDlg::OnInitDialog()
 
     InitializeFontControls();
 
+    
+    // TODO - Implement the preview feature, until then hide it
+    m_fontPreviewEdit.ShowWindow(FALSE);
+
     return FALSE;
 }
 
@@ -113,12 +118,24 @@ LRESULT CManilla2DConfigFontsDlg::OnQuerySiblings(WPARAM wParam, LPARAM lParam)
 
 void CManilla2DConfigFontsDlg::OnBnClickedFontColorBtn()
 {   
-    // TODO - launch the color picker dialog
-    m_fontColorBtn.SetColorValues(255,255,0);
+    CColorPickerDlg cpd(this);
 
-    // TODO - update the button with the new color from the color picker
+    if(cpd.DoModal() != IDOK)
+    {
+        return;
+    }
 
-    // TODO - update the font object with the new color
+    int red = 0;
+    int green = 255;
+    int blue = 255;
+
+    // TODO - read the colors from the actual color picker dialog
+
+
+    // update the button
+    m_fontColorBtn.SetColorValues(red, green, blue);
+
+    // update the font object
     Manilla2DFontObject* curFont = GetCurrentFontSelection();
     if(curFont != NULL)
     {
@@ -126,8 +143,7 @@ void CManilla2DConfigFontsDlg::OnBnClickedFontColorBtn()
 
         CString colorString;
 
-        // TODO - Use the actual rgb values
-        colorString.Format(_T("%d,%d,%d"), 255, 255, 0);
+        colorString.Format(_T("%d,%d,%d"), red, green, blue);
 
         curFont->fontColor = colorString;
     }
