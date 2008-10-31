@@ -67,6 +67,8 @@ public:
     afx_msg void OnBnClickedFontResetAllCombo();
     afx_msg void OnBnClickedFontDefaultCheck();
 
+    void OnOK();
+
     void AddFont(CString fontFaceName);
 
 private:
@@ -74,4 +76,13 @@ private:
     void InitializeFontControls();
 
     std::vector<Manilla2DFontObject> m_m2dFontObjects;
+
+    Manilla2DFontObject* GetCurrentFontSelection();
+public:
+    afx_msg void OnBnClickedFontBoldCheck();
+    afx_msg void OnBnClickedFontItalicCheck();
+    afx_msg void OnCbnSelchangeFontAlignCombo();
+    afx_msg void OnCbnSelchangeFontSizeCombo();
+    afx_msg void OnCbnSelchangeFontFaceCombo();
+    afx_msg void OnCbnSelchangeFontPurposeCombo();
 };
