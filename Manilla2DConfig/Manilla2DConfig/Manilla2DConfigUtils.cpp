@@ -2353,6 +2353,7 @@ void M2DC::ReadManilla2DFontFromRegistry(Manilla2DFontObject* pM2dfo)
         return;
     }
 
+    valueBufferSize = MAX_PATH;
     retVal = rKey.QueryStringValue(_T("Face"), valueBuffer, &valueBufferSize);
     if(retVal != ERROR_SUCCESS)
     {
@@ -2377,6 +2378,7 @@ void M2DC::ReadManilla2DFontFromRegistry(Manilla2DFontObject* pM2dfo)
     }
     pM2dfo->fontFmt = dwordValue;
 
+    valueBufferSize = MAX_PATH;
     retVal = rKey.QueryStringValue(_T("Clr"), valueBuffer, &valueBufferSize);
     if(retVal != ERROR_SUCCESS)
     {
@@ -2401,6 +2403,7 @@ void M2DC::ReadManilla2DFontFromRegistry(Manilla2DFontObject* pM2dfo)
     }
     pM2dfo->fontItalic = dwordValue;
     
+    valueBufferSize = MAX_PATH;
     retVal = rKey.QueryStringValue(_T("Rc"), valueBuffer, &valueBufferSize);
     if(retVal != ERROR_SUCCESS)
     {
@@ -2423,7 +2426,15 @@ void M2DC::WriteManilla2DFontToRegistry(Manilla2DFontObject* pM2dfo)
 
     if(pM2dfo->fontDefault)
     {
-        rKey.DeleteSubKey(pM2dfo->registryKey);
+        LONG retVal = rKey.Open(HKEY_LOCAL_MACHINE, _T(""));
+
+        if(retVal == ERROR_SUCCESS)
+        {
+            rKey.DeleteSubKey(pM2dfo->registryKey);
+
+            CString debugMsg = _T("Deleted key ");
+            debugMsg += pM2dfo->registryKey;
+        }
     }
     else
     {
