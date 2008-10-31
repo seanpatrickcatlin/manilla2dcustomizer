@@ -65,6 +65,23 @@ struct HTCHomeSettingsStruct
     std::vector<TiXmlElement> locationWidgetPropertyElements;
 };
 
+struct Manilla2DFontObject
+{
+    bool fontDefault;
+
+    CString purpose;
+
+    CString registryKey;
+
+    CString fontFace;
+    int fontSize;
+    int fontFmt;
+    CString fontColor;
+    int fontBold;
+    int fontItalic;
+    CString fontRc;
+};
+
 namespace M2DC
 {
     void SetAllowPopupDialogs(bool allow);
@@ -138,4 +155,7 @@ namespace M2DC
     void WriteTabValuesToXml(NameAndEnabledState_vector_t* tabValues);
 
     void SetNewTskTheme(CString pathToTskTheme);
+
+    void ReadManilla2DFontFromRegistry(Manilla2DFontObject* pM2dfo);
+    void WriteManilla2DFontToRegistry(Manilla2DFontObject* pM2dfo);
 };
