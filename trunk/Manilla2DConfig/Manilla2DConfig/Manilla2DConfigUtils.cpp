@@ -16,6 +16,7 @@
 */
 
 #include "StdAfx.h"
+#include <atlbase.h>
 #include "Manilla2DConfigUtils.h"
 #include "Manilla2DConfigProgressDlg.h"
 
@@ -2320,4 +2321,123 @@ void M2DC::SetNewTskTheme(CString pathToTskTheme)
         }
     }
     */
+}
+
+void M2DC::ReadManilla2DFontFromRegistry(Manilla2DFontObject* pM2dfo)
+{
+    if(pM2dfo == NULL)
+    {
+        return;
+    }
+
+    pM2dfo->fontBold = 0;
+    pM2dfo->fontItalic = 0;
+    pM2dfo->fontFmt = 3;
+    pM2dfo->fontRc = _T("0,0,0,0");
+    pM2dfo->fontColor = _T("255,255,255");
+    pM2dfo->fontSize = 0;
+    pM2dfo->fontFace = _T("");
+    pM2dfo->fontDefault = true;
+
+    LONG retVal;
+    CRegKey rKey;
+    TCHAR valueBuffer[MAX_PATH];
+    DWORD valueBufferSize = MAX_PATH;
+
+    DWORD dwordValue;
+
+    retVal = rKey.Open(HKEY_LOCAL_MACHINE, pM2dfo->registryKey);
+    if(retVal != ERROR_SUCCESS)
+    {
+        pM2dfo->fontDefault = true;
+        return;
+    }
+
+    retVal = rKey.QueryStringValue(_T("Face"), valueBuffer, &valueBufferSize);
+    if(retVal != ERROR_SUCCESS)
+    {
+        pM2dfo->fontDefault = true;
+        return;
+    }
+    pM2dfo->fontFace = valueBuffer;
+
+    retVal = rKey.QueryDWORDValue(_T("Size"), dwordValue);
+    if(retVal != ERROR_SUCCESS)
+    {
+        pM2dfo->fontDefault = true;
+        return;
+    }
+    pM2dfo->fontSize = dwordValue;
+
+    retVal = rKey.QueryDWORDValue(_T("Fmt"), dwordValue);
+    if(retVal != ERROR_SUCCESS)
+    {
+        pM2dfo->fontDefault = true;
+        return;
+    }
+    pM2dfo->fontFmt = dwordValue;
+
+    retVal = rKey.QueryStringValue(_T("Clr"), valueBuffer, &valueBufferSize);
+    if(retVal != ERROR_SUCCESS)
+    {
+        pM2dfo->fontDefault = true;
+        return;
+    }
+    pM2dfo->fontColor = valueBuffer;
+    
+    retVal = rKey.QueryDWORDValue(_T("Bold"), dwordValue);
+    if(retVal != ERROR_SUCCESS)
+    {
+        pM2dfo->fontDefault = true;
+        return;
+    }
+    pM2dfo->fontBold = dwordValue;
+    
+    retVal = rKey.QueryDWORDValue(_T("Italic"), dwordValue);
+    if(retVal != ERROR_SUCCESS)
+    {
+        pM2dfo->fontDefault = true;
+        return;
+    }
+    pM2dfo->fontItalic = dwordValue;
+    
+    retVal = rKey.QueryStringValue(_T("Rc"), valueBuffer, &valueBufferSize);
+    if(retVal != ERROR_SUCCESS)
+    {
+        pM2dfo->fontDefault = true;
+        return;
+    }
+    pM2dfo->fontRc = valueBuffer;
+
+    pM2dfo->fontDefault = false;
+}
+
+void M2DC::WriteManilla2DFontToRegistry(Manilla2DFontObject* pM2dfo)
+{
+    if(pM2dfo == NULL)
+    {
+        return;
+    }
+
+    CRegKey rKey;
+
+    if(pM2dfo->fontDefault)
+    {
+        rKey.DeleteSubKey(pM2dfo->registryKey);
+    }
+    else
+    {
+        LONG retVal = rKey.Open(HKEY_LOCAL_MACHINE, pM2dfo->registryKey);
+
+        if(retVal == ERROR_SUCCESS)
+        {
+            rKey.SetStringValue(_T("Face"), pM2dfo->fontFace);
+            rKey.SetDWORDValue(_T("Size"), pM2dfo->fontSize);
+            rKey.SetDWORDValue(_T("Fmt"), pM2dfo->fontFmt);
+            rKey.SetStringValue(_T("Clr"), pM2dfo->fontColor);
+            rKey.SetDWORDValue(_T("Bold"), pM2dfo->fontBold);
+            rKey.SetDWORDValue(_T("Italic"), pM2dfo->fontItalic);
+            rKey.SetStringValue(_T("Rc"), pM2dfo->fontRc);
+        }
+    }
 }

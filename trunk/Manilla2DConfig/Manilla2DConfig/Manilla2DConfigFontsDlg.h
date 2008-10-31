@@ -21,6 +21,7 @@
 #include "Manilla2DConfigUtils.h"
 #include "Manilla2DConfigAbstractDlg.h"
 #include "afxwin.h"
+#include <vector>
 
 // CManilla2DConfigFontsDlg dialog
 
@@ -57,7 +58,7 @@ public:
     CButton m_fontBoldCheck;
     CButton m_fontItalicCheck;
     CSolidColorButton m_fontColorBtn;
-    CComboBox m_fontAlignComb;
+    CComboBox m_fontAlignCombo;
     CButton m_fontDefaultCheck;
     CEdit m_fontPreviewEdit;
     CButton m_fontResetAllButton;
@@ -66,6 +67,11 @@ public:
     afx_msg void OnBnClickedFontResetAllCombo();
     afx_msg void OnBnClickedFontDefaultCheck();
 
+    void AddFont(CString fontFaceName);
+
 private:
     void EnableFontControls(BOOL bEnable = TRUE);
+    void InitializeFontControls();
+
+    std::vector<Manilla2DFontObject> m_m2dFontObjects;
 };
