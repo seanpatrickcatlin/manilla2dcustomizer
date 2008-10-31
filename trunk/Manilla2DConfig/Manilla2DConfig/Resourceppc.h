@@ -13,6 +13,7 @@
 #define IDD_M2DC_SOFTKEYS_DLG           109
 #define IDD_M2DC_HOMEREG_DLG            110
 #define IDD_M2DC_FONTS_DLG              111
+#define IDD_COLOR_PICKER_DLG            112
 #define IDR_M2DC_ICO                    128
 #define IDR_APPLY_CANCEL_MENU           129
 #define IDR_OK_CANCEL_MENU              130
