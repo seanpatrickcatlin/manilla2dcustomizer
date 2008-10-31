@@ -96,6 +96,12 @@
 #define IDC_FONT_DEFAULT_CHECK          1059
 #define IDC_FONT_RESET_ALL_COMBO        1060
 #define IDC_FONT_PREVIEW_EDIT           1061
+#define IDC_COLOR_EXAMPLE_BUTTON        1062
+#define IDC_COLOR_RED_SLIDER            1063
+#define IDC_COLOR_GREEN_SLIDER          1064
+#define IDC_SLIDER3                     1065
+#define IDC_COLOR_BLUE_SLIDER           1065
+#define IDC_COLOR_VALUE_TEXT            1067
 #define ID_RESTORE_DEFAULTS             32771
 #define IDT_M2DC_PROGRESS_TIMER         32772
 
@@ -105,7 +111,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        151
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1062
+#define _APS_NEXT_CONTROL_VALUE         1068
 #define _APS_NEXT_SYMED_VALUE           112
 #endif
 #endif

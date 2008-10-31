@@ -24,6 +24,9 @@
 
 #include "Manilla2DConfig.h"
 #include "Manilla2DConfigAbstractDlg.h"
+#include "afxwin.h"
+
+#include "SolidColorButton.h"
 
 // CColorPickerDlg dialog
 class CColorPickerDlg : public CManilla2DConfigAbstractDlg
@@ -53,4 +56,24 @@ protected:
 	virtual BOOL OnInitDialog();
 
 	DECLARE_MESSAGE_MAP()
+public:
+    CSliderCtrl m_colorRedSlider;
+    CSliderCtrl m_colorGreenSlider;
+    CSliderCtrl m_colorBlueSlider;
+    CStatic m_colorValueStaticText;
+    CSolidColorButton m_colorExampleButton;
+    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+
+private:
+    bool bHasBeenInitialized;
+
+    int m_red;
+    int m_green;
+    int m_blue;
+
+    void UpdateColorControls();
+
+public:
+    void SetColorValues(int red, int green, int blue);
+    void GetColorValues(int &red, int &green, int &blue);
 };
