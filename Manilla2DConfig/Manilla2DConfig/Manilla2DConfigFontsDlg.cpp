@@ -41,11 +41,24 @@ void CManilla2DConfigFontsDlg::DoDataExchange(CDataExchange* pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_FONT_COLOR_BTN, m_fontColorBtn);
+    DDX_Control(pDX, IDC_FONT_PURPOSE_COMBO, m_fontPurposeCombo);
+    DDX_Control(pDX, IDC_FONT_FACE_COMBO, m_fontFaceCombo);
+    DDX_Control(pDX, IDC_FONT_SIZE_COMBO, m_fontSizeCombo);
+    DDX_Control(pDX, IDC_FONT_BOLD_CHECK, m_fontBoldCheck);
+    DDX_Control(pDX, IDC_FONT_ITALIC_CHECK, m_fontItalicCheck);
+    DDX_Control(pDX, IDC_FONT_DEFAULT_CHECK, m_fontDefaultCheck);
+    DDX_Control(pDX, IDC_FONT_PREVIEW_EDIT, m_fontPreviewEdit);
+    DDX_Control(pDX, IDC_FONT_RESET_ALL_COMBO, m_fontResetAllButton);
+    DDX_Control(pDX, IDC_FONT_ALIGN_COMBO, m_fontAlignComb);
 }
 
 BOOL CManilla2DConfigFontsDlg::OnInitDialog()
 {
     CManilla2DConfigAbstractDlg::OnInitDialog();
+
+    EnableFontControls(FALSE);
+
+    m_fontDefaultCheck.SetCheck(BST_CHECKED);
 
     return FALSE;
 }
@@ -53,6 +66,8 @@ BOOL CManilla2DConfigFontsDlg::OnInitDialog()
 BEGIN_MESSAGE_MAP(CManilla2DConfigFontsDlg, CManilla2DConfigAbstractDlg)
     ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigFontsDlg::OnQuerySiblings)
     ON_BN_CLICKED(IDC_FONT_COLOR_BTN, &CManilla2DConfigFontsDlg::OnBnClickedFontColorBtn)
+    ON_BN_CLICKED(IDC_FONT_RESET_ALL_COMBO, &CManilla2DConfigFontsDlg::OnBnClickedFontResetAllCombo)
+    ON_BN_CLICKED(IDC_FONT_DEFAULT_CHECK, &CManilla2DConfigFontsDlg::OnBnClickedFontDefaultCheck)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigFontsDlg message handlers
@@ -66,4 +81,48 @@ void CManilla2DConfigFontsDlg::OnBnClickedFontColorBtn()
 {
     
     m_fontColorBtn.SetColorValues(255,0,0);
+}
+
+void CManilla2DConfigFontsDlg::OnBnClickedFontResetAllCombo()
+{
+    EnableFontControls(FALSE);
+
+    m_fontDefaultCheck.SetCheck(BST_CHECKED);
+
+    // loop through all of the different Manilla2D Font Entries
+
+
+    // set the font purpose to the first one in the combo box
+}
+
+void CManilla2DConfigFontsDlg::OnBnClickedFontDefaultCheck()
+{
+    BOOL setDefault = TRUE;
+
+    if(m_fontDefaultCheck.GetCheck() == BST_CHECKED)
+    {
+        setDefault = FALSE;
+    }
+
+    EnableFontControls(setDefault);
+}
+
+void CManilla2DConfigFontsDlg::EnableFontControls(BOOL bEnable/* = 1*/)
+{
+    m_fontColorBtn.EnableWindow(bEnable);
+    m_fontPurposeCombo.EnableWindow(bEnable);
+    m_fontFaceCombo.EnableWindow(bEnable);
+    m_fontSizeCombo.EnableWindow(bEnable);
+    m_fontBoldCheck.EnableWindow(bEnable);
+    m_fontItalicCheck.EnableWindow(bEnable);
+    m_fontAlignComb.EnableWindow(bEnable);
+
+    if(bEnable == TRUE)
+    {
+        m_fontPreviewEdit.SetWindowTextW(TEXT("Preview Text AaBbCcDdEeFf"));
+    }
+    else
+    {
+        m_fontPreviewEdit.SetWindowTextW(TEXT(""));
+    }
 }

@@ -51,6 +51,21 @@ public:
 	DECLARE_MESSAGE_MAP()
 
 public:
+    CComboBox m_fontPurposeCombo;
+    CComboBox m_fontFaceCombo;
+    CComboBox m_fontSizeCombo;
+    CButton m_fontBoldCheck;
+    CButton m_fontItalicCheck;
     CSolidColorButton m_fontColorBtn;
+    CComboBox m_fontAlignComb;
+    CButton m_fontDefaultCheck;
+    CEdit m_fontPreviewEdit;
+    CButton m_fontResetAllButton;
+
     afx_msg void OnBnClickedFontColorBtn();
+    afx_msg void OnBnClickedFontResetAllCombo();
+    afx_msg void OnBnClickedFontDefaultCheck();
+
+private:
+    void EnableFontControls(BOOL bEnable = TRUE);
 };

@@ -78,22 +78,75 @@ void CSolidColorButton::SetColorValues(int red, int green, int blue)
         m_blue = blue;
     }
 
-
+    Invalidate();
 }
 
 BEGIN_MESSAGE_MAP(CSolidColorButton, CButton)
-    ON_WM_PAINT()
+    //ON_WM_DRAWITEM()
 END_MESSAGE_MAP()
 
-void CSolidColorButton::OnPaint() 
+/*
+BOOL CSolidColorButton::OnEraseBkgnd(CDC* pDC)
 {
-    CPaintDC* pDC = new CPaintDC(this);
+    if(IsWindowEnabled() == TRUE)
+    {
+        CRect rect;
+        GetWindowRect(&rect);
+        rect.DeflateRect(CSize(GetSystemMetrics(SM_CXEDGE), GetSystemMetrics(SM_CYEDGE)));
+        pDC->FillSolidRect(rect, RGB(m_red, m_green, m_blue));
+        return FALSE;
+    }
+    else
+    {
+        return CButton::OnEraseBkgnd(pDC);
+    }
+}
+*/
 
-    CRect rect(0, 0, pDC->GetDeviceCaps(HORZRES), pDC->GetDeviceCaps(VERTRES));
+void CSolidColorButton::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
+{
+    CDC dc;
+    dc.Attach(lpDrawItemStruct->hDC);     //Get device context object
+    CRect rt;
+    rt = lpDrawItemStruct->rcItem;        //Get button rect
 
-    rect.DeflateRect(CSize(GetSystemMetrics(SM_CXEDGE), GetSystemMetrics(SM_CYEDGE)));
+    if(IsWindowEnabled() == TRUE)
+    {
+        dc.FillSolidRect(rt, RGB(m_red, m_green, m_blue));
+    }
+    else
+    {
+        dc.FillSolidRect(rt, RGB(192, 192, 192));
 
-    pDC->FillSolidRect(rect, RGB(m_red, m_green, m_blue)); // yellow
+    }
 
-    delete pDC;
+    UINT state = lpDrawItemStruct->itemState; //Get state of the button
+    if ( (state & ODS_SELECTED) )            // If it is pressed
+    {
+        dc.DrawEdge(rt,EDGE_SUNKEN,BF_RECT);    // Draw a sunken face
+    }
+    else
+    {
+        dc.DrawEdge(rt,EDGE_RAISED,BF_RECT);    // Draw a raised face
+    }
+
+    dc.SetTextColor(RGB(255,255,120));
+    // Set the color of the caption to be yellow
+    CString strTemp;
+    GetWindowText(strTemp);
+    // Get the caption which have been set
+    dc.DrawText(strTemp,rt,DT_CENTER|DT_VCENTER|DT_SINGLELINE);
+    // Draw out the caption
+    if ( (state & ODS_FOCUS ) )       // If the button is focused
+    {
+        // Draw a focus rect which indicates the user
+        // that the button is focused
+        int iChange = 3;
+        rt.top += iChange;
+        rt.left += iChange;
+        rt.right -= iChange;
+        rt.bottom -= iChange;
+        dc.DrawFocusRect(rt);
+    }
+    dc.Detach();
 }
