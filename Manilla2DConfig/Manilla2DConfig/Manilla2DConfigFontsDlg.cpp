@@ -120,17 +120,20 @@ void CManilla2DConfigFontsDlg::OnBnClickedFontColorBtn()
 {   
     CColorPickerDlg cpd(this);
 
+    int red = 0;
+    int green = 0;
+    int blue = 0;
+
+    m_fontColorBtn.GetColorValues(red, green, blue);
+    cpd.SetColorValues(red, green, blue);
+
     if(cpd.DoModal() != IDOK)
     {
         return;
     }
 
-    int red = 0;
-    int green = 255;
-    int blue = 255;
-
-    // TODO - read the colors from the actual color picker dialog
-
+    // read the colors from the actual color picker dialog
+    cpd.GetColorValues(red, green, blue);
 
     // update the button
     m_fontColorBtn.SetColorValues(red, green, blue);

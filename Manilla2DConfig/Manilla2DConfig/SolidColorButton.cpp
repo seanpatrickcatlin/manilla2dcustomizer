@@ -82,26 +82,7 @@ void CSolidColorButton::SetColorValues(int red, int green, int blue)
 }
 
 BEGIN_MESSAGE_MAP(CSolidColorButton, CButton)
-    //ON_WM_DRAWITEM()
 END_MESSAGE_MAP()
-
-/*
-BOOL CSolidColorButton::OnEraseBkgnd(CDC* pDC)
-{
-    if(IsWindowEnabled() == TRUE)
-    {
-        CRect rect;
-        GetWindowRect(&rect);
-        rect.DeflateRect(CSize(GetSystemMetrics(SM_CXEDGE), GetSystemMetrics(SM_CYEDGE)));
-        pDC->FillSolidRect(rect, RGB(m_red, m_green, m_blue));
-        return FALSE;
-    }
-    else
-    {
-        return CButton::OnEraseBkgnd(pDC);
-    }
-}
-*/
 
 void CSolidColorButton::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
