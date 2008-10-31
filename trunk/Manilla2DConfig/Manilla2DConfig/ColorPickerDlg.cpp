@@ -15,7 +15,7 @@
     along with Manilla2DCustomizer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// FileTreeDlg.cpp : implementation file
+// ColorPickerDlg.cpp : implementation file
 //
 
 #include "stdafx.h"
@@ -49,10 +49,12 @@ void CColorPickerDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_COLOR_BLUE_SLIDER, m_colorBlueSlider);
     DDX_Control(pDX, IDC_COLOR_VALUE_TEXT, m_colorValueStaticText);
     DDX_Control(pDX, IDC_COLOR_EXAMPLE_BUTTON, m_colorExampleButton);
+    DDX_Control(pDX, IDC_COLOR_BASIC_COMBO, m_colorBasicCombo);
 }
 
 BEGIN_MESSAGE_MAP(CColorPickerDlg, CManilla2DConfigAbstractDlg)
     ON_WM_HSCROLL()
+    ON_CBN_SELCHANGE(IDC_COLOR_BASIC_COMBO, &CColorPickerDlg::OnCbnSelchangeColorBasicCombo)
 END_MESSAGE_MAP()
 
 
@@ -61,6 +63,16 @@ END_MESSAGE_MAP()
 BOOL CColorPickerDlg::OnInitDialog()
 {
 	CManilla2DConfigAbstractDlg::OnInitDialog();
+
+    m_colorBasicCombo.AddString(_T("White"));
+    m_colorBasicCombo.AddString(_T("Black"));
+    m_colorBasicCombo.AddString(_T("Red"));
+    m_colorBasicCombo.AddString(_T("Green"));
+    m_colorBasicCombo.AddString(_T("Blue"));
+    m_colorBasicCombo.AddString(_T("Yellow"));
+    m_colorBasicCombo.AddString(_T("Cyan"));
+    m_colorBasicCombo.AddString(_T("Fuschia"));
+    m_colorBasicCombo.SetCurSel(0);
 
     m_colorRedSlider.SetRange(0, 255);
     m_colorGreenSlider.SetRange(0, 255);
@@ -156,5 +168,49 @@ void CColorPickerDlg::UpdateColorControls()
         CString colorDisplayString;
         colorDisplayString.Format(_T("%d,%d,%d"), m_red, m_green, m_blue);
         m_colorValueStaticText.SetWindowTextW(colorDisplayString);
+    }
+}
+
+void CColorPickerDlg::OnCbnSelchangeColorBasicCombo()
+{
+    int curSel = m_colorBasicCombo.GetCurSel();
+
+    if(curSel >= 0)
+    {
+        CString selectedColor;
+        m_colorBasicCombo.GetLBText(curSel, selectedColor);
+
+        if(selectedColor.CompareNoCase(_T("White")) == 0)
+        {
+            SetColorValues(255, 255, 255);
+        }
+        else if(selectedColor.CompareNoCase(_T("Black")) == 0)
+        {
+            SetColorValues(0, 0, 0);
+        }
+        else if(selectedColor.CompareNoCase(_T("Red")) == 0)
+        {
+            SetColorValues(255, 0, 0);
+        }
+        else if(selectedColor.CompareNoCase(_T("Green")) == 0)
+        {
+            SetColorValues(0, 255, 0);
+        }
+        else if(selectedColor.CompareNoCase(_T("Blue")) == 0)
+        {
+            SetColorValues(0, 0, 255);
+        }
+        else if(selectedColor.CompareNoCase(_T("Yellow")) == 0)
+        {
+            SetColorValues(255, 255, 0);
+        }
+        else if(selectedColor.CompareNoCase(_T("Cyan")) == 0)
+        {
+            SetColorValues(0, 255, 255);
+        }
+        else if(selectedColor.CompareNoCase(_T("Fuschia")) == 0)
+        {
+            SetColorValues(255, 0, 255);
+        }
     }
 }
