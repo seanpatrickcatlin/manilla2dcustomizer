@@ -12,9 +12,6 @@
 		<Platform
 			Name="Windows Mobile 6 Professional SDK (ARMV4I)"
 		/>
-		<Platform
-			Name="Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -78,95 +75,6 @@
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="$(OutDir)/Manilla2DConfigSetup.lib"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCCodeSignTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-			<DeploymentTool
-				ForceDirty="-1"
-				RemoteDirectory=""
-				RegisterOutput="0"
-				AdditionalFiles=""
-			/>
-			<DebuggerTool
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-			OutputDirectory="Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
-			IntermediateDirectory="Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
-			ConfigurationType="2"
-			UseOfMFC="1"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES)"
-				MkTypLibCompatible="false"
-				TargetEnvironment="1"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				ExecutionBucket="7"
-				AdditionalIncludeDirectories="..\..\ThirdParty\tinyxml_2_5_3;..\..\ThirdParty\zip_utils_src"
-				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_USRDLL;$(ARCHFAM);$(_ARCHFAM_);POCKETPC2003_UI_MODEL"
-				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES)"
-				Culture="1033"
-				AdditionalIncludeDirectories="$(IntDir)"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions=" /subsystem:windowsce,5.02"
-				OutputFile="$(OutDir)/Manilla2DConfigSetup.dll"
-				LinkIncremental="2"
-				ModuleDefinitionFile=".\Manilla2DConfigSetup.def"
-				GenerateDebugInformation="true"
-				StackReserveSize="65536"
-				StackCommitSize="4096"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/Manilla2DConfigSetup.lib"
-				TargetMachine="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -282,95 +190,6 @@
 			<DebuggerTool
 			/>
 		</Configuration>
-		<Configuration
-			Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-			OutputDirectory="Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
-			IntermediateDirectory="Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
-			ConfigurationType="2"
-			UseOfMFC="1"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES)"
-				MkTypLibCompatible="false"
-				TargetEnvironment="1"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				ExecutionBucket="7"
-				AdditionalIncludeDirectories="..\..\ThirdParty\tinyxml_2_5_3;..\..\ThirdParty\zip_utils_src"
-				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_USRDLL;$(ARCHFAM);$(_ARCHFAM_);POCKETPC2003_UI_MODEL"
-				RuntimeLibrary="0"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES)"
-				Culture="1033"
-				AdditionalIncludeDirectories="$(IntDir)"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions=" /subsystem:windowsce,5.02"
-				OutputFile="$(OutDir)/Manilla2DConfigSetup.dll"
-				LinkIncremental="1"
-				ModuleDefinitionFile=".\Manilla2DConfigSetup.def"
-				GenerateDebugInformation="true"
-				StackReserveSize="65536"
-				StackCommitSize="4096"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/Manilla2DConfigSetup.lib"
-				TargetMachine="0"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCCodeSignTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-			<DeploymentTool
-				ForceDirty="-1"
-				RemoteDirectory=""
-				RegisterOutput="0"
-				AdditionalFiles=""
-			/>
-			<DebuggerTool
-			/>
-		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -396,23 +215,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -436,23 +239,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -472,23 +259,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -515,23 +286,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
 						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -551,23 +306,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
 						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -587,23 +326,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
 						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -623,23 +346,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
 						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -663,23 +370,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
 						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -699,23 +390,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
 						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
