@@ -72,22 +72,22 @@ BOOL CManilla2DConfigFontsDlg::OnInitDialog()
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
 
-    fontObj.purpose = _T("Scrolling Tab Text");
+    fontObj.purpose = _T("Big Icon Scrolling Tab Text");
     fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\1");
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
 
-    fontObj.purpose = _T("Title Text");
+    fontObj.purpose = _T("Generic Tab Title Text");
     fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\2");
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
 
-    fontObj.purpose = _T("Unread Count Text");
+    fontObj.purpose = _T("Tab Bar Unread Msg Count Text");
     fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\3");
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
 
-    fontObj.purpose = _T("Missed Calls Text");
+    fontObj.purpose = _T("Home Tab Missed Calls Text");
     fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\HOME\\BUTTON\\0");
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
@@ -127,7 +127,17 @@ BOOL CManilla2DConfigFontsDlg::OnInitDialog()
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
 
-    fontObj.purpose = _T("Weather Tab Four Day Text");
+    fontObj.purpose = _T("Weather Tab Low Temperature Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\WEATHER\\FORECAST\\LOWTEMPRATURE\\LargeView");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+    
+    fontObj.purpose = _T("Weather Tab Forecast Temperature Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\WEATHER\\FORECAST\\LOWTEMPRATURE\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Weather Tab Forecast Day Name Text");
     fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\WEATHER\\FORECAST\\DAY\\0");
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
