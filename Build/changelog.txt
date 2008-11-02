@@ -1,5 +1,14 @@
 Manilla 2D Customizer changelog
 
+Nov-02-2008
+v0.19.203
+- Added 2 new font items, weather tab low temperature, and weather tab forecast temperature
+    neither of thee will allow a color ot be set, not sure why, if you figure it out please
+    let me know
+- removed experimental WM5 support... the cab will allow installation on a WM 5 device,
+    but this app is being built with the WM6 SDK.  The WM5 supprt messed up my build process
+- fixed bug with version not being displayed correctly on the about page (see above reason)
+
 Oct-31-2008
 v0.18.200
 - Added font picker tab... this is highly experimental and may be buggy, please provide feedback
