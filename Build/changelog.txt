@@ -1,5 +1,10 @@
 Manilla 2D Customizer changelog
 
+Nov-??-2008
+v0.20.2??
+- updated about page with new donators
+- added new font entry for the weather pag error text
+
 Nov-02-2008
 v0.19.203
 - Added 2 new font items, weather tab low temperature, and weather tab forecast temperature
