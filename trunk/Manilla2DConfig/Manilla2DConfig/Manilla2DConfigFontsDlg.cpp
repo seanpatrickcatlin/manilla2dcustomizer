@@ -97,7 +97,7 @@ BOOL CManilla2DConfigFontsDlg::OnInitDialog()
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
 
-    fontObj.purpose = _T("Home Tabe Appointment Description");
+    fontObj.purpose = _T("Home Tab Appointment Description");
     fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\HOME\\DATE\\1");
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
