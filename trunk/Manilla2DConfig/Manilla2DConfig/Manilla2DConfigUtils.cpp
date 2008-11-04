@@ -534,8 +534,7 @@ void M2DC::EndMakingChanges()
     }
 }
 
-
-
+/*
 void M2DC::UpdateHTCHomeSettingsXmlWithActualFilePaths(std::vector<CString>* pPathVector, CString xmlFilePath)
 {
     if(pPathVector == NULL)
@@ -721,6 +720,7 @@ void M2DC::UpdateHTCHomeSettingsXmlWithActualFilePaths(std::vector<CString>* pPa
         doc.SaveFile();
     }
 }
+*/
 
 void M2DC::GetVectorOfThemeFilesFromHTCHomeSettingsXml(std::vector<CString>* pPathVector, CString xmlFilePath)
 {
@@ -957,7 +957,6 @@ void M2DC::BackupAndDisableTodayScreen()
         BackupTodayScreenItemsRegHive();
         DisableAllTodayScreenItems();
         RefreshTodayScreen();
-        Sleep(5000);
         AfxGetApp()->EndWaitCursor();
 
         g_bRestoreTodayScreenNeeded = true;
@@ -988,6 +987,7 @@ int M2DC::SetActiveTheme(CString themeName)
     return SetActiveThemeFromPath(pathToTheme, themeName);
 }
 
+/*
 int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
 {
     int retVal = 0;
@@ -1165,15 +1165,12 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
         CloseZip(hz);
 
         UpdateHTCHomeSettingsXmlWithActualFilePaths(&originalThemeFilePathsList, GetPathToHTCHomeSettingsXmlFileWorking());
-
-        /*
         // Read specific values from the HTCHomeSettings.xml file in the ActiveThemeDirectory
         // write the values to the working xml file
-        HTCHomeSettingsStruct xmlSettings;
+        //HTCHomeSettingsStruct xmlSettings;
 
-        ReadValuesFromXml(GetPathToHTCHomeSettingsXmlFileActiveTheme(), &xmlSettings);
-        WriteValuesToXml(GetPathToHTCHomeSettingsXmlFileWorking(), &xmlSettings);
-        */
+        //ReadValuesFromXml(GetPathToHTCHomeSettingsXmlFileActiveTheme(), &xmlSettings);
+        //WriteValuesToXml(GetPathToHTCHomeSettingsXmlFileWorking(), &xmlSettings);
 
         // restore launcher settings
         M2DC::WriteLauncherValuesToXml(launcherColumns, launcherRows);
@@ -1187,8 +1184,144 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
 
     return retVal;
 }
+*/
 
+int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
+{
+    int retVal = 0;
 
+    // unzip the files to their appropriate destinations according to the
+    // paths from the current XML file
+    if(WinCeFileUtils::FileExists(themePath))
+    {
+        // add a 5 second wait ot make sure that the files can be overwritten
+        Sleep(5000);
+
+        if(!FileIsValidM2DCTheme(themePath))
+        {
+            CString msg;
+            msg = TEXT("Unable to find HTCHomeSettings.xml or a hh_* file in the selected theme.\n");
+            msg += TEXT("Unable to apply");
+
+            AfxMessageBox(msg, MB_OK);
+
+            return -1;
+        }
+
+        // delete the last active theme file
+        DeleteFile(GetPathToHTCHomeSettingsXmlFileActiveTheme());
+
+        BeginMakingChanges();
+        AfxGetApp()->BeginWaitCursor();
+
+        std::vector<CString> pathsToThemeFiles;
+
+        GetVectorOfThemeFilesCurrentlyInUse(&pathsToThemeFiles, true);
+
+        HZIP hz = OpenZip(themePath, 0);
+        ZIPENTRY ze;
+
+        // -1 gives overall information about the zipfile
+        GetZipItem(hz,-1,&ze);
+
+        CString progMsg;
+        CManilla2DConfigProgressDlg* pProgDlg = NULL;
+        
+        if(g_bAllowPopupDialogs)
+        {
+            pProgDlg = new CManilla2DConfigProgressDlg(AfxGetApp()->GetMainWnd());
+        }
+
+        int numitems = ze.index;
+
+        if(pProgDlg != NULL)
+        {
+            progMsg = TEXT("Applying theme: ");
+            progMsg += themeName;
+            pProgDlg->BeginTrackingProgress(progMsg, 0, numitems);
+        }
+
+        for(int zi=0; zi<numitems; zi++)
+        {
+            ZIPENTRY ze;
+
+            GetZipItem(hz, zi, &ze);            // fetch individual details
+
+            CString destString;
+            CString filePathFromZip = ze.name;
+            CString fileNameNoPath = filePathFromZip.Mid(filePathFromZip.ReverseFind('/')+1);
+            CString fileExt = fileNameNoPath.Mid(fileNameNoPath.ReverseFind('.')+1);
+
+            if(fileNameNoPath.Compare(TEXT("HTCHomeSettings.xml")) == 0)
+            {
+                destString = GetPathToHTCHomeSettingsXmlFileActiveTheme();
+            }
+
+            if(fileExt.CompareNoCase(TEXT("tsk")) == 0)
+            {
+                destString = WinCeFileUtils::GetPathToWindowsDirectory();
+                destString += "\\";
+                destString += fileNameNoPath;
+            }
+
+            for(size_t i=0; ((i<pathsToThemeFiles.size()) && (destString.GetLength() <= 0)); i++)
+            {
+                CString currentThemeFile = pathsToThemeFiles[i];
+                if(currentThemeFile.Find(fileNameNoPath) != -1)
+                {
+                    destString = currentThemeFile;
+                }
+            }
+
+            if(destString.GetLength() > 0)
+            {
+                if(pProgDlg != NULL)
+                {
+                    progMsg.Format(TEXT("Applying theme: %s\nFile %d of %d\n"), themeName.GetBuffer(), zi, numitems);
+                    progMsg += fileNameNoPath;
+                    pProgDlg->UpdateStatus(progMsg, zi);
+                }
+
+                DWORD dwAttributes =  GetFileAttributes(destString);
+                SetFileAttributes(destString, FILE_ATTRIBUTE_NORMAL);
+                UnzipItem(hz, zi, destString);
+                SetFileAttributes(destString, dwAttributes);
+
+                if(fileExt.CompareNoCase(TEXT("tsk")) == 0)
+                {
+                    SetNewTskTheme(destString);
+                }
+            }
+            else
+            {
+                TRACE(TEXT("Skipped "));
+                TRACE(fileNameNoPath);
+                TRACE(TEXT("\n"));
+            }
+        }
+
+        if(pProgDlg != NULL)
+        {
+            pProgDlg->EndTrackingProgress();
+            delete pProgDlg;
+            pProgDlg = NULL;
+        }
+
+        CloseZip(hz);
+
+        // Read specific values from the HTCHomeSettings.xml file in the ActiveThemeDirectory
+        // write the values to the working xml file
+        HTCHomeSettingsStruct xmlSettings;
+
+        ReadValuesFromXml(GetPathToHTCHomeSettingsXmlFileActiveTheme(), &xmlSettings);
+        WriteValuesToXml(GetPathToHTCHomeSettingsXmlFileWorking(), &xmlSettings);
+
+        AfxGetApp()->EndWaitCursor();
+        EndMakingChanges();
+    }
+
+    return retVal;
+}
 
 void M2DC::GetNamesOfAvailableM2DCThemes(std::vector<CString>* pThemeNameVector)
 {

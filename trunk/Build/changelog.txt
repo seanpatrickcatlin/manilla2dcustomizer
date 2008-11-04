@@ -1,9 +1,12 @@
 Manilla 2D Customizer changelog
 
-Nov-??-2008
+Nov-04-2008
 v0.20.2??
+- reverted xml file handling back to the version 13 method, the new method caused the latest
+    build of M2DC to not load after a theme was set through M2DC.
 - updated about page with new donators
 - added new font entry for the weather pag error text
+- fixed a spelling error (thanks p1tater)
 
 Nov-02-2008
 v0.19.203
