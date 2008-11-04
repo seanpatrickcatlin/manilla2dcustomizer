@@ -122,7 +122,7 @@ namespace M2DC
 
     void GetVectorOfThemeFilesCurrentlyInUse(std::vector<CString>* pPathVector, bool includeNonXmlFiles);
     void GetVectorOfThemeFilesFromHTCHomeSettingsXml(std::vector<CString>* pPathVector, CString xmlFilePath);
-    void UpdateHTCHomeSettingsXmlWithActualFilePaths(std::vector<CString>* pPathVector, CString xmlFIlePath);
+    //void UpdateHTCHomeSettingsXmlWithActualFilePaths(std::vector<CString>* pPathVector, CString xmlFIlePath);
 
     void SetInstallDirectory(CString installDirectory);
 
