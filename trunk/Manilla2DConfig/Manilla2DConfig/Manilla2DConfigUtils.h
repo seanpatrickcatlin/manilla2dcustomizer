@@ -95,6 +95,8 @@ namespace M2DC
     void RestoreHTCHomeSettingsXmlFromBackup();
     void BackupActiveTheme(bool overwritePreviousBackup = false);
     void RestoreActiveThemeFromBackup();
+    void BackupManila2DRegistryKey(bool overwritePreviousBackup = false);
+    void RestoreManila2DRegistryKey();
 
     void RestoreAndReEnableTodayScreen();
 
@@ -109,6 +111,7 @@ namespace M2DC
     CString GetPathToM2DCThemesDirectory();
 
     CString GetPathToThemeBackupFile();
+    CString GetPathToManila2DRegistryKeyBackupFile();
     CString GetPathToHTCHomeSettingsXmlFileActual();
     CString GetPathToHTCHomeSettingsXmlFileBackup();
     CString GetPathToHTCHomeSettingsXmlFileWorking();
@@ -137,6 +140,7 @@ namespace M2DC
     CString GetPathToNullThemePreview();
     CString GetPathToM2DCThemeListXml();
     
+    void GetPathsOfM2DCThemeFolders(std::vector<CString>* pFolderNameVector);
     void GetNamesOfAvailableM2DCThemes(std::vector<CString>* pThemeNameVector);
     CString GetPathOfM2DCThemeFromName(CString themeName);
     CString GetPathOfM2DCThemePreviewFromName(CString themeName);
@@ -145,6 +149,7 @@ namespace M2DC
     int SetActiveTheme(CString themeName);
     int SetActiveThemeFromPath(CString themePath, CString themeName);
 
+    void AddFolderToM2DCThemeList(CString pathToFolder);
     void AddToM2DCThemeList(CString pathToTheme);
     void RemoveFromM2DCThemeList(CString themeName);
 

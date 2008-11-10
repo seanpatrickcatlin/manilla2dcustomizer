@@ -103,6 +103,7 @@ BOOL CManilla2DConfigThemesDlg::OnSetActive()
     CPropertyPage::OnSetActive();
 
     AfxGetApp()->BeginWaitCursor();
+    M2DC::AddFolderToM2DCThemeList(M2DC::GetPathToM2DCThemesDirectory());
     RefreshThemeList();
     m_themeChooserListBox.SetSel(0, TRUE);
     OnLbnSelchangeM2dcThemeListbox();
@@ -143,7 +144,13 @@ void CManilla2DConfigThemesDlg::OnBnClickedM2dcThemeImportBtn()
         AfxGetApp()->BeginWaitCursor();
         CString pathToNewTheme = fileDlg.GetFilePath();
 
-        if(WinCeFileUtils::FileExists(pathToNewTheme))
+        if(WinCeFileUtils::IsDir(pathToNewTheme))
+        {
+            M2DC::AddFolderToM2DCThemeList(pathToNewTheme);
+
+            RefreshThemeList();
+        }
+        else if(WinCeFileUtils::FileExists(pathToNewTheme))
         {
             if(!M2DC::FileIsValidM2DCTheme(pathToNewTheme))
             {

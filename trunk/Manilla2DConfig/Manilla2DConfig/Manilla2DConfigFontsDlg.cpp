@@ -102,6 +102,41 @@ BOOL CManilla2DConfigFontsDlg::OnInitDialog()
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
 
+    fontObj.purpose = _T("Home Tab Alarm 0 Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\HOME\\ALARM\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Home Tab Alarm 1 Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\HOME\\ALARM\\1");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Messaging Tab Message Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\MESSAGE\\MESSAGE\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Messaging Tab Message Number Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\MESSAGE\\NUMBER\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Messaging Tab No Message Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\MESSAGE\\NOMESSAGE\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Messaging Tab Message Time Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\MESSAGE\\TIME\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Messaging Tab Message Sender Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\MESSAGE\\SENDER\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
     fontObj.purpose = _T("Music Tab Song Text");
     fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\MUSIC\\INFO\\0");
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
@@ -124,6 +159,11 @@ BOOL CManilla2DConfigFontsDlg::OnInitDialog()
 
     fontObj.purpose = _T("Weather Tab Current Temperature Text");
     fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\WEATHER\\CURRENTTMP\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Weather Tab Weather Description Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\WEATHER\\DESCRIPTION\\0");
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
 
@@ -152,8 +192,63 @@ BOOL CManilla2DConfigFontsDlg::OnInitDialog()
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
 
+    fontObj.purpose = _T("Weather Tab Forecast Temperature Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\WEATHER\\FORECAST\\LOWTEMPRATURE\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Weather Tab Update Time Title Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\WEATHER\\UPDATETIMETITLE\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Weather Tab Update Time Ago Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\WEATHER\\UPDATETIMEAGO\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
     fontObj.purpose = _T("Weather Tab Error Text");
     fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\WEATHER\\STATUS\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Settings Tab Item Title Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\SETTINGS\\ITEMTITLE\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Settings Tab Item Description Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\SETTINGS\\ITEMDESCRIPTION\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Settings Tab Item Title Disabled Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\SETTINGS\\ITEMTITLEDISABLED\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Settings Tab Item Description Disabled Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\SETTINGS\\ITEMDESCRIPTIONDISABLED\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Internet Tab Globe Title Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\INTERNET\\GLOBETITLE\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Internet Tab Globe Web Address Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\INTERNET\\GLOBETITLEWEBADDRESS\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Internet Tab Item Title Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\INTERNET\\ITEMTITLE\\0");
+    M2DC::ReadManilla2DFontFromRegistry(&fontObj);
+    m_m2dFontObjects.push_back(fontObj);
+
+    fontObj.purpose = _T("Internet Tab Item Description Text");
+    fontObj.registryKey = _T("Software\\HTC\\Manila2D\\FONT\\WIDGET\\INTERNET\\ITEMDESCRIPTION\\0");
     M2DC::ReadManilla2DFontFromRegistry(&fontObj);
     m_m2dFontObjects.push_back(fontObj);
 
@@ -318,6 +413,7 @@ void CManilla2DConfigFontsDlg::InitializeFontControls()
     m_fontAlignCombo.AddString(_T("Left"));
     m_fontAlignCombo.AddString(_T("Center"));
     m_fontAlignCombo.AddString(_T("Right"));
+    m_fontAlignCombo.AddString(_T("Multi Line"));
     m_fontAlignCombo.SetCurSel(0);
 
     m_fontFaceCombo.AddString(_T("<Default>"));
@@ -417,9 +513,13 @@ void CManilla2DConfigFontsDlg::OnCbnSelchangeFontAlignCombo()
             {
                 curFont->fontFmt = 2;
             }
+            else if(curSelString.CompareNoCase(_T("Multi Line")) == 0)
+            {
+                curFont->fontFmt = 16;
+            }
             else
             {
-                curFont->fontFmt = 3;
+                curFont->fontFmt = 16;
             }
         }
     }
