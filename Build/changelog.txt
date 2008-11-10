@@ -1,12 +1,14 @@
 Manilla 2D Customizer changelog
 
-Nov-09-2008
-v.0.21.211
+Nov-10-2008
+v.0.21.213
 - added more fonts [Messaging, interent, settings, weather] (Manila2D v20 only)
 - added ability to add a folder of themes in the theme manager, this folder will
     be remembered and every time you restart M2DC will look for new themes in that
     folder
 - updated donator list (I think)
+- fixed build process (again... stupid devenv not knowing how to handle dependencies)
+- uninstaller no longer applies your backed up theme
 
 Nov-04-2008
 v0.20.207
