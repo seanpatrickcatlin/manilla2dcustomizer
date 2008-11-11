@@ -1,5 +1,10 @@
 Manilla 2D Customizer changelog
 
+Nov-11-2008
+v.0.22.215
+- added an internet page that allows you to set a different default internet browser
+    for Manila 2D version 20 (build 1.0.1820.3328)
+
 Nov-10-2008
 v.0.21.213
 - added more fonts [Messaging, interent, settings, weather] (Manila2D v20 only)
