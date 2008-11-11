@@ -163,4 +163,7 @@ namespace M2DC
 
     void ReadManilla2DFontFromRegistry(Manilla2DFontObject* pM2dfo);
     void WriteManilla2DFontToRegistry(Manilla2DFontObject* pM2dfo);
+
+    CString ReadBrowserExeFromRegistry();
+    void WriteBrowserExeToRegistry(CString newBrowserPath);
 };
