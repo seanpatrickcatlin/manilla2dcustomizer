@@ -240,6 +240,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Manilla2DConfigInternetDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Manilla2DConfigLauncherDlg.cpp"
 				>
 			</File>
@@ -257,6 +261,10 @@
 			</File>
 			<File
 				RelativePath=".\Manilla2DConfigTabsDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Manilla2DConfigThemePartsDlg.cpp"
 				>
 			</File>
 			<File
@@ -482,6 +490,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Manilla2DConfigInternetDlg.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Manilla2DConfigLauncherDlg.h"
 				>
 			</File>
@@ -499,6 +511,10 @@
 			</File>
 			<File
 				RelativePath=".\Manilla2DConfigTabsDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Manilla2DConfigThemePartsDlg.h"
 				>
 			</File>
 			<File

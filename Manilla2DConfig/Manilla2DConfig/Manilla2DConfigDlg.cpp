@@ -31,6 +31,7 @@
 #include "Manilla2DConfigRestoreDlg.h"
 #include "Manilla2DConfigSoftKeysDlg.h"
 #include "Manilla2DConfigLauncherDlg.h"
+#include "Manilla2DConfigInternetDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -89,6 +90,7 @@ void CManilla2DConfigDlg::SetupPages()
     AddNewTabPage(new CManilla2DConfigHomeRegDlg(this));
     AddNewTabPage(new CManilla2DConfigTabsDlg(this));
     AddNewTabPage(new CManilla2DConfigHomeDlg(this));
+    AddNewTabPage(new CManilla2DConfigInternetDlg(this));
     AddNewTabPage(new CManilla2DConfigLauncherDlg(this));
     AddNewTabPage(new CManilla2DConfigRestoreDlg(this));
     AddNewTabPage(new CManilla2DConfigAboutDlg(this));

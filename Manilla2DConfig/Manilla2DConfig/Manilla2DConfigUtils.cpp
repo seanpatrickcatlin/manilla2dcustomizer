@@ -2730,3 +2730,42 @@ void M2DC::WriteManilla2DFontToRegistry(Manilla2DFontObject* pM2dfo)
         }
     }
 }
+
+CString M2DC::ReadBrowserExeFromRegistry()
+{
+    CString retString;
+
+    CRegKey rKey;
+    TCHAR valueBuffer[MAX_PATH];
+    DWORD valueBufferSize = MAX_PATH;
+
+    LONG retVal = rKey.Open(HKEY_LOCAL_MACHINE, _T("SOFTWARE\\HTC\\Manila2D\\InternetWidget"));
+
+    if(retVal == ERROR_SUCCESS)
+    {
+        valueBufferSize = MAX_PATH;
+        retVal = rKey.QueryStringValue(_T("OperaEXEFile"), valueBuffer, &valueBufferSize);
+        if(retVal != ERROR_SUCCESS)
+        {
+            retString = _T("");
+        }
+        else
+        {
+            retString = valueBuffer;
+        }
+    }
+
+    return retString;
+}
+
+void M2DC::WriteBrowserExeToRegistry(CString newBrowserPath)
+{
+    CRegKey rKey;
+
+    LONG retVal = rKey.Open(HKEY_LOCAL_MACHINE, _T("SOFTWARE\\HTC\\Manila2D\\InternetWidget"));
+
+    if(retVal == ERROR_SUCCESS)
+    {
+        rKey.SetStringValue(_T("OperaEXEFile"), newBrowserPath);
+    }
+}

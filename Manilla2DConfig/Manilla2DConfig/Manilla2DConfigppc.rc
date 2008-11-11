@@ -231,6 +231,23 @@ BEGIN
     PUSHBUTTON      "Set All Fonts To Their Default State",IDC_FONT_RESET_ALL_COMBO,4,134,148,14
 END
 
+IDD_M2DC_INTERNET_DLG DIALOG  0, 0, 156, 156
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Default Internet Browser",IDC_STATIC,4,20,148,8
+    PUSHBUTTON      "...",IDC_INTERNET_BROWSER_BTN,127,28,25,14
+    EDITTEXT        IDC_INTERNET_BROWSER_EDIT,4,28,120,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "Set Default",IDC_INTERNET_DEFAULT_BUTTON,53,44,50,14
+END
+
+IDD_M2DC_THEME_PARTS_DLG DIALOG  0, 0, 156, 156
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg"
+BEGIN
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -335,6 +352,22 @@ BEGIN
         TOPMARGIN, 20
         BOTTOMMARGIN, 148
     END
+
+    IDD_M2DC_INTERNET_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 152
+        TOPMARGIN, 20
+        BOTTOMMARGIN, 148
+    END
+
+    IDD_M2DC_THEME_PARTS_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 152
+        TOPMARGIN, 20
+        BOTTOMMARGIN, 148
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -370,6 +403,10 @@ BEGIN
     IDS_COLOR_PICKER_TITLE_STR "Coose a color"
     IDS_M2DC_FONTS_TAB_STR  "Fonts"
     IDS_M2DC_FONTS_TITLE_STR "Manilla 2D Font Settings"
+    IDS_M2DC_INTERNET_TAB_STR "Internet"
+    IDS_M2DC_INTERNET_TITLE_STR "Manilla 2D Internet Settings"
+    IDS_M2DC_THEME_PARTS_TITLE_STR "Pick the theme parts to apply"
+    
 END
 
 #endif    // English (U.S.) resources
