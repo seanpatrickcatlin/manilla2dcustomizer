@@ -78,6 +78,8 @@ BOOL CManilla2DConfigAboutDlg::OnInitDialog()
     m_donatorsListBox.AddString(TEXT("sschlesinger - $$$"));
     m_donatorsListBox.AddString(TEXT("Zak from ZaksEnterprises.com - $$$"));
     m_donatorsListBox.AddString(TEXT("scotchua - $$$"));
+    m_donatorsListBox.AddString(TEXT("jesusishere - $$$"));
+    m_donatorsListBox.AddString(TEXT("Jaxboater - $$$"));
     m_donatorsListBox.AddString(TEXT("..."));
     m_donatorsListBox.AddString(TEXT("<your name here for a donation of $1 or more>"));
 

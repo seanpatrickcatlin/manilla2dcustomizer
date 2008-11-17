@@ -1,5 +1,9 @@
 Manilla 2D Customizer changelog
 
+Nov-??-2008
+v0.23.???
+- updated donator list
+
 Nov-11-2008
 v.0.22.215
 - added an internet page that allows you to set a different default internet browser
