@@ -2,12 +2,14 @@ Manilla 2D Customizer changelog
 
 Nov-??-2008
 v0.23.???
+- added warning about a theme file that contains an m2dct file, hopefully this will
+    cut down on some confusion
 - updated donator list
 
 Nov-11-2008
 v.0.22.215
 - added an internet page that allows you to set a different default internet browser
-    for Manila 2D version 20 (build 1.0.1820.3328)
+    for Manila 2D build 1.0.1820.3328
 
 Nov-10-2008
 v.0.21.213
