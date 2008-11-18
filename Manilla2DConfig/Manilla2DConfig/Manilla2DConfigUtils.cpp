@@ -1735,7 +1735,17 @@ bool M2DC::FileIsValidM2DCTheme(CString filePath)
         GetZipItem(hz, zi, &ze);            // fetch individual details
 
         CString filePathFromZip(ze.name);
-        CString fileExt = filePathFromZip.Mid(filePathFromZip.ReverseFind('.')+1);
+
+        CString fileExtension = WinCeFileUtils::GetFileExtNoDirNoName(filePathFromZip);
+
+        if(fileExtension.CompareNoCase(_T("m2dct")) == 0)
+        {
+            CString warningString = _T("M2DC found a m2dct file in this theme file.\n");
+            warningString += _T("You may need to extract the m2dct file from this archive");
+            warningString += _T("if you have problems applying this theme.");
+
+            MessageBox(NULL, warningString, WinCeFileUtils::GetFileNameNoDirNoExt(filePathFromZip), MB_OK);
+        }
 
         retVal = ((filePathFromZip.Find(TEXT("HTCHomeSettings.xml")) != -1) ||
                     (filePathFromZip.Find(TEXT("HH_")) != -1) ||
@@ -2113,7 +2123,6 @@ void M2DC::AddToM2DCThemeList(CString pathToTheme)
 
         CString previewPath = GetPathToNullThemePreview();;
 
-        
         // check to see if a file named "preview.jpeg" exists
         // if it does exist extract it and sav the path
         // get information about the zip file
