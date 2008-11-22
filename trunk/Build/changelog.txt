@@ -2,6 +2,7 @@ Manilla 2D Customizer changelog
 
 Nov-??-2008
 v0.23.???
+- fonts drop down boxes are much larger now, much more easy to read
 - added warning about a theme file that contains an m2dct file, hopefully this will
     cut down on some confusion
 - updated donator list
