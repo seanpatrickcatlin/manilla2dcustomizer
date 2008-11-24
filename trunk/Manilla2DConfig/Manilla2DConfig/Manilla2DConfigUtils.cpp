@@ -122,7 +122,7 @@ CString M2DC::GetPathToBackgroundFile()
 
     if(!WinCeFileUtils::FileExists(retVal))
     {
-        CString retVal = WinCeFileUtils::GetPathToWindowsDirectory();
+        retVal = WinCeFileUtils::GetPathToWindowsDirectory();
         retVal += "\\hh_fw_background.png";
     }
 
@@ -1260,9 +1260,6 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
     // paths from the current XML file
     if(WinCeFileUtils::FileExists(themePath))
     {
-        // add a 5 second wait ot make sure that the files can be overwritten
-        Sleep(5000);
-
         if(!FileIsValidM2DCTheme(themePath))
         {
             CString msg;
@@ -1279,6 +1276,9 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
 
         BeginMakingChanges();
         AfxGetApp()->BeginWaitCursor();
+        
+        // add a 5 second wait ot make sure that the files can be overwritten
+        Sleep(5000);
 
         std::vector<CString> pathsToThemeFiles;
 
@@ -1760,9 +1760,12 @@ bool M2DC::FileIsValidM2DCTheme(CString filePath)
 
         if(fileExtension.CompareNoCase(_T("m2dct")) == 0)
         {
-            CString warningString = _T("M2DC found a m2dct file in this theme file.\n");
-            warningString += _T("You may need to extract the m2dct file from this archive");
-            warningString += _T("if you have problems applying this theme.");
+            CString warningString = _T("M2DC found a m2dct file in");
+            warningString += _T("this theme file.  You may ");
+            warningString += _T("need to extract the m2dct ");
+            warningString += _T("file from this archive if ");
+            warningString += _T("you have problems applying ");
+            warningString += _T("this theme.");
 
             MessageBox(NULL, warningString, WinCeFileUtils::GetFileNameNoDirNoExt(filePathFromZip), MB_OK);
         }
