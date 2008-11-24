@@ -14,7 +14,7 @@ v0.23.223
     Manila2D background.  Right now there is no way to go back to the "default"
     background, only restoring a theme, or applying a new theme can change your
     background.  This feature only supports "hh_fw_background.png" files that are
-    located in "\Windows" and "\Windows\MainlaGFX" which should satisfy 99% of users
+    located in "\Windows" and "\Windows\ManilaGFX" which should satisfy 99% of users
     but if you have issues let me know and I will read the value directly from the
     HTCHomeSettings.xml file
 - fonts drop down boxes are much larger now, much more easy to read
