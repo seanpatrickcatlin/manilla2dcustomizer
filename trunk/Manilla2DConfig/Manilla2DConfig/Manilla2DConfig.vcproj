@@ -224,6 +224,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Manilla2DConfigBackgroundDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Manilla2DConfigDlg.cpp"
 				>
 			</File>
@@ -471,6 +475,10 @@
 			</File>
 			<File
 				RelativePath=".\Manilla2DConfigAbstractDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Manilla2DConfigBackgroundDlg.h"
 				>
 			</File>
 			<File

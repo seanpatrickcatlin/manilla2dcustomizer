@@ -16,6 +16,7 @@
 #define IDD_COLOR_PICKER_DLG            112
 #define IDD_M2DC_INTERNET_DLG           113
 #define IDD_M2DC_THEME_PARTS_DLG        114
+#define IDD_M2DC_BACKGROUND_DLG         115
 #define IDR_M2DC_ICO                    128
 #define IDR_APPLY_CANCEL_MENU           129
 #define IDR_OK_CANCEL_MENU              130
@@ -42,6 +43,8 @@
 #define IDS_M2DC_INTERNET_TAB_STR       151
 #define IDS_M2DC_INTERNET_TITLE_STR     152
 #define IDS_M2DC_THEME_PARTS_TITLE_STR  153
+#define IDS_M2DC_BACKGROUND_TAB_STR     154
+#define IDS_M2DC_BACKGROUND_TITLE_STR   155
 #define IDC_M2DC_TABS_UP_BTN            1001
 #define IDC_M2DC_TABS_DOWN_BTN          1002
 #define IDC_M2DC_TABS_MAIN_LC           1003
@@ -110,6 +113,10 @@
 #define IDC_INTERNET_BROWSER_BTN        1069
 #define IDC_INTERNET_BROWSER_EDIT       1070
 #define IDC_INTERNET_DEFAULT_BUTTON     1071
+#define IDC_BACKGROUND_PATH_EDIT        1072
+#define IDC_BACKGROUND_PATH_BROWSE_BTN  1074
+#define IDC_BUTTON2                     1075
+#define IDC_BACKGROUND_PATH_CLEAR_BTN   1075
 #define ID_RESTORE_DEFAULTS             32771
 #define IDT_M2DC_PROGRESS_TIMER         32772
 
@@ -117,9 +124,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        154
+#define _APS_NEXT_RESOURCE_VALUE        156
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1072
-#define _APS_NEXT_SYMED_VALUE           114
+#define _APS_NEXT_CONTROL_VALUE         1076
+#define _APS_NEXT_SYMED_VALUE           116
 #endif
 #endif

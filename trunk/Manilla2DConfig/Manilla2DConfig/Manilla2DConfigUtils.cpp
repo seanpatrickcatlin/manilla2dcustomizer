@@ -115,6 +115,26 @@ CString M2DC::GetPathToHTCHomeSettingsXmlFileWorking()
     return retVal;
 }
 
+CString M2DC::GetPathToBackgroundFile()
+{
+    CString retVal = WinCeFileUtils::GetPathToWindowsDirectory();
+    retVal += "\\ManilaGFX\\hh_fw_background.png";
+
+    if(!WinCeFileUtils::FileExists(retVal))
+    {
+        CString retVal = WinCeFileUtils::GetPathToWindowsDirectory();
+        retVal += "\\hh_fw_background.png";
+    }
+
+    CString debugStr = TEXT("GetPathToBackgroundFile ");
+    debugStr += retVal;
+    debugStr += "\n";
+
+    TRACE(debugStr);
+
+    return retVal;
+}
+
 CString M2DC::GetPathToHTCHomeSettingsXmlFileActual()
 {
     CString retVal = WinCeFileUtils::GetPathToWindowsDirectory();
