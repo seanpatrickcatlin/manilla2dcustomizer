@@ -1,6 +1,14 @@
 Manilla 2D Customizer changelog
 
 Nov-24-2008
+v0.24.225
+- fixed background bug, only worked with "\Windows\ManilaGFX" folder, now works with
+    "\Windows" folder too.
+- fixed some formatting on the m2dct inside of a zip file warning box
+- moved some code around so you are not waiting for 5 seconds after you hit apply, 
+    now the spinning cursor should come up immediately
+
+Nov-24-2008
 v0.23.223
 - added a new background page that will let you specify a png image to use as the
     Manila2D background.  Right now there is no way to go back to the "default"
