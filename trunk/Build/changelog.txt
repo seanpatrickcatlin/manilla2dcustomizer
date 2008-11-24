@@ -1,7 +1,7 @@
 Manilla 2D Customizer changelog
 
 Nov-24-2008
-v0.23.220
+v0.23.222
 - added a new background page that will let you specify a png image to use as the
     Manila2D background.  Right now there is no way to go back to the "default"
     background, only restoring a theme, or applying a new theme can change your
