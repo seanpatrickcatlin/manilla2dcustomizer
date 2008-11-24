@@ -1,7 +1,14 @@
 Manilla 2D Customizer changelog
 
-Nov-??-2008
-v0.23.???
+Nov-24-2008
+v0.23.220
+- added a new background page that will let you specify a png image to use as the
+    Manila2D background.  Right now there is no way to go back to the "default"
+    background, only restoring a theme, or applying a new theme can change your
+    background.  This feature only supports "hh_fw_background.png" files that are
+    located in "\Windows" and "\Windows\MainlaGFX" which should satisfy 99% of users
+    but if you have issues let me know and I will read the value directly from the
+    HTCHomeSettings.xml file
 - fonts drop down boxes are much larger now, much more easy to read
 - added warning about a theme file that contains an m2dct file, hopefully this will
     cut down on some confusion

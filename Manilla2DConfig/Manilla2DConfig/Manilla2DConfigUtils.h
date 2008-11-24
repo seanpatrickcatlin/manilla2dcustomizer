@@ -117,6 +117,8 @@ namespace M2DC
     CString GetPathToHTCHomeSettingsXmlFileWorking();
     CString GetPathToHTCHomeSettingsXmlFileActiveTheme();
 
+    CString GetPathToBackgroundFile();
+
     void BackupTodayScreenItemsRegHive();
     void RestoreTodayScreenItemsRegHive();
 
