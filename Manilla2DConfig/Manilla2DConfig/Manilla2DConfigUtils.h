@@ -116,6 +116,7 @@ namespace M2DC
     CString GetPathToHTCHomeSettingsXmlFileBackup();
     CString GetPathToHTCHomeSettingsXmlFileWorking();
     CString GetPathToHTCHomeSettingsXmlFileActiveTheme();
+    CString GetPathToHTCHomeSettingsXmlFileTemp();
 
     CString GetPathToBackgroundFile();
 

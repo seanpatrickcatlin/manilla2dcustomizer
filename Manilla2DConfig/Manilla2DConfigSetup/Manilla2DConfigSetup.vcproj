@@ -200,6 +200,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\Manilla2DConfig\Manilla2DConfigAbstractDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\Manilla2DConfig\Manilla2DConfigProgressDlg.cpp"
 				>
 			</File>
@@ -225,6 +229,10 @@
 			</File>
 			<File
 				RelativePath=".\Manilla2DConfigSetup.def"
+				>
+			</File>
+			<File
+				RelativePath="..\Manilla2DConfig\Manilla2DConfigThemePartsDlg.cpp"
 				>
 			</File>
 			<File
@@ -406,11 +414,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\Manilla2DConfig\Manilla2DConfigAboutDlg.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Manilla2DConfig\Manilla2DConfigProgressDlg.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Manilla2DConfigSetup.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Manilla2DConfig\Manilla2DConfigThemePartsDlg.h"
 				>
 			</File>
 			<File

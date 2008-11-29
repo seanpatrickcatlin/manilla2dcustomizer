@@ -54,4 +54,10 @@ protected:
 	virtual BOOL OnInitDialog();
 
 	DECLARE_MESSAGE_MAP()
+
+    CButton m_noWeatherCheck;
+    bool m_bDoUpdateWeather;
+
+public:
+    bool DoUpdateWeather();
 };
