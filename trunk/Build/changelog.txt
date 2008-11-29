@@ -1,5 +1,10 @@
 Manilla 2D Customizer changelog
 
+Nov-29-2008
+v0.25.227
+- added new dialog with 1 option "Don't update Weather Tab", so you can choose if you
+    want to use your existing weather settings or use the new weather settings
+
 Nov-24-2008
 v0.24.225
 - fixed background bug, only worked with "\Windows\ManilaGFX" folder, now works with

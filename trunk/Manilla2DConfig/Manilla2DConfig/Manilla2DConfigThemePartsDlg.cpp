@@ -33,7 +33,7 @@
 CManilla2DConfigThemePartsDlg::CManilla2DConfigThemePartsDlg(CWnd* pParent)
 : CManilla2DConfigAbstractDlg(pParent, CManilla2DConfigThemePartsDlg::IDD, CManilla2DConfigThemePartsDlg::IDS_TAB, CManilla2DConfigThemePartsDlg::IDS_TITLE, true)
 {
-
+    m_bDoUpdateWeather = true;
 }
 
 CManilla2DConfigThemePartsDlg::~CManilla2DConfigThemePartsDlg()
@@ -43,6 +43,7 @@ CManilla2DConfigThemePartsDlg::~CManilla2DConfigThemePartsDlg()
 void CManilla2DConfigThemePartsDlg::DoDataExchange(CDataExchange* pDX)
 {
     CDialog::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_NO_WEATHER_CHECK, m_noWeatherCheck);
 }
 
 BEGIN_MESSAGE_MAP(CManilla2DConfigThemePartsDlg, CManilla2DConfigAbstractDlg)
@@ -60,6 +61,7 @@ BOOL CManilla2DConfigThemePartsDlg::OnInitDialog()
 
 void CManilla2DConfigThemePartsDlg::OnOK()
 {
+    m_bDoUpdateWeather = (m_noWeatherCheck.GetCheck() == BST_UNCHECKED);
     CDialog::OnOK();
 }
 
@@ -68,4 +70,7 @@ void CManilla2DConfigThemePartsDlg::OnCancel()
     CDialog::OnCancel();
 }
 
-
+bool CManilla2DConfigThemePartsDlg::DoUpdateWeather()
+{
+    return m_bDoUpdateWeather;
+}

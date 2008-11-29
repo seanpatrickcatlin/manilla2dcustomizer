@@ -115,8 +115,9 @@
 #define IDC_INTERNET_DEFAULT_BUTTON     1071
 #define IDC_BACKGROUND_PATH_EDIT        1072
 #define IDC_BACKGROUND_PATH_BROWSE_BTN  1074
-#define IDC_BUTTON2                     1075
 #define IDC_BACKGROUND_PATH_CLEAR_BTN   1075
+#define IDC_CHECK1                      1076
+#define IDC_NO_WEATHER_CHECK            1076
 #define ID_RESTORE_DEFAULTS             32771
 #define IDT_M2DC_PROGRESS_TIMER         32772
 
@@ -126,7 +127,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        156
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1076
+#define _APS_NEXT_CONTROL_VALUE         1077
 #define _APS_NEXT_SYMED_VALUE           116
 #endif
 #endif

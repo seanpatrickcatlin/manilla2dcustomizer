@@ -19,6 +19,7 @@
 #include <atlbase.h>
 #include "Manilla2DConfigUtils.h"
 #include "Manilla2DConfigProgressDlg.h"
+#include "Manilla2DConfigThemePartsDlg.h"
 
 #include "WinCeFileUtils.h"
 
@@ -90,8 +91,22 @@ CString M2DC::GetPathToHTCHomeSettingsXmlFileActiveTheme()
 
     if(!WinCeFileUtils::FileExists(retVal))
     {
-        retVal = GetPathToHTCHomeSettingsXmlFileBackup();
+        CopyFile(GetPathToHTCHomeSettingsXmlFileActual(), retVal, FALSE);
     }
+
+    return retVal;
+}
+
+CString M2DC::GetPathToHTCHomeSettingsXmlFileTemp()
+{
+	CString retVal = GetPathToM2DCInstallDirectory();
+    retVal += "\\HTCHomeSettings-Temp.xml";
+
+    CString debugStr = TEXT("GetPathToHTCHomeSettingsXmlFileTemp: ");
+    debugStr += retVal;
+    debugStr += "\n";
+
+    TRACE(debugStr);
 
     return retVal;
 }
@@ -1271,9 +1286,6 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
             return -1;
         }
 
-        // delete the last active theme file
-        DeleteFile(GetPathToHTCHomeSettingsXmlFileActiveTheme());
-
         BeginMakingChanges();
         AfxGetApp()->BeginWaitCursor();
         
@@ -1283,6 +1295,25 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
         std::vector<CString> pathsToThemeFiles;
 
         GetVectorOfThemeFilesCurrentlyInUse(&pathsToThemeFiles, true);
+
+        CManilla2DConfigThemePartsDlg partsDlg(NULL);
+
+        AfxGetApp()->EndWaitCursor();
+        partsDlg.DoModal();
+        AfxGetApp()->BeginWaitCursor();
+
+        if(!partsDlg.DoUpdateWeather())
+        {
+            for(size_t i=0; i< pathsToThemeFiles.size(); i++)
+            {
+                if((pathsToThemeFiles[i].Find(_T("HH_WEATHER")) != -1) || 
+                    (pathsToThemeFiles[i].Find(_T("hh_weather")) != -1))
+                {
+                    pathsToThemeFiles.erase(pathsToThemeFiles.begin() + i);
+                    i--;
+                }
+            }
+        }
 
         HZIP hz = OpenZip(themePath, 0);
         ZIPENTRY ze;
@@ -1320,7 +1351,7 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
 
             if(fileNameNoPath.Compare(TEXT("HTCHomeSettings.xml")) == 0)
             {
-                destString = GetPathToHTCHomeSettingsXmlFileActiveTheme();
+                destString = GetPathToHTCHomeSettingsXmlFileTemp();
             }
 
             if(fileExt.CompareNoCase(TEXT("tsk")) == 0)
@@ -1379,8 +1410,17 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
         // write the values to the working xml file
         HTCHomeSettingsStruct xmlSettings;
 
-        ReadValuesFromXml(GetPathToHTCHomeSettingsXmlFileActiveTheme(), &xmlSettings);
+        ReadValuesFromXml(GetPathToHTCHomeSettingsXmlFileTemp(), &xmlSettings);
+
+        if(!partsDlg.DoUpdateWeather())
+        {
+            xmlSettings.weatherWidgetPropertyElements.clear();
+        }
+
+        WriteValuesToXml(GetPathToHTCHomeSettingsXmlFileActiveTheme(), &xmlSettings);
         WriteValuesToXml(GetPathToHTCHomeSettingsXmlFileWorking(), &xmlSettings);
+
+        DeleteFile(GetPathToHTCHomeSettingsXmlFileTemp());
 
         AfxGetApp()->EndWaitCursor();
         EndMakingChanges();

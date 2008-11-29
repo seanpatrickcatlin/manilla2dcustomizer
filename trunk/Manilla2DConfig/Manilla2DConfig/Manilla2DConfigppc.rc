@@ -246,6 +246,8 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Dialog"
 FONT 8, "MS Shell Dlg"
 BEGIN
+    CONTROL         "Don't Update Weather Tab Settings",IDC_NO_WEATHER_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,20,148,10
 END
 
 IDD_M2DC_BACKGROUND_DLG DIALOG  0, 0, 156, 156
@@ -423,7 +425,7 @@ BEGIN
     IDS_M2DC_FONTS_TITLE_STR "Manilla 2D Font Settings"
     IDS_M2DC_INTERNET_TAB_STR "Internet"
     IDS_M2DC_INTERNET_TITLE_STR "Manilla 2D Internet Settings"
-    IDS_M2DC_THEME_PARTS_TITLE_STR "Pick the theme parts to apply"
+    IDS_M2DC_THEME_PARTS_TITLE_STR "Apply Theme Options"
     IDS_M2DC_BACKGROUND_TAB_STR "Background"
     IDS_M2DC_BACKGROUND_TITLE_STR "Manilla 2D Background Settings"
 END
