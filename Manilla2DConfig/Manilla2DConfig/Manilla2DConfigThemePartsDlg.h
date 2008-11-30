@@ -58,6 +58,10 @@ protected:
     CButton m_noWeatherCheck;
     bool m_bDoUpdateWeather;
 
+    CButton m_noTabIconsCheck;
+    bool m_bDoUpdateTabIcons;
+
 public:
     bool DoUpdateWeather();
+    bool DoUpdateTabIcons();
 };

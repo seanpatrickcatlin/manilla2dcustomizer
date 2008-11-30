@@ -246,8 +246,10 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Dialog"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    CONTROL         "Don't Update Weather Tab Settings",IDC_NO_WEATHER_CHECK,
+    CONTROL         "Don't Update Weather Images and Xml",IDC_NO_WEATHER_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,20,148,10
+    CONTROL         "Don't Update Tab Icon Images and Xml",IDC_NO_TABICONS_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,35,148,10
 END
 
 IDD_M2DC_BACKGROUND_DLG DIALOG  0, 0, 156, 156

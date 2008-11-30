@@ -1302,12 +1302,20 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
         partsDlg.DoModal();
         AfxGetApp()->BeginWaitCursor();
 
-        if(!partsDlg.DoUpdateWeather())
+        if((!partsDlg.DoUpdateWeather()) || (!partsDlg.DoUpdateTabIcons()))
         {
             for(size_t i=0; i< pathsToThemeFiles.size(); i++)
             {
-                if((pathsToThemeFiles[i].Find(_T("HH_WEATHER")) != -1) || 
-                    (pathsToThemeFiles[i].Find(_T("hh_weather")) != -1))
+                if((!partsDlg.DoUpdateWeather()) &&
+                    ((pathsToThemeFiles[i].Find(_T("HH_WEATHER")) != -1) || 
+                    (pathsToThemeFiles[i].Find(_T("hh_weather")) != -1)))
+                {
+                    pathsToThemeFiles.erase(pathsToThemeFiles.begin() + i);
+                    i--;
+                }
+                else if((!partsDlg.DoUpdateTabIcons()) &&
+                    ((pathsToThemeFiles[i].Find(_T("hh_fw_bigicon")) != -1) || 
+                    (pathsToThemeFiles[i].Find(_T("hh_fw_tab")) != -1)))
                 {
                     pathsToThemeFiles.erase(pathsToThemeFiles.begin() + i);
                     i--;
@@ -1319,7 +1327,7 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
         ZIPENTRY ze;
 
         // -1 gives overall information about the zipfile
-        GetZipItem(hz,-1,&ze);
+        GetZipItem(hz, -1, &ze);
 
         CString progMsg;
         CManilla2DConfigProgressDlg* pProgDlg = NULL;
@@ -1415,6 +1423,11 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
         if(!partsDlg.DoUpdateWeather())
         {
             xmlSettings.weatherWidgetPropertyElements.clear();
+        }
+
+        if(!partsDlg.DoUpdateTabIcons())
+        {
+            xmlSettings.tabWidgetPropertyElements.clear();
         }
 
         WriteValuesToXml(GetPathToHTCHomeSettingsXmlFileActiveTheme(), &xmlSettings);

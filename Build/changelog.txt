@@ -1,5 +1,9 @@
 Manilla 2D Customizer changelog
 
+Dec-01-2008
+- updated donator list
+- added option to not update the TabIcons images and settings from a new skin
+
 Nov-29-2008
 v0.25.227
 - added new dialog with 1 option "Don't update Weather Tab", so you can choose if you
