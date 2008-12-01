@@ -1,6 +1,7 @@
 Manilla 2D Customizer changelog
 
 Dec-01-2008
+v0.26.230
 - updated donator list
 - added option to not update the TabIcons images and settings from a new skin
 
