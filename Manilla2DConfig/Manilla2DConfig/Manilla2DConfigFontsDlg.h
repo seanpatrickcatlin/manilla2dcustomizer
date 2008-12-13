@@ -60,11 +60,10 @@ public:
     CSolidColorButton m_fontColorBtn;
     CComboBox m_fontAlignCombo;
     CButton m_fontDefaultCheck;
-    CEdit m_fontPreviewEdit;
     CButton m_fontResetAllButton;
 
     afx_msg void OnBnClickedFontColorBtn();
-    afx_msg void OnBnClickedFontResetAllCombo();
+    afx_msg void OnBnClickedFontResetAllButton();
     afx_msg void OnBnClickedFontDefaultCheck();
 
     void OnOK();
@@ -85,4 +84,6 @@ public:
     afx_msg void OnCbnSelchangeFontSizeCombo();
     afx_msg void OnCbnSelchangeFontFaceCombo();
     afx_msg void OnCbnSelchangeFontPurposeCombo();
+    CButton m_fontApplyAllButton;
+    afx_msg void OnBnClickedFontAppyAllButton();
 };

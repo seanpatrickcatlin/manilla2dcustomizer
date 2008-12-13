@@ -2695,7 +2695,7 @@ void M2DC::ReadManilla2DFontFromRegistry(Manilla2DFontObject* pM2dfo)
 
     pM2dfo->fontBold = 0;
     pM2dfo->fontItalic = 0;
-    pM2dfo->fontFmt = 3;
+    pM2dfo->fontFmt = 16;
     pM2dfo->fontRc = _T("0,0,0,0");
     pM2dfo->fontColor = _T("255,255,255");
     pM2dfo->fontSize = 0;

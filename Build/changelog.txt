@@ -1,5 +1,11 @@
 Manilla 2D Customizer changelog
 
+Dec-13-2008
+v0.27.232
+- added "Apply the settings to all fonts" button on the font dialog
+- increased the color picker drop down combo box length
+- updated donator list
+
 Dec-01-2008
 v0.26.230
 - updated donator list

@@ -72,9 +72,9 @@ void CManilla2DConfigFontsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_FONT_BOLD_CHECK, m_fontBoldCheck);
     DDX_Control(pDX, IDC_FONT_ITALIC_CHECK, m_fontItalicCheck);
     DDX_Control(pDX, IDC_FONT_DEFAULT_CHECK, m_fontDefaultCheck);
-    DDX_Control(pDX, IDC_FONT_PREVIEW_EDIT, m_fontPreviewEdit);
-    DDX_Control(pDX, IDC_FONT_RESET_ALL_COMBO, m_fontResetAllButton);
     DDX_Control(pDX, IDC_FONT_ALIGN_COMBO, m_fontAlignCombo);
+    DDX_Control(pDX, IDC_FONT_APPY_ALL_BUTTON, m_fontApplyAllButton);
+    DDX_Control(pDX, IDC_FONT_RESET_ALL_BUTTON, m_fontResetAllButton);
 }
 
 BOOL CManilla2DConfigFontsDlg::OnInitDialog()
@@ -269,9 +269,6 @@ BOOL CManilla2DConfigFontsDlg::OnInitDialog()
     m_m2dFontObjects.push_back(fontObj);
 
     InitializeFontControls();
-    
-    // TODO - Implement the preview feature, until then hide it
-    m_fontPreviewEdit.ShowWindow(FALSE);
 
     return FALSE;
 }
@@ -279,7 +276,7 @@ BOOL CManilla2DConfigFontsDlg::OnInitDialog()
 BEGIN_MESSAGE_MAP(CManilla2DConfigFontsDlg, CManilla2DConfigAbstractDlg)
     ON_MESSAGE(PSM_QUERYSIBLINGS, CManilla2DConfigFontsDlg::OnQuerySiblings)
     ON_BN_CLICKED(IDC_FONT_COLOR_BTN, &CManilla2DConfigFontsDlg::OnBnClickedFontColorBtn)
-    ON_BN_CLICKED(IDC_FONT_RESET_ALL_COMBO, &CManilla2DConfigFontsDlg::OnBnClickedFontResetAllCombo)
+    ON_BN_CLICKED(IDC_FONT_RESET_ALL_BUTTON, &CManilla2DConfigFontsDlg::OnBnClickedFontResetAllButton)
     ON_BN_CLICKED(IDC_FONT_DEFAULT_CHECK, &CManilla2DConfigFontsDlg::OnBnClickedFontDefaultCheck)
     ON_BN_CLICKED(IDC_FONT_BOLD_CHECK, &CManilla2DConfigFontsDlg::OnBnClickedFontBoldCheck)
     ON_BN_CLICKED(IDC_FONT_ITALIC_CHECK, &CManilla2DConfigFontsDlg::OnBnClickedFontItalicCheck)
@@ -287,6 +284,7 @@ BEGIN_MESSAGE_MAP(CManilla2DConfigFontsDlg, CManilla2DConfigAbstractDlg)
     ON_CBN_SELCHANGE(IDC_FONT_SIZE_COMBO, &CManilla2DConfigFontsDlg::OnCbnSelchangeFontSizeCombo)
     ON_CBN_SELCHANGE(IDC_FONT_FACE_COMBO, &CManilla2DConfigFontsDlg::OnCbnSelchangeFontFaceCombo)
     ON_CBN_SELCHANGE(IDC_FONT_PURPOSE_COMBO, &CManilla2DConfigFontsDlg::OnCbnSelchangeFontPurposeCombo)
+    ON_BN_CLICKED(IDC_FONT_APPY_ALL_BUTTON, &CManilla2DConfigFontsDlg::OnBnClickedFontAppyAllButton)
 END_MESSAGE_MAP()
 
 // CManilla2DConfigFontsDlg message handlers
@@ -332,7 +330,7 @@ void CManilla2DConfigFontsDlg::OnBnClickedFontColorBtn()
     }
 }
 
-void CManilla2DConfigFontsDlg::OnBnClickedFontResetAllCombo()
+void CManilla2DConfigFontsDlg::OnBnClickedFontResetAllButton()
 {
     // loop through all of the different Manilla2D Font Entries
     for(size_t i=0; i<m_m2dFontObjects.size(); i++)
@@ -383,15 +381,7 @@ void CManilla2DConfigFontsDlg::EnableFontControls(BOOL bEnable/* = 1*/)
     m_fontBoldCheck.EnableWindow(bEnable);
     m_fontItalicCheck.EnableWindow(bEnable);
     m_fontAlignCombo.EnableWindow(bEnable);
-
-    if(bEnable == TRUE)
-    {
-        m_fontPreviewEdit.SetWindowTextW(TEXT("Preview Text AaBbCcDdEeFf"));
-    }
-    else
-    {
-        m_fontPreviewEdit.SetWindowTextW(TEXT(""));
-    }
+    m_fontApplyAllButton.EnableWindow(bEnable);
 }
 
 void CManilla2DConfigFontsDlg::AddFont(CString fontFaceName)
@@ -620,6 +610,10 @@ void CManilla2DConfigFontsDlg::OnCbnSelchangeFontPurposeCombo()
         {
             m_fontAlignCombo.SelectString(0, _T("Right"));
         }
+        else if(curFont->fontFmt == 16)
+        {
+            m_fontAlignCombo.SelectString(0, _T("Multi Line"));
+        }
         else
         {
             m_fontAlignCombo.SelectString(0, _T("<Default>"));
@@ -701,5 +695,29 @@ void CManilla2DConfigFontsDlg::OnCbnSelchangeFontPurposeCombo()
 
         // refresh the state of the controls
         OnBnClickedFontDefaultCheck();
+    }
+}
+
+void CManilla2DConfigFontsDlg::OnBnClickedFontAppyAllButton()
+{
+    Manilla2DFontObject* curFont = GetCurrentFontSelection();
+    if(curFont != NULL)
+    {
+        AfxGetApp()->BeginWaitCursor();
+
+        // loop through all of the different Manilla2D Font Entries
+        for(size_t i=0; i<m_m2dFontObjects.size(); i++)
+        {
+            m_m2dFontObjects[i].fontBold = curFont->fontBold;
+            m_m2dFontObjects[i].fontColor = curFont->fontColor;
+            m_m2dFontObjects[i].fontDefault = curFont->fontDefault;
+            m_m2dFontObjects[i].fontFace = curFont->fontFace;
+            m_m2dFontObjects[i].fontFmt = curFont->fontFmt;
+            m_m2dFontObjects[i].fontItalic = curFont->fontItalic;
+            m_m2dFontObjects[i].fontRc = curFont->fontRc;
+            m_m2dFontObjects[i].fontSize = curFont->fontSize;
+        }
+
+        AfxGetApp()->EndWaitCursor();
     }
 }
