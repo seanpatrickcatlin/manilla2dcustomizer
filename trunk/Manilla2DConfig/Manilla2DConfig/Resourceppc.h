@@ -102,8 +102,8 @@
 #define IDC_FONT_ITALIC_CHECK           1057
 #define IDC_FONT_ALIGN_COMBO            1058
 #define IDC_FONT_DEFAULT_CHECK          1059
-#define IDC_FONT_RESET_ALL_COMBO        1060
-#define IDC_FONT_PREVIEW_EDIT           1061
+#define IDC_FONT_APPY_ALL_BUTTON        1060
+#define IDC_FONT_RESET_ALL_BUTTON       1061
 #define IDC_COLOR_EXAMPLE_BUTTON        1062
 #define IDC_COLOR_RED_SLIDER            1063
 #define IDC_COLOR_GREEN_SLIDER          1064
