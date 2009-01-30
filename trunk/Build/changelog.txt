@@ -1,5 +1,9 @@
 Manilla 2D Customizer changelog
 
+Jan-30-2009
+v0.28.233
+- fixed digital clock shift bug
+
 Dec-13-2008
 v0.27.232
 - added "Apply the settings to all fonts" button on the font dialog
