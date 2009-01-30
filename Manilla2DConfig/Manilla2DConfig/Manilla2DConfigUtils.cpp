@@ -91,7 +91,11 @@ CString M2DC::GetPathToHTCHomeSettingsXmlFileActiveTheme()
 
     if(!WinCeFileUtils::FileExists(retVal))
     {
+        DWORD dwFileAttributes = GetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual());
+        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual(), FILE_ATTRIBUTE_NORMAL);
         CopyFile(GetPathToHTCHomeSettingsXmlFileActual(), retVal, FALSE);
+        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileBackup(), FILE_ATTRIBUTE_NORMAL);  
+        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual(), dwFileAttributes);
     }
 
     return retVal;
@@ -1433,6 +1437,8 @@ int M2DC::SetActiveThemeFromPath(CString themePath, CString themeName)
         WriteValuesToXml(GetPathToHTCHomeSettingsXmlFileActiveTheme(), &xmlSettings);
         WriteValuesToXml(GetPathToHTCHomeSettingsXmlFileWorking(), &xmlSettings);
 
+        // set file attributes to normal so that we can delete this stupid temp file
+        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileTemp(), FILE_ATTRIBUTE_NORMAL);
         DeleteFile(GetPathToHTCHomeSettingsXmlFileTemp());
 
         AfxGetApp()->EndWaitCursor();
