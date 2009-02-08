@@ -1,5 +1,9 @@
 Manilla 2D Customizer changelog
 
+Feb-7-2009
+v0.29.235
+- 2nd attmpt at fixing digital clock shift bug
+
 Jan-30-2009
 v0.28.233
 - fixed digital clock shift bug
