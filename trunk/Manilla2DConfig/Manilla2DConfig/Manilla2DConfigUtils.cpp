@@ -91,11 +91,12 @@ CString M2DC::GetPathToHTCHomeSettingsXmlFileActiveTheme()
 
     if(!WinCeFileUtils::FileExists(retVal))
     {
-        DWORD dwFileAttributes = GetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual());
-        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual(), FILE_ATTRIBUTE_NORMAL);
         CopyFile(GetPathToHTCHomeSettingsXmlFileActual(), retVal, FALSE);
-        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileBackup(), FILE_ATTRIBUTE_NORMAL);  
-        SetFileAttributes(GetPathToHTCHomeSettingsXmlFileActual(), dwFileAttributes);
+    }
+
+    if(WinCeFileUtils::FileExists(retVal))
+    {
+        SetFileAttributes(retVal, FILE_ATTRIBUTE_NORMAL);
     }
 
     return retVal;
@@ -112,6 +113,11 @@ CString M2DC::GetPathToHTCHomeSettingsXmlFileTemp()
 
     TRACE(debugStr);
 
+    if(WinCeFileUtils::FileExists(retVal))
+    {
+        SetFileAttributes(retVal, FILE_ATTRIBUTE_NORMAL);
+    }
+
     return retVal;
 }
 
@@ -125,6 +131,11 @@ CString M2DC::GetPathToHTCHomeSettingsXmlFileWorking()
     debugStr += "\n";
 
     TRACE(debugStr);
+
+    if(WinCeFileUtils::FileExists(retVal))
+    {
+        SetFileAttributes(retVal, FILE_ATTRIBUTE_NORMAL);
+    }
 
     if(!g_bAlreadyBeganMakingChanges)
     {
@@ -151,6 +162,11 @@ CString M2DC::GetPathToBackgroundFile()
 
     TRACE(debugStr);
 
+    if(WinCeFileUtils::FileExists(retVal))
+    {
+        SetFileAttributes(retVal, FILE_ATTRIBUTE_NORMAL);
+    }
+
     return retVal;
 }
 
@@ -164,6 +180,11 @@ CString M2DC::GetPathToHTCHomeSettingsXmlFileActual()
     debugStr += "\n";
 
     TRACE(debugStr);
+
+    if(WinCeFileUtils::FileExists(retVal))
+    {
+        SetFileAttributes(retVal, FILE_ATTRIBUTE_NORMAL);
+    }
 
     return retVal;
 }
@@ -179,6 +200,11 @@ CString M2DC::GetPathToHTCHomeSettingsXmlFileBackup()
 
     TRACE(debugStr);
 
+    if(WinCeFileUtils::FileExists(retVal))
+    {
+        SetFileAttributes(retVal, FILE_ATTRIBUTE_NORMAL);
+    }
+
     return retVal;
 }
 
@@ -193,6 +219,11 @@ CString M2DC::GetPathToManila2DRegistryKeyBackupFile()
 
     TRACE(debugStr);
 
+    if(WinCeFileUtils::FileExists(retVal))
+    {
+        SetFileAttributes(retVal, FILE_ATTRIBUTE_NORMAL);
+    }
+
     return retVal;
 }
 
@@ -206,6 +237,11 @@ CString M2DC::GetPathToThemeBackupFile()
     debugStr += "\n";
 
     TRACE(debugStr);
+
+    if(WinCeFileUtils::FileExists(retVal))
+    {
+        SetFileAttributes(retVal, FILE_ATTRIBUTE_NORMAL);
+    }
 
     return retVal;
 }
